@@ -1,0 +1,198 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI - Your Learning Profile & Plan{% endblock %}
+
+{% block content %}
+<div class="container" id="profile-view-container" style="max-width: 900px; margin: 0 auto; padding-top: 1rem;">
+
+    <!-- Profile Header with Ambient Glow -->
+    <header style="margin-bottom: 3rem; position: relative;">
+        <div
+            style="position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 250px; height: 250px; background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%); filter: blur(30px); z-index: -1;">
+        </div>
+
+        <h1 class="hero-title" style="font-size: 2.75rem; text-align: center; margin-bottom: 0.5rem;"
+            id="profile-title-main">
+            Your Study <span>Sanctuary</span>
+        </h1>
+        <p class="hero-subtitle" style="font-size: 1rem; text-align: center;" id="profile-subtitle-desc">
+            Monitor your subscription status, limits, and learning consistency streak.
+        </p>
+    </header>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;" id="profile-main-grid">
+
+        <!-- Main Profile Info Card -->
+        <div class="glass-card"
+            style="position: relative; overflow: hidden; padding: 2.5rem; display: flex; flex-direction: column; md:flex-direction: row; gap: 2.5rem; align-items: center;"
+            id="profile-card-details">
+
+            <!-- Glow Accent -->
+            <div
+                style="position: absolute; top: 0; right: 0; width: 150px; height: 150px; background: radial-gradient(circle, {% if profile.plan_type == 'ultra' %}rgba(236, 72, 153, 0.12){% elif profile.plan_type == 'pro' %}rgba(139, 92, 246, 0.12){% else %}rgba(255, 255, 255, 0.04){% endif %} 0%, rgba(0,0,0,0) 70%); pointer-events: none;">
+            </div>
+
+            <!-- Left Avatar & General Details -->
+            <div style="text-align: center; flex-shrink: 0;" id="profile-avatar-block">
+                {% if user.first_name %}
+                <!-- Premium Initials Avatar -->
+                <div
+                    style="width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%); color: #fff; font-size: 2.5rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.05);">
+                    {{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1"|default:"" }}
+                </div>
+                {% else %}
+                <!-- Standard High Contrast Initial Avatar -->
+                <div
+                    style="width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%); color: #fff; font-size: 2.5rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; box-shadow: 0 8px 30px rgba(167, 139, 250, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.05);">
+                    {{ user.username|slice:":2"|upper }}
+                </div>
+                {% endif %}
+
+                <h2
+                    style="font-family: 'Outfit'; font-size: 1.5rem; color: var(--text-primary); margin-bottom: 0.25rem;">
+                    {{ user.first_name|default:user.username }} {{ user.last_name|default:"" }}
+                </h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+                    {{ user.email }}
+                </p>
+
+                <!-- Streak Flame Tag -->
+                <div
+                    style="display: inline-flex; align-items: center; gap: 8px; background: rgba(249, 115, 22, 0.08); border: 1px solid rgba(249, 115, 22, 0.2); padding: 0.4rem 1rem; border-radius: 20px; color: #f97316; font-weight: 600; font-size: 0.8rem; box-shadow: 0 0 10px rgba(249, 115, 22, 0.05); animation: hoverFloat 3s infinite ease-in-out;">
+                    <!-- Burning Flame Icon -->
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {{ profile.streak_count }} Day Study Streak
+                </div>
+            </div>
+
+            <!-- Right Plan details and actions -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 1.5rem;" id="profile-info-block">
+
+                <!-- Subscription details -->
+                <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.06); padding-bottom: 1.5rem;">
+                    <div
+                        style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                        Current Plan</div>
+
+                    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                        {% if profile.plan_type == 'ultra' %}
+                        <span
+                            style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(6, 182, 212, 0.25) 100%); border: 1px solid rgba(236, 72, 153, 0.4); box-shadow: 0 0 15px rgba(236, 72, 153, 0.3); color: #fff; padding: 0.4rem 1.2rem; border-radius: 6px; font-weight: 700; font-family: 'Outfit'; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                            Ultra Plan
+                        </span>
+                        {% elif profile.plan_type == 'pro' %}
+                        <span
+                            style="background: rgba(139, 92, 246, 0.25); border: 1px solid rgba(139, 92, 246, 0.4); box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); color: #fff; padding: 0.4rem 1.2rem; border-radius: 6px; font-weight: 700; font-family: 'Outfit'; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                            Pro Plan
+                        </span>
+                        {% else %}
+                        <span
+                            style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15); color: var(--text-secondary); padding: 0.4rem 1.2rem; border-radius: 6px; font-weight: 700; font-family: 'Outfit'; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                            Free Plan
+                        </span>
+                        {% endif %}
+
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                            {% if profile.plan_type == 'free' %}
+                            Basic platform usage, ad-supported features.
+                            {% else %}
+                            Active until <span style="font-weight: 600; color: var(--text-primary);">{% if profile.subscription_end_date %}{{ profile.subscription_end_date|date:"M d, Y" }}{% else %}Active (Ongoing){% endif %}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Usage Progress Bar (Course / Playlist Limits) -->
+                <div>
+                    <div
+                        style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 0.5rem;">
+                        <span
+                            style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Playlist
+                            Import Limit</span>
+                        <span style="color: var(--text-primary); font-weight: 600;">
+                            {{ playlist_count }} / {% if profile.plan_type == 'ultra' %}Unlimited{% else %}{{ playlist_limit }}{% endif %} Used
+                        </span>
+                    </div>
+
+                    <div
+                        style="width: 100%; height: 8px; background: rgba(255, 255, 255, 0.04); border-radius: 4px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.03);">
+                        {% if profile.plan_type == 'ultra' %}
+                        <div
+                            style="width: 100%; height: 100%; background: linear-gradient(90deg, #ec4899 0%, #06b6d4 100%); border-radius: 4px; box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);">
+                        </div>
+                        {% else %}
+                        <div
+                            style="width: {{ playlist_percentage }}%; height: 100%; background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%); border-radius: 4px; box-shadow: 0 0 10px rgba(139, 92, 246, 0.4); transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);">
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        {% if profile.plan_type == 'free' %}
+                        You are on the Free plan, which allows up to 3 distraction-free playlist imports. Upgrade to
+                        unlock 20 or unlimited playlists!
+                        {% elif profile.plan_type == 'pro' %}
+                        You are on the Pro plan, which allows up to 20 distraction-free playlist imports, AI study
+                        quizzes, and AI study planners.
+                        {% else %}
+                        You are on the Ultra plan! Enjoy unlimited playlist imports, AI study quizzes, AI study
+                        planners, and prioritized AI Tutor chatbots.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <!-- Action Button Block -->
+                <div style="display: flex; gap: 12px; margin-top: 0.5rem; flex-wrap: wrap;">
+                    {% if profile.plan_type == 'free' %}
+                    <a href="{% url 'pricing' %}" class="btn btn-primary"
+                        style="padding: 0.65rem 1.5rem; font-size: 0.85rem; box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);">
+                        Upgrade Plan &rarr;
+                    </a>
+                    {% elif profile.plan_type == 'pro' %}
+                    <a href="{% url 'pricing' %}" class="btn btn-primary"
+                        style="padding: 0.65rem 1.5rem; font-size: 0.85rem; background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); border-color: #ec4899; box-shadow: 0 4px 20px rgba(236, 72, 153, 0.3);">
+                        Upgrade to Ultra
+                    </a>
+                    {% else %}
+                    <div
+                        style="font-size: 0.8rem; color: #10b981; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.5rem 1rem; border-radius: 6px;">
+                        <span
+                            style="width: 6px; height: 6px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
+                        You have unlocked maximum EduTech AI privileges!
+                    </div>
+                    {% endif %}
+
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary"
+                        style="padding: 0.65rem 1.5rem; font-size: 0.85rem;">
+                        Back to Study Dashboard
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    @keyframes hoverFloat {
+        0% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-4px);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

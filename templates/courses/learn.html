@@ -1,0 +1,1129 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}Zen Mode Learn: {{ course.title }} - EduTech AI{% endblock %}
+
+{% block extra_head %}
+<!-- Hide standard scrollbars on base body in learning view to focus on individual sidebar scrolling -->
+<style>
+    body {
+        overflow: hidden;
+    }
+
+    @media (max-width: 1200px) {
+        body {
+            overflow: auto;
+        }
+    }
+
+    /* Subtle float animation for lock premium icons */
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-8px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Metadata store for JavaScript parameters -->
+<div id="course-meta-data" data-course-id="{{ course.id }}" style="display:none;"></div>
+<form style="display:none;">{% csrf_token %}</form>
+
+<div class="zen-layout" id="zen-room-layout">
+
+    <!-- LEFT SIDEBAR: Collapsible Curriculum Playlist Checklist -->
+    <aside class="zen-sidebar" id="curriculum-sidebar">
+        <header class="zen-sidebar-header" id="curriculum-header"
+            style="display: flex; flex-direction: column; gap: 0.75rem; padding: 1.25rem; border-bottom: var(--border-glass);">
+            <h2 style="font-family: 'Outfit'; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 1.1rem; margin: 0;"
+                title="{{ course.title }}">
+                {{ course.title }}
+            </h2>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="course-progress-label"
+                    style="font-size: 0.75rem; margin-bottom: 0; color: var(--text-secondary);">
+                    Completed: <strong id="header-completed-count" style="color: var(--text-primary);">{{ completed_count }}</strong> / <strong id="header-total-count" style="color: var(--text-primary);">{{ total_count }}</strong> videos (<span id="header-percentage" style="color: var(--success); font-weight: 700;">{{ percentage }}</span>%)
+                </div>
+                {% if percentage == 100 %}
+                {% if profile.plan_type == 'free' %}
+                <a href="{% url 'pricing' %}" class="btn btn-primary"
+                    style="background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); color: #fff; font-weight: 800; border: none; padding: 0.25rem 0.65rem; font-size: 0.72rem; border-radius: 4px; box-shadow: 0 0 10px rgba(139,92,246,0.4); text-decoration: none;">
+                    🔒 Unlock Exam
+                </a>
+                {% else %}
+                {% if course.passed_exam %}
+                <a href="{% url 'certificate' course.id %}" class="btn btn-primary"
+                    style="background: linear-gradient(135deg, #d4af37 0%, #b89018 100%); color: #000; font-weight: 800; border: none; padding: 0.25rem 0.65rem; font-size: 0.72rem; border-radius: 4px; box-shadow: 0 0 10px rgba(212,175,55,0.4);">
+                    🏆 Certificate
+                </a>
+                {% else %}
+                <a href="{% url 'final_exam' course.id %}" class="btn btn-primary"
+                    style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; font-weight: 800; border: none; padding: 0.25rem 0.65rem; font-size: 0.72rem; border-radius: 4px; box-shadow: 0 0 10px rgba(16,185,129,0.4);">
+                    📝 Final Exam
+                </a>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+            </div>
+            <div class="course-progress-bar"
+                style="height: 5px; max-width: 100%; border-radius: 10px; background: rgba(255, 255, 255, 0.05); overflow: hidden;">
+                <div class="course-progress-fill"
+                    style="width: {{ percentage }}%; height: 100%; background: linear-gradient(90deg, #9333ea 0%, #06b6d4 100%); border-radius: 10px;">
+                </div>
+            </div>
+            <!-- Sleek Target Pace capsule badge under progress bar -->
+            <div class="glass-badge badge-purple"
+                style="font-size: 0.72rem; padding: 0.35rem 0.75rem; display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 20px; font-weight: 500; background: rgba(147, 51, 234, 0.08); border: 1px solid rgba(147, 51, 234, 0.2); width: 100%; text-align: center;">
+                🎯 <span style="color: var(--text-secondary);">Target Pace: Finish in</span> <strong
+                    style="color: #fff;">{{ course.target_days }} days</strong> <span
+                    style="color: var(--text-muted);">({{ course.daily_target_videos }}/day)</span>
+            </div>
+        </header>
+
+        <!-- Video Checklist Navigation -->
+        <ul class="zen-playlist-nav" id="curriculum-videos-list" style="padding: 0.75rem 0.5rem; list-style: none;">
+            {% for item in playlist_items %}
+            <li class="zen-playlist-item {% if item.video.id == active_video.id %}active{% endif %}"
+                id="playlist-item-{{ item.video.id }}">
+                <a href="?video={{ item.video.id }}" class="zen-playlist-link">
+                    <!-- Completion glowing dot indicator (auto-updated when full video is watched) -->
+                    <div class="video-status-dot {% if item.is_completed %}completed{% endif %}"
+                        data-video-id="{{ item.video.id }}" id="status-video-{{ item.video.id }}"
+                        style="margin: 0; flex-shrink: 0;">
+                    </div>
+
+                    <!-- Video title -->
+                    <span
+                        style="flex: 1; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 0.82rem; color: {% if item.video.id == active_video.id %}#fff{% else %}var(--text-secondary){% endif %};"
+                        title="{{ item.video.title }}">
+                        {{ item.video.title }}
+                    </span>
+
+                    <!-- Video duration pill badge on far right -->
+                    <span
+                        style="font-size: 0.68rem; color: var(--text-muted); background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 0.15rem 0.45rem; border-radius: 12px; font-weight: 500; flex-shrink: 0; letter-spacing: -0.01em;">
+                        {{ item.video.duration_display }}m
+                    </span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <!-- CENTRAL SECTION: Distraction-free Video Iframe & AI Study Buddy -->
+    <section class="zen-center" id="learning-workspace">
+
+        <!-- Video Title Header Bar -->
+        <header
+            style="border-bottom: var(--border-glass); padding-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem;"
+            id="active-video-header">
+            <h1
+                style="font-size: 1.35rem; font-family: 'Outfit'; line-height: 1.3; font-weight: 700; background: linear-gradient(135deg, #ffffff 60%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                {{ active_video.title }}
+            </h1>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                <span class="glass-badge badge-purple"
+                    style="font-size: 0.7rem; padding: 0.2rem 0.6rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                    👁️ Zen Mode
+                </span>
+                <span class="glass-badge badge-cyan"
+                    style="font-size: 0.7rem; padding: 0.2rem 0.6rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                    ⚡ Ad-Free
+                </span>
+                <span class="glass-badge badge-emerald"
+                    style="font-size: 0.7rem; padding: 0.2rem 0.6rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                    💬 Comment-Free
+                </span>
+            </div>
+        </header>
+
+        <!-- The Distraction-Free Embedded Player -->
+        <div class="video-player-container" id="zen-iframe-container"
+            style="min-height: 400px; background: #000; width: 100%; position: relative;">
+            <iframe
+                src="https://www.youtube.com/embed/{{ active_video.youtube_video_id }}?origin={{ request.scheme }}://{{ request.get_host }}&rel=0&showinfo=0&modestbranding=1&controls=1&iv_load_policy=3&autoplay=0&enablejsapi=1"
+                title="{{ active_video.title }}"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; border: none;"
+                id="player-iframe">
+            </iframe>
+        </div>
+
+        <!-- AI STUDY BUDDY Console Section -->
+        <article class="ai-section glass-card" id="ai-study-buddy-console"
+            style="margin-top: 1.5rem; padding: 1.25rem 1.5rem; transform: none !important; transition: none !important; box-shadow: var(--shadow-card), var(--highlight-top) !important;">
+
+            <header id="ai-tabs-navigation"
+                style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 0.85rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                <div class="ai-tabs"
+                    style="display: flex; background: rgba(255, 255, 255, 0.02); padding: 4px; border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.05); gap: 2px;">
+                    <button class="ai-tab-btn active" data-tab="summary" id="tab-summary-btn">🤖 Instant
+                        Summary</button>
+                    <button class="ai-tab-btn" data-tab="chat" id="tab-chat-btn">💬 AI Tutor & Workspace {% if profile.plan_type == 'free' %}<span style="font-size: 0.75rem; vertical-align: middle; margin-left: 2px;">🔒</span>{% endif %}</button>
+                    <button class="ai-tab-btn" data-tab="quiz" id="tab-quiz-btn">✍️ Concept Quiz {% if profile.plan_type == 'free' %}<span style="font-size: 0.75rem; vertical-align: middle; margin-left: 2px;">🔒</span>{% endif %}</button>
+                </div>
+                <div
+                    style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-secondary);">
+                    <span></span>
+                    <span
+                        style="width: 8px; height: 8px; border-radius: 50%; background: var(--success); display: inline-block; box-shadow: 0 0 8px var(--success);"></span>
+                </div>
+            </header>
+
+            <!-- Panel 1: Instant Summaries (Markdown structured block) -->
+            <section class="ai-content-panel active" id="ai-panel-summary">
+                <div class="ai-summary-text" id="summary-markdown-block"
+                    style="line-height: 1.6; color: var(--text-secondary); font-size: 0.95rem;">
+                    <!-- Renders dynamic summary block generated via Groq -->
+                </div>
+                <div id="raw-summary-content" style="display: none;">{{ ai_bundle.summary|safe }}</div>
+            </section>
+
+            <!-- Panel 2: AI Tutor & Notes Workspace -->
+            <section class="ai-content-panel" id="ai-panel-chat" style="position: relative;">
+                {% if profile.plan_type == 'free' %}
+                <!-- Premium Locked Glassmorphic Card for Free users -->
+                <div class="locked-feature-overlay"
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 420px; background: rgba(15, 10, 25, 0.45); border-radius: var(--radius-sm); border: 1px dashed rgba(236, 72, 153, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-align: center; padding: 2rem; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(236, 72, 153, 0.05);">
+                    <div
+                        style="position: absolute; top: -50px; right: -50px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, transparent 70%); pointer-events: none;">
+                    </div>
+                    <div
+                        style="font-size: 3.5rem; margin-bottom: 1rem; filter: drop-shadow(0 0 12px rgba(236, 72, 153, 0.4)); animation: float 3s ease-in-out infinite; cursor: default;">
+                        🤖</div>
+                    <h3
+                        style="font-family: 'Outfit'; font-size: 1.65rem; color: #fff; margin-bottom: 0.75rem; text-shadow: 0 0 10px rgba(255,255,255,0.1);">
+                        AI Tutor & Notes Workspace</h3>
+                    <p
+                        style="color: var(--text-secondary); max-width: 420px; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.75rem;">
+                        Unlock your personal 24/7 AI Tutor to instantly solve doubts, alongside a smart persistent notes
+                        workspace.
+                    </p>
+                    <a href="{% url 'pricing' %}" class="btn-learn-action"
+                        style="background: linear-gradient(135deg, #ec4899, #8b5cf6); box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4); font-size: 0.85rem; padding: 0.8rem 1.80rem; border-radius: 8px; text-decoration: none;">
+                        ✨ Upgrade to Pro / Ultra Plan
+                    </a>
+                </div>
+                {% else %}
+                <!-- Active Workspace for Pro and Ultra Subscribers -->
+                <div
+                    style="display: flex; flex-direction: column; background: rgba(10, 8, 20, 0.35); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.06); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);">
+
+                    <!-- Unified Swipe Header Toolbar -->
+                    <div class="workspace-sub-header"
+                        style="display: flex; flex-wrap: wrap; gap: 12px; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); background: rgba(15, 12, 28, 0.4); align-items: center; justify-content: space-between;">
+
+                        <!-- Premium Switch Segmenter -->
+                        <div
+                            style="display: flex; background: rgba(255, 255, 255, 0.03); padding: 4px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.06); gap: 2px;">
+                            <button id="subtab-tutor-btn" class="subtab-btn active"
+                                onclick="switchWorkspaceSubtab('tutor')">
+                                🤖 AI Tutor Chat
+                            </button>
+                            <button id="subtab-notes-btn" class="subtab-btn" onclick="switchWorkspaceSubtab('notes')">
+                                📝 Notes Workspace
+                            </button>
+                        </div>
+
+                        <!-- Quota Pill & Indicators -->
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="plan-pill-tag" style="padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+                                {% if profile.plan_type == 'ultra' %}
+                                background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #000; box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
+                                {% else %}
+                                background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: #fff; box-shadow: 0 0 10px rgba(139, 92, 246, 0.35);
+                                {% endif %}">
+                                {{ profile.plan_type }} Plan
+                            </span>
+
+                            <span id="workspace-quota-badge"
+                                style="font-size: 0.8rem; font-weight: 600; color: #a78bfa; display: flex; align-items: center; gap: 4px;">
+                                {% if profile.plan_type == 'ultra' %}
+                                Unlimited ⚡
+                                {% else %}
+                                Quota: {{ remaining_queries }} Remaining
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- SUBTAB PANEL A: Chatbot doubt solver -->
+                    <div id="workspace-tutor-panel"
+                        style="display: flex; flex-direction: column; height: 420px; transition: opacity 0.2s ease;">
+                        <!-- Message Log -->
+                        <div id="chat-messages"
+                            style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.25rem; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.08) transparent;">
+                            <!-- Welcome message -->
+                            <div class="chat-bubble tutor"
+                                style="align-self: flex-start; max-width: 85%; padding: 0.95rem 1.35rem; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.15); border-radius: 16px; color: var(--text-primary); font-size: 0.9rem; line-height: 1.5; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                                👋 Namaste! I am your <strong>EduTech AI Tutor</strong>. Ask me anything about today's
+                                lecture: <strong>"{{ active_video.title }}"</strong>! I can explain core concepts, write
+                                code, or solve doubts!
+                            </div>
+                        </div>
+
+                        <!-- Input Console -->
+                        <div
+                            style="padding: 1rem 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; gap: 0.85rem; background: rgba(10, 8, 20, 0.45); align-items: center;">
+                            <input type="text" id="chat-input" placeholder="Type your doubt about this lecture..."
+                                style="flex: 1; padding: 0.8rem 1.2rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 30px; color: var(--text-primary); font-family: inherit; font-size: 0.9rem; outline: none; transition: all 0.2s;"
+                                onfocus="this.style.borderColor='rgba(139, 92, 246, 0.5)'; this.style.background='rgba(255, 255, 255, 0.05)';"
+                                onblur="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.03)';">
+                            <button id="chat-send"
+                                style="padding: 0.8rem 1.6rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border: none; border-radius: 30px; color: #fff; font-family: inherit; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);"
+                                onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 4px 20px rgba(139, 92, 246, 0.45)';"
+                                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(139, 92, 246, 0.3)';"
+                                onclick="sendChatMessage();">
+                                Send ⚡
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SUBTAB PANEL B: Workspace Notes editor -->
+                    <div id="workspace-notes-panel"
+                        style="display: none; flex-direction: column; height: 420px; transition: opacity 0.2s ease;">
+                        <!-- Premium Action toolbar -->
+                        <div class="notes-toolbar"
+                            style="display: flex; flex-wrap: wrap; gap: 12px; padding: 0.85rem 1.5rem; background: rgba(15, 12, 28, 0.45); border-bottom: 1px solid rgba(255, 255, 255, 0.05); align-items: center; justify-content: space-between;">
+
+                            <!-- Left tools: AI actions -->
+                            <div style="display: flex; gap: 8px;">
+                                <!-- AI Enhance button -->
+                                <button id="notes-ai-enhance-btn" onclick="enhanceNotesAI()"
+                                    style="
+                                    {% if profile.plan_type != 'ultra' %}
+                                    opacity: 0.45; background: rgba(55, 65, 81, 0.4); border: 1px solid rgba(255,255,255,0.08); color: #9ca3af; cursor: not-allowed; box-shadow: none;
+                                    {% else %}
+                                    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; cursor: pointer; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+                                    {% endif %}
+                                    font-size: 0.78rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 20px; display: flex; align-items: center; gap: 4px; transition: all 0.2s;"
+                                    title="AI Enhance formatting (bullets, spacings, readability)" {% if profile.plan_type != 'ultra' %}data-locked="true"{% endif %}>
+                                    ✨ AI Enhance {% if profile.plan_type != 'ultra' %}🔒{% endif %}
+                                </button>
+
+                                <!-- Inject Summary button -->
+                                <button id="notes-inject-summary-btn" onclick="injectLectureSummary()"
+                                    style="
+                                    {% if profile.plan_type != 'ultra' %}
+                                    opacity: 0.45; background: rgba(55, 65, 81, 0.2); border: 1px dashed rgba(255,255,255,0.08); color: #9ca3af; cursor: not-allowed;
+                                    {% else %}
+                                    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.1) 100%); border: 1px solid rgba(139, 92, 246, 0.35); color: #c084fc; cursor: pointer; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+                                    {% endif %}
+                                    font-size: 0.78rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 20px; display: flex; align-items: center; gap: 4px; transition: all 0.2s;"
+                                    title="Inject dynamic Groq lecture summary into active notes" {% if profile.plan_type != 'ultra' %}data-locked="true"{% endif %}>
+                                    🤖 Inject Summary {% if profile.plan_type != 'ultra' %}🔒{% endif %}
+                                </button>
+                            </div>
+
+                            <!-- Right tools: Preview Toggle, Export & Save status -->
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <span id="autosave-status"
+                                    style="font-size: 0.75rem; color: #10b981; display: flex; align-items: center; gap: 4px; font-weight: 500; margin-right: 4px;">
+                                    <span
+                                        style="width: 6px; height: 6px; background: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #10b981;"></span>
+                                    Saved
+                                </span>
+                                <button id="notes-preview-toggle-btn" onclick="toggleNotesPreview()"
+                                    style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: #c084fc; font-size: 0.78rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;"
+                                    onmouseover="this.style.background='rgba(139, 92, 246, 0.18)';"
+                                    onmouseout="this.style.background='rgba(139, 92, 246, 0.1)';">
+                                    👁️ Preview
+                                </button>
+                                <button id="notes-export-btn" onclick="exportNotes()"
+                                    style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: #e2e8f0; font-size: 0.78rem; font-weight: 600; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;"
+                                    onmouseover="this.style.background='rgba(255,255,255,0.06)';"
+                                    onmouseout="this.style.background='rgba(255,255,255,0.03)';">
+                                    📥 Export {% if profile.plan_type == 'ultra' %}Markdown{% else %}Plain Text{% endif %}
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Editor Textarea Area & Preview Area -->
+                        <div
+                            style="flex: 1; display: flex; flex-direction: column; background: rgba(0, 0, 0, 0.12); position: relative; overflow: hidden;">
+                            <textarea id="notes-textarea"
+                                placeholder="Start typing your study notes here... Everything you write is saved in real-time!"
+                                style="flex: 1; width: 100%; border: none; background: transparent; padding: 1.5rem; font-family: inherit; font-size: 0.95rem; line-height: 1.65; color: var(--text-primary); resize: none; outline: none; scrollbar-width: thin;"
+                                oninput="onNotesInput()"></textarea>
+                            <div id="notes-preview-area"
+                                style="display: none; flex: 1; padding: 1.5rem; overflow-y: auto; color: var(--text-primary); font-size: 0.95rem; line-height: 1.65; scrollbar-width: thin;">
+                            </div>
+                        </div>
+
+                        <!-- Limit status bar -->
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); background: rgba(10, 8, 20, 0.4); font-size: 0.75rem; color: var(--text-muted);">
+                            <span>📍 Persistent notes workspace for this lecture</span>
+                            <span id="notes-char-counter" style="font-weight: 600;">0 / {% if profile.plan_type == 'ultra' %}Unlimited{% else %}1,000{% endif %} characters</span>
+                        </div>
+                    </div>
+
+                </div>
+                {% endif %}
+            </section>
+
+            <!-- Panel 3: Interactive Concept Quizzes -->
+            <section class="ai-content-panel" id="ai-panel-quiz" style="position: relative;">
+                {% if profile.plan_type != 'free' %}
+                <div class="quiz-container" id="interactive-quiz-container">
+
+                    {% for q in ai_bundle.quiz %}
+                    <div class="quiz-question" id="quiz-question-{{ forloop.counter }}" style="margin-bottom: 1.5rem; {% if forloop.counter > 5 %}display: none;{% endif %}" {% if forloop.counter > 5 %}data-hidden="true"{% endif %}>
+                        <h4>Question {{ forloop.counter }}: {{ q.question }}</h4>
+                        <div class="quiz-options">
+                            {% for opt in q.options %}
+                            <button class="quiz-option-btn"
+                                data-correct="{% if forloop.counter0 == q.correct_index %}true{% else %}false{% endif %}"
+                                id="btn-q{{ forloop.parentloop.counter }}-opt{{ forloop.counter }}">
+                                {{ opt }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {% if ai_bundle.quiz|length > 5 %}
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <button id="load-more-quiz-btn" onclick="loadMoreQuizzes()"
+                            style="padding: 0.75rem 1.5rem; background: rgba(139, 92, 246, 0.15); border: 1px solid var(--accent-primary); border-radius: 6px; color: var(--text-primary); font-family: inherit; font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+                            Load More Quizzes 📚
+                        </button>
+                    </div>
+                    {% endif %}
+
+                </div>
+                {% else %}
+                <!-- Premium Locked Glassmorphic Card for Free users -->
+                <div class="locked-feature-overlay"
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background: rgba(15, 10, 25, 0.45); border-radius: var(--radius-sm); border: 1px dashed rgba(139, 92, 246, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-align: center; padding: 2rem; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(139, 92, 246, 0.05);">
+                    <div
+                        style="position: absolute; top: -50px; right: -50px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%); pointer-events: none;">
+                    </div>
+                    <div
+                        style="font-size: 3.5rem; margin-bottom: 1rem; filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.4)); animation: float 3s ease-in-out infinite; cursor: default;">
+                        ✍️</div>
+                    <h3
+                        style="font-family: 'Outfit'; font-size: 1.65rem; color: #fff; margin-bottom: 0.75rem; text-shadow: 0 0 10px rgba(255,255,255,0.1);">
+                        AI-Powered Conceptual Quizzes</h3>
+                    <p
+                        style="color: var(--text-secondary); max-width: 420px; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.75rem;">
+                        Test your understanding instantly with dynamically generated AI conceptual quizzes tailored to
+                        the exact moments of this lecture.
+                    </p>
+                    <a href="{% url 'pricing' %}" class="btn-learn-action"
+                        style="background: linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4); font-size: 0.85rem; padding: 0.8rem 1.80rem; border-radius: 8px; text-decoration: none;">
+                        ✨ Upgrade to Pro Plan
+                    </a>
+                </div>
+                {% endif %}
+            </section>
+
+        </article>
+
+    </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Dynamic markdown parsing for AI Tutor messages with premium styling
+    function formatMarkdown(text) {
+        if (!text) return '';
+        let formatted = text.replace(/\r\n/g, '\n');
+
+        // Code blocks
+        formatted = formatted.replace(/```([\s\S]*?)```/g, '<pre style="background: rgba(0,0,0,0.5); padding: 1.25rem; border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.2); overflow-x: auto; margin: 1.25rem 0;"><code style="font-family: monospace; color:#a78bfa; font-size: 0.9rem;">$1</code></pre>');
+        // Inline code
+        formatted = formatted.replace(/`([^`\n]+)`/g, '<code style="font-family: monospace; color:#a78bfa; background: rgba(139, 92, 246, 0.15); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em;">$1</code>');
+
+        // Headings (Using ^ and $ with /gm to match line starts regardless of \n)
+        formatted = formatted.replace(/^#### (.*)$/gm, '<h4 style="font-family: \'Outfit\'; color: #fff; font-size: 1.15rem; margin-top: 1.75rem; margin-bottom: 0.75rem; font-weight: 600;">$1</h4>');
+        formatted = formatted.replace(/^### (.*)$/gm, '<h3 style="font-family: \'Outfit\'; color: #fff; font-size: 1.35rem; margin-top: 2rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">$1</h3>');
+        formatted = formatted.replace(/^## (.*)$/gm, '<h2 style="font-family: \'Outfit\'; color: #fff; font-size: 1.6rem; margin-top: 2rem; margin-bottom: 1rem;">$1</h2>');
+
+        // Horizontal divider (---)
+        formatted = formatted.replace(/^---$/gm, '<hr style="border: 0; height: 1px; background: linear-gradient(to right, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.5), rgba(139, 92, 246, 0.1)); margin: 1.5rem 0;">');
+
+        // Bullet Points (Grouping into <ul>) - parsed BEFORE bold/italic to prevent asterisk eating
+        formatted = formatted.replace(/(?:^\*\s+.*$\n?)+/gm, function (match) {
+            let items = match.replace(/^\*\s+(.*)$/gm, '<li style="margin-bottom: 0.6rem; padding-left: 0.5rem; position: relative;">$1</li>');
+            return `<ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; margin-top: 0.5rem; list-style-type: none; padding: 0;">
+                    ${items.replace(/<li>/g, '<li style="margin-bottom: 0.6rem; padding-left: 1.5rem; position: relative;"><span style="position: absolute; left: 0; top: 0.4rem; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-primary); box-shadow: 0 0 6px var(--accent-primary);"></span>')}
+                </ul>`;
+        });
+
+        // Numbered Lists (Grouping into <ol>) - parsed BEFORE bold/italic
+        formatted = formatted.replace(/(?:^\d+\. .*$\n?)+/gm, function (match) {
+            let items = match.replace(/^\d+\. (.*)$/gm, '<li style="margin-bottom: 0.6rem; padding-left: 0.5rem;">$1</li>');
+            return `<ol style="margin-left: 1.5rem; margin-bottom: 1.5rem; margin-top: 0.5rem; color: var(--text-secondary); font-weight: 500;">${items}</ol>`;
+        });
+
+        // Bold text (Strong White)
+        formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #fff; font-weight: 700; text-shadow: 0 0 8px rgba(255,255,255,0.2);">$1</strong>');
+        // Italic text
+        formatted = formatted.replace(/\*(.*?)\*/g, '<em style="color: #cbd5e1;">$1</em>');
+
+        // Clean up multiple newlines to clean spacing
+        formatted = formatted.replace(/\n\n/g, '<div style="height: 0.5rem;"></div>');
+        formatted = formatted.replace(/\n/g, '<br>');
+
+        // Remove <br> tags immediately following or preceding block elements
+        formatted = formatted.replace(/(<\/?(?:ul|ol|li|pre|h2|h3|h4|div|hr)[^>]*>)<br>/g, '$1');
+        formatted = formatted.replace(/<br>(<\/?(?:ul|ol|li|pre|h2|h3|h4|div|hr)[^>]*>)/g, '$1');
+
+        return formatted;
+    }
+
+    // Format the Instant Summary immediately when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        const summaryBlock = document.getElementById('summary-markdown-block');
+        const rawSummaryEl = document.getElementById('raw-summary-content');
+        if (summaryBlock && rawSummaryEl) {
+            summaryBlock.innerHTML = formatMarkdown(rawSummaryEl.textContent.trim());
+        }
+    });
+
+    // Load more quizzes logic
+    function loadMoreQuizzes() {
+        const hiddenQuestions = document.querySelectorAll('.quiz-question[data-hidden="true"]');
+        hiddenQuestions.forEach(q => {
+            q.style.display = 'block';
+            q.removeAttribute('data-hidden');
+        });
+
+        // Hide the button after loading all
+        const btn = document.getElementById('load-more-quiz-btn');
+        if (btn) btn.style.display = 'none';
+
+        showToast("Loaded additional quizzes for this lecture!", "success");
+    }
+
+    // Global workspace parameters
+    const userPlanType = "{{ profile.plan_type }}";
+    const activeVideoId = "{{ active_video.id }}";
+    const activeVideoTitle = "{{ active_video.title|escapejs }}";
+    const courseTitle = "{{ course.title|escapejs }}";
+
+    // Switch workspace subtabs smoothly
+    function switchWorkspaceSubtab(tab) {
+        const tutorTabBtn = document.getElementById('subtab-tutor-btn');
+        const notesTabBtn = document.getElementById('subtab-notes-btn');
+        const tutorPanel = document.getElementById('workspace-tutor-panel');
+        const notesPanel = document.getElementById('workspace-notes-panel');
+
+        if (!tutorTabBtn || !notesTabBtn || !tutorPanel || !notesPanel) return;
+
+        if (tab === 'tutor') {
+            tutorTabBtn.classList.add('active');
+            notesTabBtn.classList.remove('active');
+
+            notesPanel.style.display = 'none';
+            tutorPanel.style.display = 'flex';
+
+            showToast("Swapped to AI Tutor Chatbot 🤖", "info");
+        } else {
+            notesTabBtn.classList.add('active');
+            tutorTabBtn.classList.remove('active');
+
+            tutorPanel.style.display = 'none';
+            notesPanel.style.display = 'flex';
+
+            showToast("Swapped to Personal Study Notes Workspace 📝", "info");
+
+            const textarea = document.getElementById('notes-textarea');
+            if (textarea) {
+                textarea.focus();
+                // Scroll to bottom
+                textarea.scrollTop = textarea.scrollHeight;
+            }
+        }
+    }
+
+    // Toggle Markdown Preview and Edit Modes for Notes Workspace
+    function toggleNotesPreview() {
+        const textarea = document.getElementById('notes-textarea');
+        const previewArea = document.getElementById('notes-preview-area');
+        const toggleBtn = document.getElementById('notes-preview-toggle-btn');
+        if (!textarea || !previewArea || !toggleBtn) return;
+
+        if (previewArea.style.display === 'none') {
+            // Switch to Preview Mode
+            previewArea.innerHTML = formatMarkdown(textarea.value.trim() || '*No notes captured yet. Start typing under Edit mode!*');
+            textarea.style.display = 'none';
+            previewArea.style.display = 'block';
+            toggleBtn.innerHTML = '✏️ Edit';
+            toggleBtn.style.background = 'rgba(16, 185, 129, 0.1)';
+            toggleBtn.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+            toggleBtn.style.color = '#34d399';
+            showToast("Swapped to Markdown rendered preview 👁️", "success");
+        } else {
+            // Switch to Edit Mode
+            previewArea.style.display = 'none';
+            textarea.style.display = 'block';
+            textarea.focus();
+            toggleBtn.innerHTML = '👁️ Preview';
+            toggleBtn.style.background = 'rgba(139, 92, 246, 0.1)';
+            toggleBtn.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+            toggleBtn.style.color = '#c084fc';
+            showToast("Swapped to markdown editing editor ✏️", "info");
+        }
+    }
+
+    // Real-time local storage persistence & limits
+    let saveTimeout = null;
+    function onNotesInput() {
+        const textarea = document.getElementById('notes-textarea');
+        const counterEl = document.getElementById('notes-char-counter');
+        const saveStatus = document.getElementById('autosave-status');
+        if (!textarea) return;
+
+        let content = textarea.value;
+
+        if (userPlanType === 'pro') {
+            if (content.length > 1000) {
+                content = content.slice(0, 1000);
+                textarea.value = content;
+                showToast("🔒 Pro limit reached! Notes cannot exceed 1,000 characters. Upgrade to Ultra for completely unlimited space!", "warning");
+                if (counterEl) counterEl.style.color = '#ef4444';
+            } else {
+                if (counterEl) counterEl.style.color = '';
+            }
+            if (counterEl) counterEl.textContent = `${content.length} / 1,000 characters`;
+        } else {
+            if (counterEl) counterEl.textContent = `${content.length} / Unlimited characters`;
+        }
+
+        // Show saving visual status
+        if (saveStatus) {
+            saveStatus.innerHTML = '<span style="width: 6px; height: 6px; background: #eab308; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #eab308; animation: pulse 1s infinite alternate;"></span> Saving...';
+            saveStatus.style.color = '#eab308';
+        }
+
+        // Debounced local storage save
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+            localStorage.setItem(`note_${activeVideoId}`, content);
+            if (saveStatus) {
+                saveStatus.innerHTML = '<span style="width: 6px; height: 6px; background: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #10b981;"></span> Saved';
+                saveStatus.style.color = '#10b981';
+            }
+        }, 500);
+    }
+
+    // Simulated AI Notes Enhancer for Ultra Plan Subscribers
+    function enhanceNotesAI() {
+        const btn = document.getElementById('notes-ai-enhance-btn');
+        if (btn && btn.getAttribute('data-locked') === 'true') {
+            showToast("🔒 AI Note Enhancer is an exclusive Ultra feature. Upgrade your plan to automatically structure, format, and bulletize your notes!", "error");
+            return;
+        }
+
+        const textarea = document.getElementById('notes-textarea');
+        if (!textarea) return;
+
+        // Auto exit preview mode if currently active
+        const previewArea = document.getElementById('notes-preview-area');
+        if (previewArea && previewArea.style.display !== 'none') {
+            toggleNotesPreview();
+        }
+
+        const rawText = textarea.value.trim();
+        if (!rawText) {
+            showToast("Write some notes first before enhancing!", "warning");
+            return;
+        }
+
+        showToast("✨ AI is analyzing and styling your study notes...", "success");
+
+        // Parse lines dynamically to convert unstructured lines to headers and lists
+        let lines = rawText.split('\n');
+        let enhancedText = `### 📝 ENHANCED STUDY NOTES: ${activeVideoTitle.toUpperCase()}\n\n`;
+        let bulletGroup = false;
+        let insideCodeBlock = false;
+
+        lines.forEach(line => {
+            let cleanLine = line.trim();
+
+            // 1. Preserve markdown code blocks (such as ```java)
+            if (cleanLine.startsWith('```')) {
+                insideCodeBlock = !insideCodeBlock;
+                if (bulletGroup) {
+                    enhancedText += `\n`;
+                    bulletGroup = false;
+                }
+                enhancedText += `${line}\n`;
+                return;
+            }
+
+            if (insideCodeBlock) {
+                enhancedText += `${line}\n`;
+                return;
+            }
+
+            if (!cleanLine) return;
+
+            // 2. Ignore existing generated header and footer patterns to avoid duplication
+            if (cleanLine.includes('ENHANCED STUDY NOTES') || cleanLine.includes('AI Optimized Notes Workspace')) {
+                return;
+            }
+
+            // Skip common headers and skip markers
+            if (cleanLine.startsWith('###') || cleanLine.startsWith('####') || cleanLine.startsWith('===')) {
+                return;
+            }
+
+            // 3. Preserve markdown horizontal rules (e.g., ---)
+            if (cleanLine.startsWith('---')) {
+                if (bulletGroup) {
+                    enhancedText += `\n`;
+                    bulletGroup = false;
+                }
+                enhancedText += `\n---\n\n`;
+                return;
+            }
+
+            // 4. Format short lines as subheaders, others as Key Takeaway bullets
+            if (cleanLine.length < 50 && !cleanLine.endsWith('.') && !cleanLine.startsWith('*') && !cleanLine.startsWith('-')) {
+                if (bulletGroup) {
+                    enhancedText += `\n`;
+                    bulletGroup = false;
+                }
+                enhancedText += `#### 💡 ${cleanLine}\n`;
+            } else {
+                if (!bulletGroup) {
+                    enhancedText += `\n`;
+                    bulletGroup = true;
+                }
+                let prevLine;
+                do {
+                    prevLine = cleanLine;
+                    // Strip leading standard bullet characters (*, -, +, •) followed by spaces
+                    cleanLine = cleanLine.replace(/^\s*[\*\-\+•]\s+/, '');
+                    // Strip leading numbered list formats (e.g. 1. or 1)) followed by spaces
+                    cleanLine = cleanLine.replace(/^\s*\d+[\.\)]\s+/, '');
+                    // Strip leading Key Takeaway label with optional bold formatting asterisks, colons, or trailing spaces
+                    cleanLine = cleanLine.replace(/^\s*\*?\*?Key Takeaway\*?\*?[:\s]*/i, '');
+                } while (cleanLine !== prevLine);
+                enhancedText += `*   **Key Takeaway:** ${cleanLine}\n`;
+            }
+        });
+
+        // Add main footer if not already present
+        if (!enhancedText.includes('AI Optimized Notes Workspace')) {
+            enhancedText += `\n---\n*⚡ AI Optimized Notes Workspace • Plan: ULTRA Tier*`;
+        }
+
+        // Apply typing transition effect
+        let index = 0;
+        textarea.value = '';
+        textarea.disabled = true;
+        const interval = setInterval(() => {
+            textarea.value = enhancedText.slice(0, index);
+            index += 12;
+            textarea.scrollTop = textarea.scrollHeight;
+            if (index >= enhancedText.length) {
+                textarea.value = enhancedText;
+                textarea.disabled = false;
+                clearInterval(interval);
+                onNotesInput();
+                showToast("✨ Notes enhanced beautifully with structured typography!", "success");
+            }
+        }, 8);
+    }
+
+    // Dynamic Summary Injection
+    function injectLectureSummary() {
+        const btn = document.getElementById('notes-inject-summary-btn');
+        if (btn && btn.getAttribute('data-locked') === 'true') {
+            showToast("🔒 Summary Injection is an exclusive Ultra feature. Upgrade your plan to instantly populate your notes with Groq key takeaways!", "error");
+            return;
+        }
+
+        const rawSummaryContent = document.getElementById('raw-summary-content');
+        const textarea = document.getElementById('notes-textarea');
+        if (!rawSummaryContent || !textarea) return;
+
+        // Auto exit preview mode if currently active
+        const previewArea = document.getElementById('notes-preview-area');
+        if (previewArea && previewArea.style.display !== 'none') {
+            toggleNotesPreview();
+        }
+
+        // Use textContent to get clean summary text
+        let summaryText = rawSummaryContent.textContent.trim();
+        if (!summaryText) {
+            showToast("No summary available for this video to inject.", "error");
+            return;
+        }
+
+        showToast("🤖 Injecting Groq AI Lecture Summary...", "success");
+
+        let prefilledHeader = `### 🤖 GROQ LECTURE SUMMARY\n\n${summaryText}\n\n---\n\n### 📝 MY WORKSPACE NOTES\n\n`;
+        const currentNotes = textarea.value.replace(/### 🤖 GROQ LECTURE SUMMARY[\s\S]*?### 📝 MY WORKSPACE NOTES/g, '').trim();
+
+        textarea.value = prefilledHeader + currentNotes;
+        textarea.scrollTop = 0;
+
+        onNotesInput();
+        showToast("✅ Lecture Summary injected successfully!", "success");
+    }
+
+    // Export Notes File
+    function exportNotes() {
+        const textarea = document.getElementById('notes-textarea');
+        if (!textarea) return;
+
+        const content = textarea.value.trim();
+        if (!content) {
+            showToast("Your notes are empty! Type something first.", "warning");
+            return;
+        }
+
+        const filenameSafeTitle = activeVideoTitle.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+
+        let blob, filename;
+        if (userPlanType === 'ultra') {
+            const mdHeader = `# Study Notes: ${activeVideoTitle}\n` +
+                `*Course: ${courseTitle}*\n` +
+                `*Date: ${new Date().toLocaleDateString()}*\n` +
+                `*Plan: ULTRA Tier*\n\n` +
+                `---\n\n` +
+                content;
+            blob = new Blob([mdHeader], { type: 'text/markdown;charset=utf-8;' });
+            filename = `${filenameSafeTitle}_study_notes.md`;
+        } else {
+            const txtHeader = `STUDY NOTES: ${activeVideoTitle}\n` +
+                `Course: ${courseTitle}\n` +
+                `Date: ${new Date().toLocaleDateString()}\n` +
+                `Plan: PRO Tier\n` +
+                `========================================\n\n` +
+                content;
+            blob = new Blob([txtHeader], { type: 'text/plain;charset=utf-8;' });
+            filename = `${filenameSafeTitle}_study_notes.txt`;
+        }
+
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast(`📥 Exported notes as ${filename}!`, "success");
+        }
+    }
+
+    // Send live chat message to Backend Groq API
+    function sendChatMessage() {
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const message = chatInput.value.trim();
+
+        if (!message) return;
+
+        // Clear input field
+        chatInput.value = '';
+
+        // 1. Append User Message Bubble
+        const userBubble = document.createElement('div');
+        userBubble.className = 'chat-bubble user';
+        userBubble.style.alignSelf = 'flex-end';
+        userBubble.style.maxWidth = '85%';
+        userBubble.style.padding = '0.85rem 1.15rem';
+        userBubble.style.background = 'rgba(255, 255, 255, 0.08)';
+        userBubble.style.border = '1px solid rgba(255, 255, 255, 0.12)';
+        userBubble.style.borderRadius = '18px 18px 4px 18px';
+        userBubble.style.color = 'var(--text-primary)';
+        userBubble.style.fontSize = '0.9rem';
+        userBubble.style.lineHeight = '1.4';
+        userBubble.textContent = message;
+        chatMessages.appendChild(userBubble);
+
+        // Scroll view to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // 2. Append Pulsating Typing Indicator Bubble
+        const typingBubble = document.createElement('div');
+        typingBubble.className = 'chat-bubble tutor typing';
+        typingBubble.style.alignSelf = 'flex-start';
+        typingBubble.style.maxWidth = '85%';
+        typingBubble.style.padding = '0.85rem 1.15rem';
+        typingBubble.style.background = 'rgba(139, 92, 246, 0.12)';
+        typingBubble.style.border = '1px solid rgba(139, 92, 246, 0.25)';
+        typingBubble.style.borderRadius = '4px 18px 18px 18px';
+        typingBubble.style.color = 'var(--text-secondary)';
+        typingBubble.style.fontSize = '0.9rem';
+
+        const dotStyle = 'width:6px; height:6px; background:#a78bfa; border-radius:50%; display:inline-block; animation: chatBlink 1.4s infinite both;';
+        typingBubble.innerHTML = `
+        <span style="display:inline-flex; gap: 4px; align-items:center;">
+            <span style="${dotStyle}"></span>
+            <span style="${dotStyle} animation-delay: .2s;"></span>
+            <span style="${dotStyle} animation-delay: .4s;"></span>
+        </span>
+    `;
+
+        chatMessages.appendChild(typingBubble);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // 3. Post to dynamic Groq view endpoint
+        fetch(`/video/${activeVideoId}/chat/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrfToken
+            },
+            body: `message=${encodeURIComponent(message)}`
+        })
+            .then(res => res.json())
+            .then(data => {
+                // Remove typing visual
+                typingBubble.remove();
+
+                if (data.status === 'success') {
+                    // Update remaining badge if present in response
+                    if (data.remaining !== undefined) {
+                        const quotaBadge = document.getElementById('workspace-quota-badge');
+                        if (quotaBadge) {
+                            if (data.remaining === 'unlimited') {
+                                quotaBadge.textContent = 'Unlimited ⚡';
+                            } else {
+                                quotaBadge.textContent = `Quota: ${data.remaining} Remaining`;
+                                if (data.remaining <= 0) {
+                                    chatInput.disabled = true;
+                                    chatInput.placeholder = "🔒 Quota exhausted. Upgrade to Ultra!";
+                                    const sendBtn = document.getElementById('chat-send');
+                                    if (sendBtn) sendBtn.disabled = true;
+                                }
+                            }
+                        }
+                    }
+
+                    const tutorBubble = document.createElement('div');
+                    tutorBubble.className = 'chat-bubble tutor';
+                    tutorBubble.style.alignSelf = 'flex-start';
+                    tutorBubble.style.maxWidth = '85%';
+                    tutorBubble.style.padding = '0.85rem 1.15rem';
+                    tutorBubble.style.background = 'rgba(139, 92, 246, 0.12)';
+                    tutorBubble.style.border = '1px solid rgba(139, 92, 246, 0.25)';
+                    tutorBubble.style.borderRadius = '4px 18px 18px 18px';
+                    tutorBubble.style.color = 'var(--text-primary)';
+                    tutorBubble.style.fontSize = '0.9rem';
+                    tutorBubble.style.lineHeight = '1.4';
+                    tutorBubble.innerHTML = formatMarkdown(data.response);
+                    chatMessages.appendChild(tutorBubble);
+
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                } else if (data.status === 'limit_reached') {
+                    const quotaBadge = document.getElementById('workspace-quota-badge');
+                    if (quotaBadge) quotaBadge.textContent = 'Quota: 0 Remaining';
+
+                    const limitBubble = document.createElement('div');
+                    limitBubble.className = 'chat-bubble tutor';
+                    limitBubble.style.alignSelf = 'flex-start';
+                    limitBubble.style.maxWidth = '85%';
+                    limitBubble.style.padding = '0.85rem 1.15rem';
+                    limitBubble.style.background = 'rgba(239, 68, 68, 0.15)';
+                    limitBubble.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                    limitBubble.style.borderRadius = '4px 18px 18px 18px';
+                    limitBubble.style.color = '#ef4444';
+                    limitBubble.style.fontSize = '0.9rem';
+                    limitBubble.style.lineHeight = '1.4';
+                    limitBubble.innerHTML = `<strong>🔒 Quota Exhausted!</strong><br><br>${data.message}`;
+                    chatMessages.appendChild(limitBubble);
+
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                    chatInput.disabled = true;
+                    chatInput.placeholder = "🔒 Quota exhausted. Upgrade to Ultra!";
+                    const sendBtn = document.getElementById('chat-send');
+                    if (sendBtn) sendBtn.disabled = true;
+
+                    showToast("🔒 Quota limit reached! Upgrade to Ultra for unlimited access.", "error");
+                } else {
+                    showToast("Tutor encountered a roadblock. Please try again.", "error");
+                }
+            })
+            .catch(err => {
+                typingBubble.remove();
+                console.error("AJAX Tutor error:", err);
+                showToast("Connection to the tutor was interrupted.", "error");
+            });
+    }
+
+    // Load persistent state and bind enter listeners
+    document.addEventListener('DOMContentLoaded', () => {
+        const chatInput = document.getElementById('chat-input');
+        if (chatInput) {
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendChatMessage();
+                }
+            });
+
+            // Enforce initial Pro quota locks
+            if (userPlanType === 'pro') {
+                const initialRemaining = parseInt("{{ remaining_queries }}") || 0;
+                if (initialRemaining <= 0) {
+                    chatInput.disabled = true;
+                    chatInput.placeholder = "🔒 Quota exhausted. Upgrade to Ultra!";
+                    const sendBtn = document.getElementById('chat-send');
+                    if (sendBtn) sendBtn.disabled = true;
+                }
+            }
+        }
+
+        // Initialize notes content from localStorage
+        const textarea = document.getElementById('notes-textarea');
+        if (textarea) {
+            const savedNote = localStorage.getItem(`note_${activeVideoId}`);
+            if (savedNote) {
+                textarea.value = savedNote;
+            }
+            onNotesInput(); // Pre-trigger character counter and autosave alignment
+        }
+    });
+</script>
+
+<!-- YouTube IFrame API for auto-completion detection -->
+<script>
+    (function () {
+        const activeVideoId = {{ active_video.id }};
+    let videoAutoCompleted = false;
+
+    // Listen for messages from the YouTube iframe (postMessage API)
+    window.addEventListener('message', function (event) {
+        // YouTube sends state change events via postMessage when enablejsapi=1
+        if (event.origin !== 'https://www.youtube.com') return;
+
+        try {
+            const data = JSON.parse(event.data);
+            // YouTube IFrame API state: 0 = ended
+            if (data.event === 'onStateChange' && data.info === 0 && !videoAutoCompleted) {
+                videoAutoCompleted = true;
+                autoMarkVideoCompleted();
+            }
+        } catch (e) {
+            // Not a JSON message, ignore
+        }
+    });
+
+    // Also use the official YT IFrame API as primary method
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = function () {
+        var player = new YT.Player('player-iframe', {
+            events: {
+                'onStateChange': function (event) {
+                    // YT.PlayerState.ENDED === 0
+                    if (event.data === 0 && !videoAutoCompleted) {
+                        videoAutoCompleted = true;
+                        autoMarkVideoCompleted();
+                    }
+                }
+            }
+        });
+    };
+
+    function autoMarkVideoCompleted() {
+        const checkEl = document.querySelector(`.video-status-dot[data-video-id="${activeVideoId}"]`);
+        if (!checkEl) return;
+
+        // Already completed? Skip
+        if (checkEl.classList.contains('completed')) {
+            showToast('🎉 Video already completed! Moving to next...', 'success');
+            autoNavigateNext();
+            return;
+        }
+
+        // Mark as completed visually
+        checkEl.classList.add('completed');
+
+        // Send AJAX to backend
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        fetch(`/video/${activeVideoId}/toggle-progress/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrfToken
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Update progress bar
+                    const progressFill = document.querySelector('.course-progress-fill');
+                    const progressLabel = document.querySelector('.course-progress-label');
+                    if (progressFill && progressLabel) {
+                        progressFill.style.width = `${data.percentage}%`;
+                        progressLabel.innerHTML = `Completed: <strong>${data.completed_count} / ${data.total_count}</strong> videos (${data.percentage}%)`;
+                    }
+                    showToast(`✅ Video auto-completed! Progress: ${data.percentage}% (${data.completed_count}/${data.total_count})`, 'success');
+
+                    // Auto navigate to next video after 2 seconds
+                    setTimeout(() => autoNavigateNext(), 2500);
+                }
+            })
+            .catch(err => console.error('Auto-complete error:', err));
+    }
+
+    function autoNavigateNext() {
+        // Find the next incomplete video in the playlist
+        const allItems = document.querySelectorAll('.zen-playlist-item');
+        let foundCurrent = false;
+        for (const item of allItems) {
+            if (item.classList.contains('active')) {
+                foundCurrent = true;
+                continue;
+            }
+            if (foundCurrent) {
+                const check = item.querySelector('.video-status-dot');
+                if (check && !check.classList.contains('completed')) {
+                    const link = item.querySelector('.zen-playlist-link');
+                    if (link) {
+                        showToast('⏭️ Loading next lecture...', 'info');
+                        setTimeout(() => { window.location.href = link.href; }, 1000);
+                        return;
+                    }
+                }
+            }
+        }
+        showToast('🎓 All videos completed! Great job!', 'success');
+    }
+}) ();
+</script>
+
+<style>
+    @keyframes chatBlink {
+        0% {
+            opacity: .2;
+        }
+
+        20% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: .2;
+        }
+    }
+</style>
+{% endblock %}
