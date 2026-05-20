@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django local DB and logs
+db.sqlite3
+db.sqlite3-journal
+*.log
+
+# Environments and Secrets
+.env
+.venv/
+venv/
+ENV/
+env/
+firebase-key.json
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Media and Visuals (exclude all screenshots and images)
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.gif
+*.ico
