@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EduTech AI - Distraction-Free EdTech SaaS{% endblock %}</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Personalized Zen-mode EdTech platform. Convert scattered video playlists into distraction-free structured curriculums with Pomodoro timers and AI study buddy support.">
+    <meta name="keywords"
+        content="EdTech, YouTube course importer, focus room, pomodoro timer, AI study buddy">
+    <meta name="author" content="EduTech AI Team">
+
+    <!-- Fonts and External Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Master Premium Stylesheet with Cache-Busting Version -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=3.0.1">
+
+    <!-- Premium Dynamic Ambient Themes Engine (FOUT-Prevention) -->
+    <style>
+        :root {
+            --glow-1-bg: radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            --glow-2-bg: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
+            --glow-speed: 25s;
+            --glow-scale: 1.0;
+            --glow-opacity: 1.0;
+            --glow-blur: 40px;
+        }
+        @keyframes floatGlow1 {
+            0% { transform: translate(0px, 0px) scale(var(--glow-scale)); }
+            33% { transform: translate(50px, -70px) scale(calc(var(--glow-scale) * 1.12)); }
+            66% { transform: translate(-40px, 40px) scale(calc(var(--glow-scale) * 0.88)); }
+            100% { transform: translate(0px, 0px) scale(var(--glow-scale)); }
+        }
+        @keyframes floatGlow2 {
+            0% { transform: translate(0px, 0px) scale(var(--glow-scale)); }
+            50% { transform: translate(-60px, 60px) scale(calc(var(--glow-scale) * 1.1)); }
+            100% { transform: translate(0px, 0px) scale(var(--glow-scale)); }
+        }
+        .ambient-glow-1 {
+            background: var(--glow-1-bg) !important;
+            transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            animation: floatGlow1 var(--glow-speed) infinite ease-in-out !important;
+            opacity: var(--glow-opacity) !important;
+            filter: blur(var(--glow-blur)) !important;
+            transform-origin: center;
+        }
+        .ambient-glow-2 {
+            background: var(--glow-2-bg) !important;
+            transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            animation: floatGlow2 var(--glow-speed) infinite ease-in-out !important;
+            opacity: var(--glow-opacity) !important;
+            filter: blur(var(--glow-blur)) !important;
+            transform-origin: center;
+        }
+    </style>
+    <script>
+        (function() {
+            try {
+                const activeTheme = localStorage.getItem('ambient-glow-theme') || 'nebula';
+                const themesConfig = {
+                    'nebula': {
+                        '--glow-1-bg': 'radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, rgba(0, 0, 0, 0) 70%)',
+                        '--glow-2-bg': 'radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(0, 0, 0, 0) 70%)'
+                    },
+                    'cyberpunk': {
+                        '--glow-1-bg': 'radial-gradient(circle, rgba(236, 72, 153, 0.18) 0%, rgba(0, 0, 0, 0) 70%)',
+                        '--glow-2-bg': 'radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(0, 0, 0, 0) 70%)'
+                    },
+                    'emerald': {
+                        '--glow-1-bg': 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, rgba(0, 0, 0, 0) 70%)',
+                        '--glow-2-bg': 'radial-gradient(circle, rgba(20, 184, 166, 0.15) 0%, rgba(0, 0, 0, 0) 70%)'
+                    },
+                    'sunset': {
+                        '--glow-1-bg': 'radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, rgba(0, 0, 0, 0) 70%)',
+                        '--glow-2-bg': 'radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(0, 0, 0, 0) 70%)'
+                    },
+                    'solar': {
+                        '--glow-1-bg': 'radial-gradient(circle, rgba(234, 179, 8, 0.22) 0%, rgba(0, 0, 0, 0) 70%)',
+                        '--glow-2-bg': 'radial-gradient(circle, rgba(146, 64, 14, 0.18) 0%, rgba(0, 0, 0, 0) 70%)'
+                    }
+                };
+                const config = themesConfig[activeTheme] || themesConfig['nebula'];
+                for (const [prop, value] of Object.entries(config)) {
+                    document.documentElement.style.setProperty(prop, value);
+                }
+                
+                // Dynamic Animation configs
+                const savedSpeed = localStorage.getItem('ambient-glow-speed') || '25s';
+                const savedScale = localStorage.getItem('ambient-glow-scale') || '1.0';
+                const savedOpacity = localStorage.getItem('ambient-glow-opacity') || '1.0';
+                const savedBlur = localStorage.getItem('ambient-glow-blur') || '40px';
+                
+                document.documentElement.style.setProperty('--glow-speed', savedSpeed);
+                document.documentElement.style.setProperty('--glow-scale', savedScale);
+                document.documentElement.style.setProperty('--glow-opacity', savedOpacity);
+                document.documentElement.style.setProperty('--glow-blur', savedBlur);
+            } catch (e) {
+                console.error("Theme Engine Exception:", e);
+            }
+        })();
+    </script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <!-- Ambient Blur Background Glows -->
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- Django Flash Messages Toasts -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div
+            class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}success{% endif %}">
+            <span>{{ message }}</span>
+            <span class="close-alert" style="cursor:pointer; margin-left:1.5rem; font-weight:700;">&times;</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Premium Navigation Menu -->
+    <nav class="navbar" id="main-navbar">
+        <a href="{% url 'home' %}" class="nav-brand" id="navbar-logo">
+            Edu<span>Tech AI</span>
+        </a>
+
+        <ul class="nav-links" id="navbar-links-list">
+            <li><a href="{% url 'home' %}"
+                    class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
+            <li><a href="{% url 'about' %}"
+                    class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a></li>
+            <li><a href="{% url 'pricing' %}"
+                    class="nav-link {% if request.resolver_match.url_name == 'pricing' %}active{% endif %}">Pricing</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'dashboard' %}"
+                    class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+            </li>
+            <li><a href="{% url 'focus_room' %}"
+                    class="nav-link {% if request.resolver_match.url_name == 'focus_room' %}active{% endif %}">Focus
+                    Room 🎧</a></li>
+            <li><a href="{% url 'import_course' %}"
+                    class="nav-link {% if request.resolver_match.url_name == 'import_course' %}active{% endif %}">Import
+                    Playlist</a></li>
+            <li><a href="{% url 'profile' %}"
+                    class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">Profile</a>
+            </li>
+            <li><a href="{% url 'logout' %}" class="btn btn-secondary" id="btn-logout"
+                    style="padding: 0.5rem 1rem; font-size: 0.85rem;">Logout</a></li>
+            {% else %}
+            <li><a href="{% url 'login' %}"
+                    class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}">Login</a></li>
+            <li><a href="{% url 'register' %}" class="btn btn-primary" id="btn-register-nav"
+                    style="padding: 0.5rem 1.25rem; font-size: 0.85rem;">Get Started</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- Main Content Injection Wrapper -->
+    <main class="main-content" id="main-container-slot">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- JavaScript Interactive Scripts with Cache-Busting Version -->
+    <script src="{% static 'js/main.js' %}?v=3.0.1"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

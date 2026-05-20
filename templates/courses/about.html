@@ -1,0 +1,90 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI - Our Mission: Combatting Internet Distractions{% endblock %}
+
+{% block content %}
+<div class="container" id="about-view-container">
+    <div style="max-width: 800px; margin: 0 auto;">
+
+        <!-- Header -->
+        <header style="text-align: center; margin-bottom: 4rem;">
+            <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 1.5rem;" id="about-title-main">
+                Reclaiming Our <span>Focus</span> & Attention
+            </h1>
+            <p class="hero-subtitle" style="font-size: 1.15rem;" id="about-subtitle-desc">
+                YouTube holds the largest library of educational content on Earth—yet it was engineered to keep you
+                scrolling, not learning.
+            </p>
+        </header>
+
+        <!-- Mission Content Cards -->
+        <div class="glass-card" style="margin-bottom: 2.5rem; line-height: 1.7; color: var(--text-secondary);"
+            id="mission-card-challenge">
+            <h2
+                style="color: var(--text-primary); font-size: 1.75rem; margin-bottom: 1rem; border-left: 4px solid var(--accent-primary); padding-left: 1rem;">
+                The Dopamine Crisis in Modern Education
+            </h2>
+            <p style="margin-bottom: 1rem;">
+                When you open a brilliant python programming playlist on standard YouTube, you are competing against one
+                of the world's most powerful recommendation engines. In seconds, you are bombarded with:
+            </p>
+            <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                <li style="margin-bottom: 0.5rem;">Vibrant, clickbaity thumbnail recommendations designed to disrupt
+                    your train of thought.</li>
+                <li style="margin-bottom: 0.5rem;">Endless comments and comment replies calling for your debate and
+                    attention.</li>
+                <li style="margin-bottom: 0.5rem;">Repetitive unskippable advertisements breaking your cognitive flow
+                    right as concepts click.</li>
+            </ul>
+            <p>
+                Studies show that average student retention and focus spans are dropping steadily. Distraction-free
+                spaces are no longer a luxury; they are a critical educational necessity.
+            </p>
+        </div>
+
+        <div class="glass-card" style="margin-bottom: 2.5rem; line-height: 1.7; color: var(--text-secondary);"
+            id="mission-card-solution">
+            <h2
+                style="color: var(--text-primary); font-size: 1.75rem; margin-bottom: 1rem; border-left: 4px solid var(--accent-secondary); padding-left: 1rem;">
+                Our Core Principles & Philosophy
+            </h2>
+            <p style="margin-bottom: 1rem;">
+                We built EduTech AI around three foundational principles to construct a premium learning sanctuary:
+            </p>
+            <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                <li style="margin-bottom: 0.75rem;">
+                    <strong>Isolation is Power</strong>: We embed the YouTube player under clean, distraction-free
+                    parameters—stripping recommended recommendations, autoplay lists, and comment panels.
+                </li>
+                <li style="margin-bottom: 0.75rem;">
+                    <strong>Active Pomodoro Cycles</strong>: Time-boxing prevents study burnout. Breaking study blocks
+                    into intervals sustains a healthy learning flow, and the built-in music player supplies steady lo-fi
+                    beats to keep you focused.
+                </li>
+                <li style="margin-bottom: 0.75rem;">
+                    <strong>Intelligent Assessment</strong>: Instead of passively watching hour-long lectures, we use
+                    Groq AI to generate quick structured summaries and concepts quizzes, prompting active retrieval
+                    practice.
+                </li>
+            </ol>
+            <p>
+                EduTech AI acts as a shield, converting scattered YouTube playlists into highly structured courses.
+                Reclaim your focus, track your learning consistency, and achieve true educational outcomes.
+            </p>
+        </div>
+
+        <!-- Call to Action -->
+        <div style="text-align: center; margin-top: 3.5rem;">
+            {% if user.is_authenticated %}
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">You are signed in and ready to study!</h3>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary" id="btn-about-signup">Go to Dashboard &rarr;</a>
+            {% else %}
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Ready to study with 100% focus?</h3>
+            <a href="{% url 'register' %}" class="btn btn-primary" id="btn-about-signup">Create Your Account</a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

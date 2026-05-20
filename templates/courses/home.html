@@ -1,0 +1,95 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI - Escape Distraction, Amplify Retention{% endblock %}
+
+{% block content %}
+<div class="container" id="home-view-container">
+    <!-- Hero Header Module -->
+    <header class="hero-section" id="home-hero-header">
+        <div class="hero-tag" id="hero-tag-pill">EdTech SaaS 2.0</div>
+
+        <h1 class="hero-title" id="hero-title-main">
+            Transform YouTube Into a <span>Distraction-Free</span> Study Room
+        </h1>
+
+        <p class="hero-subtitle" id="hero-subtitle-desc">
+            Escape the social media algorithms. EduTech AI transforms scattered playlists into high-retention structured
+            courses integrated with Pomodoros, lo-fi flows, and Groq AI assistants.
+        </p>
+
+        <div class="hero-cta" id="hero-actions-container">
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn btn-primary" id="btn-cta-dashboard">Go to Dashboard</a>
+            <a href="{% url 'import_course' %}" class="btn btn-accent" id="btn-cta-import">Import Course</a>
+            {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary" id="btn-cta-signup">Start Learning Free</a>
+            <a href="{% url 'about' %}" class="btn btn-secondary" id="btn-cta-about">Our Mission</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Product Features Matrix Grid -->
+    <section class="features-grid" id="product-features-section">
+        <!-- Feature 1: Importer -->
+        <article class="glass-card feature-card" id="feat-importer">
+            <div class="feature-icon">📥</div>
+            <h3 class="feature-title">1-Click Course Importer</h3>
+            <p class="feature-desc">
+                Paste any public YouTube playlist URL. Our backend extracts all details, durations, and organizes them
+                instantly into a progress-tracked course curriculum.
+            </p>
+        </article>
+
+        <!-- Feature 2: Zen Mode -->
+        <article class="glass-card feature-card" id="feat-zenmode">
+            <div class="feature-icon">🧘</div>
+            <h3 class="feature-title">Zen Mode Player</h3>
+            <p class="feature-desc">
+                Study in isolation. Videos load cleanly without sidebar recommendations, auto-plays, distracting
+                commentary fields, or algorithm loops.
+            </p>
+        </article>
+
+        <!-- Feature 3: Pomodoro -->
+        <article class="glass-card feature-card" id="feat-pomodoro">
+            <div class="feature-icon">⏱️</div>
+            <h3 class="feature-title">Integrated Pomodoro</h3>
+            <p class="feature-desc">
+                Engage in highly productive time blocks (25m study / 5m break) with a customized interactive timer.
+                Successful session cycles automatically log XP and build streaks.
+            </p>
+        </article>
+
+        <!-- Feature 4: Lofi Audio -->
+        <article class="glass-card feature-card" id="feat-lofi">
+            <div class="feature-icon">🎧</div>
+            <h3 class="feature-title">Lo-Fi Beats & Frequencies</h3>
+            <p class="feature-desc">
+                Play ambient rain tracks, deep focus sine frequencies, or smooth synth loops directly inside your
+                sidebar dashboard, complete with automated equalizers.
+            </p>
+        </article>
+
+        <!-- Feature 5: AI Study Buddy -->
+        <article class="glass-card feature-card" id="feat-aibuddy">
+            <div class="feature-icon">🤖</div>
+            <h3 class="feature-title">AI Study Buddy (Groq API)</h3>
+            <p class="feature-desc">
+                Obtain structured markdown lecture notes and test your comprehension instantly with 3-question
+                multiple-choice interactive quizzes powered by Groq.
+            </p>
+        </article>
+
+        <!-- Feature 6: Smart Streaks -->
+        <article class="glass-card feature-card" id="feat-streaks">
+            <div class="feature-icon">🔥</div>
+            <h3 class="feature-title">GitHub-Style Streaks</h3>
+            <p class="feature-desc">
+                Specify target completion deadlines to calculate daily video metrics. Monitor active progress and study
+                history on your profile contribution grid.
+            </p>
+        </article>
+    </section>
+</div>
+{% endblock %}

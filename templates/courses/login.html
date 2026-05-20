@@ -1,0 +1,522 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI - Sign In to Your Study Room{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper" id="login-view-wrapper">
+    <div class="glass-card auth-card" id="login-form-card">
+
+        <header class="auth-header" id="login-form-header">
+            <h2>Welcome Back</h2>
+            <p>Access your distraction-free study courses.</p>
+        </header>
+
+        <!-- Standard username/password login -->
+        <form action="{% url 'login' %}" method="POST" id="login-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="login-username" class="form-label">Username</label>
+                <input type="text" name="username" id="login-username" class="form-input" placeholder="Enter username"
+                    required autocomplete="username">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label for="login-password" class="form-label">Password</label>
+                <input type="password" name="password" id="login-password" class="form-input"
+                    placeholder="Enter password" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btn-submit-login" style="width: 100%;">
+                Log In &rarr;
+            </button>
+        </form>
+
+        <!-- OR glowing divider -->
+        <div style="display: flex; align-items: center; gap: 10px; margin: 1.5rem 0; width: 100%;">
+            <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08);"></div>
+            <span
+                style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">Or
+                connect with</span>
+            <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08);"></div>
+        </div>
+
+        <!-- Google SSO authentication button -->
+        <button type="button" class="btn btn-secondary" id="btn-google-login"
+            style="width: 100%; gap: 10px; display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: var(--border-glass-glow); padding: 0.75rem 1rem;">
+            <!-- SVG Google Icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4" />
+                <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853" />
+                <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                    fill="#FBBC05" />
+                <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335" />
+            </svg>
+            Continue with Google
+        </button>
+
+        <!-- Dynamic Bypass trigger links -->
+        <div style="text-align: center; margin-top: 0.75rem;">
+            <button type="button" id="btn-sso-bypass"
+                style="background: none; border: none; color: var(--text-muted); font-size: 0.7rem; text-decoration: underline; cursor: pointer; transition: color 0.2s;">
+                Trouble with Firebase setup? Use Demo SSO Mode instead
+            </button>
+        </div>
+
+        <!-- Live Firebase Auth Diagnostic Panel -->
+        <div id="auth-debug-panel"
+            style="margin-top: 1rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.1); border-radius: 8px; text-align: left; display: none;">
+            <div
+                style="font-size: 0.65rem; color: var(--accent-primary); font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 6px;">
+                <span class="pulse-dot"
+                    style="width: 6px; height: 6px; background: var(--accent-primary); border-radius: 50%; display: inline-block;"></span>
+                Firebase Auth Diagnostic Tracker
+            </div>
+            <div id="auth-debug-status" style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.3;">
+                Initializing listener...</div>
+            <div id="auth-debug-error"
+                style="font-size: 0.7rem; color: #ef4444; margin-top: 0.35rem; font-family: monospace; white-space: pre-wrap; display: none; background: rgba(239, 68, 68, 0.05); padding: 0.5rem; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.15);">
+            </div>
+        </div>
+
+        <footer class="auth-footer" id="login-form-footer">
+            New to EduTech AI? <a href="{% url 'register' %}">Sign Up Free</a>
+        </footer>
+
+    </div>
+</div>
+
+<!-- GORGEOUS CUSTOM GOOGLE ACCOUNT CHOOSER MODAL -->
+<div id="google-sso-modal" class="modal-overlay" style="display: none;">
+    <div class="glass-card modal-content" style="max-width: 400px; width: 92%; padding: 2rem; position: relative;">
+        <!-- Close button -->
+        <button type="button" id="modal-close-btn"
+            style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer;">&times;</button>
+
+        <!-- Google Branding Header -->
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                style="display: inline-block;">
+                <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4" />
+                <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853" />
+                <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                    fill="#FBBC05" />
+                <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335" />
+            </svg>
+            <h3 style="font-family: 'Outfit'; font-size: 1.25rem; margin-top: 0.75rem; color: var(--text-primary);">
+                Choose an account</h3>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">to continue to <span
+                    style="color: var(--accent-primary); font-weight: 600;">EduTech AI</span></p>
+        </div>
+
+        <!-- Account Rows -->
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem;" id="sso-accounts-list">
+            <!-- Account 1 -->
+            <button type="button" class="sso-account-row" data-email="ajay@gmail.com" data-name="Ajay Vishwakarma"
+                id="sso-row-ajay">
+                <div class="sso-avatar">AV</div>
+                <div style="text-align: left; flex: 1;">
+                    <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">Ajay Vishwakarma
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">ajay@gmail.com</div>
+                </div>
+            </button>
+
+            <!-- Account 2 -->
+            <button type="button" class="sso-account-row" data-email="student@gmail.com" data-name="Focus Student"
+                id="sso-row-student">
+                <div class="sso-avatar" style="background: var(--accent-secondary);">FS</div>
+                <div style="text-align: left; flex: 1;">
+                    <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">Focus Student</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">student@gmail.com</div>
+                </div>
+            </button>
+
+            <!-- Account 3 -->
+            <button type="button" class="sso-account-row" data-email="developer@gmail.com" data-name="Google Developer"
+                id="sso-row-developer">
+                <div class="sso-avatar" style="background: #ec4899;">GD</div>
+                <div style="text-align: left; flex: 1;">
+                    <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">Google Developer
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">developer@gmail.com</div>
+                </div>
+            </button>
+        </div>
+
+        <!-- Custom Account form input -->
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1rem;">
+            <div
+                style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; text-align: left;">
+                Use another account
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <input type="email" id="sso-custom-email" class="form-input" style="padding: 0.5rem; font-size: 0.8rem;"
+                    placeholder="e.g. user@gmail.com">
+                <button type="button" id="sso-custom-submit-btn" class="btn btn-accent"
+                    style="padding: 0.5rem 1rem; font-size: 0.8rem;">Connect</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(10, 10, 15, 0.8);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        animation: fadeIn 0.25s ease-out;
+    }
+
+    .modal-content {
+        animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+
+    .sso-account-row {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        gap: 12px;
+        text-align: left;
+    }
+
+    .sso-account-row:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 12px rgba(139, 92, 246, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .sso-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--accent-primary);
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #btn-sso-bypass:hover {
+        color: var(--accent-primary) !important;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase App (the core Firebase SDK) and Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+<script>
+    // Firebase Configuration parameters loaded dynamically
+    const firebaseConfig = {
+        apiKey: "{{ firebase_api_key|default:'' }}",
+        authDomain: "{{ firebase_auth_domain|default:'' }}",
+        projectId: "{{ firebase_project_id|default:'' }}",
+        storageBucket: "{{ firebase_storage_bucket|default:'' }}",
+        messagingSenderId: "{{ firebase_messaging_sender_id|default:'' }}",
+        appId: "{{ firebase_app_id|default:'' }}"
+    };
+
+    // Firebase is initialized if the keys are populated in settings
+    const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.authDomain;
+
+    // Helper to update the visible on-screen Diagnostic Tracker
+    function updateDebugStatus(message, isError = false, errorText = "") {
+        const panel = document.getElementById('auth-debug-panel');
+        const status = document.getElementById('auth-debug-status');
+        const errorDiv = document.getElementById('auth-debug-error');
+
+        panel.style.display = 'block';
+        status.innerHTML = message;
+
+        if (isError) {
+            status.innerHTML = `<span style="color: #ef4444; font-weight: 600;">⚠️ Error:</span> ${message}`;
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = errorText;
+        } else {
+            errorDiv.style.display = 'none';
+        }
+    }
+
+    if (isFirebaseConfigured) {
+        try {
+            firebase.initializeApp(firebaseConfig);
+            
+            // Check if current hostname is 127.0.0.1 and advise localhost
+            if (window.location.hostname === "127.0.0.1") {
+                const localhostUrl = window.location.href.replace("127.0.0.1", "localhost");
+                updateDebugStatus(`You are accessing via <b>127.0.0.1</b>. Google Sign-In requires <b>localhost</b>. <a href="${localhostUrl}" style="color: #a78bfa; text-decoration: underline; font-weight: bold; margin-left: 5px;">Click here to switch to localhost</a>`, false);
+            } else {
+                updateDebugStatus("Firebase initialized. Checking for redirect sign-in results...");
+            }
+
+            // Check for redirect result if popup was previously blocked and redirected
+            firebase.auth().getRedirectResult()
+                .then((result) => {
+                    if (result && result.user) {
+                        updateDebugStatus(`Google account '${result.user.email}' authenticated via redirect! Generating token...`);
+                        return result.user.getIdToken();
+                    }
+                })
+                .then((idToken) => {
+                    if (idToken) {
+                        submitGoogleTokenToDjango(idToken);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Redirect Sign-in error:", error);
+                    let errMsg = "Google Authentication via redirect failed.";
+                    if (error.code === "auth/unauthorized-domain") {
+                        errMsg = "Error: This domain (localhost/127.0.0.1) is not listed as an 'Authorized Domain' in your Firebase console under Authentication -> Settings.";
+                    } else if (error.code === "auth/operation-not-allowed") {
+                        errMsg = "Error: Google Provider is not enabled in Firebase Console -> Authentication -> Sign-in Method.";
+                    } else if (error.message) {
+                        errMsg = `Redirect Auth Error: ${error.message}`;
+                    }
+                    updateDebugStatus("Google Sign-In redirect flow failed.", true, `Code: ${error.code}\nMessage: ${error.message}`);
+                    showToast(errMsg, "error");
+                });
+
+            updateDebugStatus("Firebase initialized. Ready. Click 'Continue with Google' to start authentication.");
+        } catch (initErr) {
+            console.error("Firebase init failed:", initErr);
+            updateDebugStatus("Failed to initialize Firebase client SDK.", true, initErr.toString());
+        }
+    } else {
+        updateDebugStatus("Firebase is NOT configured in your .env settings file. Using Developer Demo SSO Mode.");
+    }
+
+    // Modal elements
+    const ssoModal = document.getElementById('google-sso-modal');
+    const closeBtn = document.getElementById('modal-close-btn');
+    const customSubmitBtn = document.getElementById('sso-custom-submit-btn');
+    const customEmailInput = document.getElementById('sso-custom-email');
+    const bypassBtn = document.getElementById('btn-sso-bypass');
+
+    // Google Sign-In button click
+    document.getElementById('btn-google-login').addEventListener('click', function () {
+        if (isFirebaseConfigured) {
+            updateDebugStatus("Opening secure Google Sign-In popup window...");
+            const btn = this;
+            btn.innerHTML = `<span style="width: 1rem; height: 1rem; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; display: inline-block; animation: spin 1s infinite linear; margin-right: 0.5rem; vertical-align: middle;"></span> Connecting...`;
+            btn.disabled = true;
+
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
+
+            // Try popup mode first (completely unaffected by third-party cookie blocks on localhost!)
+            firebase.auth().signInWithPopup(provider)
+                .then((result) => {
+                    if (result && result.user) {
+                        updateDebugStatus(`Google account '${result.user.email}' authenticated successfully! Generating token...`);
+                        return result.user.getIdToken();
+                    }
+                    throw new Error("No user profile returned from Google.");
+                })
+                .then((idToken) => {
+                    updateDebugStatus("Secure Firebase token generated. Sending to Django backend...");
+                    submitGoogleTokenToDjango(idToken);
+                })
+                .catch((error) => {
+                    console.error("Firebase Sign-In Error:", error);
+
+                    if (error.code === "auth/popup-closed-by-user") {
+                        updateDebugStatus("Sign-in cancelled. Popup was closed by the user.", true);
+                        showToast("Sign-in cancelled. Please complete the popup window.", "warning");
+                    } else if (error.code === "auth/popup-blocked") {
+                        updateDebugStatus("Browser popup blocked! Automatically falling back to secure redirect mode...", true);
+                        showToast("Popup blocked. Redirecting securely in the main window...", "info");
+                        firebase.auth().signInWithRedirect(provider);
+                        return;
+                    } else {
+                        let errMsg = "Google Authentication failed.";
+                        if (error.code === "auth/operation-not-allowed") {
+                            errMsg = "Error: 'Google' Sign-In Provider is not enabled in your Firebase Console! Go to Firebase Auth -> Sign-in Method to turn it ON.";
+                        } else {
+                            errMsg = `Auth Error: ${error.message}`;
+                        }
+                        updateDebugStatus("Google Sign-In failed.", true, `Code: ${error.code}\nMessage: ${error.message}`);
+                        showToast(errMsg, "error");
+                    }
+                    resetButton();
+                });
+        } else {
+            // Show custom elegant account chooser modal overlay
+            ssoModal.style.display = 'flex';
+        }
+    });
+
+    // Toggle simulated modal instantly via bypass button
+    bypassBtn.addEventListener('click', () => {
+        ssoModal.style.display = 'flex';
+        showToast("Switched to Developer Demo SSO Mode!", "info");
+    });
+
+    // Close Modal
+    closeBtn.addEventListener('click', () => {
+        ssoModal.style.display = 'none';
+    });
+
+    // Handle account rows click
+    document.querySelectorAll('.sso-account-row').forEach(row => {
+        row.addEventListener('click', function () {
+            const email = this.getAttribute('data-email');
+            const name = this.getAttribute('data-name');
+            ssoModal.style.display = 'none';
+            triggerSSOConnection(email, name);
+        });
+    });
+
+    // Handle custom submit button click
+    customSubmitBtn.addEventListener('click', () => {
+        const email = customEmailInput.value.trim();
+        if (!email || !email.includes('@')) {
+            showToast("Please enter a valid Google email address.", "error");
+            return;
+        }
+        const name = email.split('@')[0];
+        ssoModal.style.display = 'none';
+        triggerSSOConnection(email, name);
+    });
+
+    // Trigger loading state on main Google button and post
+    function triggerSSOConnection(email, name) {
+        const btn = document.getElementById('btn-google-login');
+        const originalText = btn.innerHTML;
+
+        btn.innerHTML = `<span style="width: 1rem; height: 1rem; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; display: inline-block; animation: spin 1s infinite linear; margin-right: 0.5rem; vertical-align: middle;"></span> Connecting...`;
+        btn.disabled = true;
+
+        const simulatedUid = "demo_google_uid_" + Math.random().toString(36).substr(2, 9);
+        const simulatedToken = `dev_google_token_${simulatedUid}|${email}|${name}`;
+
+        // Post mock token to backend after a brief connection delay
+        setTimeout(() => {
+            submitGoogleTokenToDjango(simulatedToken);
+        }, 1000);
+    }
+
+    function submitGoogleTokenToDjango(idToken) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const formData = new FormData();
+        formData.append('id_token', idToken);
+
+        updateDebugStatus("Sending secure ID token to Django server endpoint `/login/google/`...");
+
+        fetch("{% url 'login_google' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errData => {
+                        throw new Error(errData.message || `Server returned status ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    updateDebugStatus(`Django verified successfully! Logged in as ${data.username}. Redirecting...`);
+                    showToast(`Successfully logged in as ${data.username}! Redirecting...`, "success");
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url;
+                    }, 1000);
+                } else {
+                    updateDebugStatus("Django rejected token verification.", true, data.message || "Unknown verification rejection");
+                    showToast(data.message || "Authentication verification failed.", "error");
+                    resetButton();
+                }
+            })
+            .catch(err => {
+                console.error("SSO Verification Error:", err);
+                updateDebugStatus("SSO token exchange failed with Django server.", true, err.toString());
+                showToast("Server connection failed. Try again.", "error");
+                resetButton();
+            });
+    }
+
+    function resetButton() {
+        const btn = document.getElementById('btn-google-login');
+        btn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Continue with Google
+        `;
+        btn.disabled = false;
+    }
+</script>
+
+<style>
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+{% endblock %}

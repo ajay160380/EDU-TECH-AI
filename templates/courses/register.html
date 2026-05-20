@@ -1,0 +1,54 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI - Start Distraction-Free EdTech SaaS{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper" id="register-view-wrapper">
+    <div class="glass-card auth-card" id="register-form-card">
+
+        <header class="auth-header" id="register-form-header">
+            <h2>Join EduTech AI</h2>
+            <p>Create your account and lock in today.</p>
+        </header>
+
+        <form action="{% url 'register' %}" method="POST" id="register-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="reg-username" class="form-label">Username</label>
+                <input type="text" name="username" id="reg-username" class="form-input" placeholder="e.g. study_hero"
+                    required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="reg-email" class="form-label">Email Address</label>
+                <input type="email" name="email" id="reg-email" class="form-input" placeholder="e.g. hello@edutech.ai"
+                    required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="reg-password" class="form-label">Password</label>
+                <input type="password" name="password" id="reg-password" class="form-input" placeholder="••••••••"
+                    required autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+                <label for="reg-confirm-password" class="form-label">Confirm Password</label>
+                <input type="password" name="confirm_password" id="reg-confirm-password" class="form-input"
+                    placeholder="••••••••" required autocomplete="new-password">
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btn-submit-register"
+                style="width: 100%; margin-top: 1.5rem;">
+                Create Account &rarr;
+            </button>
+        </form>
+
+        <footer class="auth-footer" id="register-form-footer">
+            Already have an account? <a href="{% url 'login' %}">Log In</a>
+        </footer>
+
+    </div>
+</div>
+{% endblock %}
