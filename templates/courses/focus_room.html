@@ -1,0 +1,179 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}Zen Focus Room 🎧 - EduTech AI{% endblock %}
+
+{% block content %}
+<!-- Metadata store for JavaScript parameters if needed -->
+<div id="course-meta-data" data-course-id="0" style="display:none;"></div>
+<form style="display:none;">{% csrf_token %}</form>
+
+<div class="focus-room-layout"
+    style="min-height: calc(100vh - 100px); display: flex; align-items: center; justify-content: center; padding: 3rem 1.5rem; position: relative;">
+
+    <!-- Ambient Blur Glows for premium immersion -->
+    <div
+        style="position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(0,0,0,0) 70%); top: 10%; left: 20%; filter: blur(60px); z-index: 0; pointer-events: none;">
+    </div>
+    <div
+        style="position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(0,0,0,0) 70%); bottom: 10%; right: 20%; filter: blur(60px); z-index: 0; pointer-events: none;">
+    </div>
+
+    <div style="width: 100%; max-width: 900px; z-index: 1;">
+        <header style="text-align: center; margin-bottom: 3rem;">
+            <span
+                style="font-size: 2.5rem; display: inline-block; margin-bottom: 0.5rem; animation: float 3s ease-in-out infinite;">🎧</span>
+            <h1
+                style="font-size: 2.75rem; font-family: 'Outfit'; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem;">
+                Zen <span class="text-gradient">Focus Room</span>
+            </h1>
+            <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto; font-size: 1.05rem;">
+                Lock into deep work with synchronized Pomodoro intervals and binaural concentration beats.
+            </p>
+        </header>
+
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 2.5rem; align-items: stretch;">
+
+            <!-- Section 1: Pomodoro Timer -->
+            <section class="pomodoro-card glass-card" id="pomodoro-timer-widget"
+                style="padding: 2.5rem; box-shadow: var(--shadow-card); border: var(--border-glass-glow);">
+                <h3
+                    style="font-size: 1.15rem; font-family: 'Outfit'; text-transform: uppercase; color: var(--accent-primary); letter-spacing: 0.08em; margin-bottom: 1rem; text-align: center; font-weight: 700;">
+                    Pomodoro Focus
+                </h3>
+
+                <div class="pomodoro-status-text" id="pomodoro-status"
+                    style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">Ready to focus</div>
+
+                <!-- Circular Progress SVG Structure -->
+                <div class="pomodoro-circle-container" id="pomodoro-circle-box"
+                    style="width: 220px; height: 220px; margin: 1.5rem auto;">
+                    <svg class="pomodoro-svg" viewBox="0 0 160 160"
+                        style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                        <circle class="pomodoro-bg-circle" cx="80" cy="80" r="72"
+                            style="fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 8;"></circle>
+                        <circle class="pomodoro-progress-circle" cx="80" cy="80" r="72" id="pomodoro-progress"
+                            style="fill: none; stroke: var(--accent-primary); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 452.4; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.3s;">
+                        </circle>
+                    </svg>
+                    <div class="pomodoro-time-display" id="pomodoro-time"
+                        style="position: absolute; font-size: 3rem; font-family: 'Outfit'; font-weight: 800; color: var(--text-primary); z-index: 10;">
+                        25:00</div>
+                </div>
+
+                <!-- Presets -->
+                <div class="pomodoro-preset-btns" id="pomodoro-preset-triggers"
+                    style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1.5rem 0;">
+                    <button class="pomodoro-preset-btn active" data-mode="study" data-minutes="25"
+                        style="padding: 0.5rem 0.85rem; font-size: 0.85rem; font-weight: 600;">Study (25m)</button>
+                    <button class="pomodoro-preset-btn" data-mode="short" data-minutes="5"
+                        style="padding: 0.5rem 0.85rem; font-size: 0.85rem; font-weight: 600;">Rest (5m)</button>
+                    <button class="pomodoro-preset-btn" data-mode="long" data-minutes="15"
+                        style="padding: 0.5rem 0.85rem; font-weight: 600;">Rest (15m)</button>
+                    <button class="pomodoro-preset-btn" data-mode="custom" id="custom-timer-toggle"
+                        style="padding: 0.5rem 0.85rem; font-size: 0.85rem; font-weight: 600; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.3);">⚙️
+                        Custom</button>
+                </div>
+
+                <!-- Custom Time Input Modal/Panel (Hidden by default) -->
+                <div id="custom-timer-panel"
+                    style="display: none; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; animation: fadeIn 0.3s ease;">
+                    <h4
+                        style="font-size: 0.9rem; color: var(--accent-primary); margin-bottom: 0.75rem; font-weight: 700; text-align: center;">
+                        Set Custom Focus Timer</h4>
+                    <div style="display: flex; gap: 0.75rem; justify-content: center; align-items: center;">
+                        <div style="text-align: center;">
+                            <label
+                                style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Hours</label>
+                            <input type="number" id="custom-hours" min="0" max="23" value="1"
+                                style="width: 65px; padding: 0.5rem; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; text-align: center; font-weight: 600;">
+                        </div>
+                        <span
+                            style="font-size: 1.25rem; font-weight: bold; color: var(--text-muted); align-self: flex-end; margin-bottom: 0.25rem;">:</span>
+                        <div style="text-align: center;">
+                            <label
+                                style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Minutes</label>
+                            <input type="number" id="custom-minutes" min="0" max="59" value="30"
+                                style="width: 65px; padding: 0.5rem; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; text-align: center; font-weight: 600;">
+                        </div>
+                        <div style="align-self: flex-end;">
+                            <button id="apply-custom-timer" class="btn btn-primary"
+                                style="padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight: 700; border-radius: 8px; height: 38px;">Apply</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="pomodoro-controls" id="pomodoro-action-controls"
+                    style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+                    <button class="btn btn-primary" id="pomodoro-start"
+                        style="padding: 0.75rem 2rem; font-size: 1rem; font-weight: 700; border-radius: 50px; box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);">
+                        ▶ Start
+                    </button>
+                    <button class="btn btn-secondary" id="pomodoro-reset"
+                        style="padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 50px;">
+                        🔄 Reset
+                    </button>
+                </div>
+            </section>
+
+            <!-- Section 2: Lo-Fi Concentration Music Player -->
+            <section class="lofi-card lofi-player glass-card" id="lofi-music-widget"
+                style="padding: 2.5rem; box-shadow: var(--shadow-card); border: var(--border-glass); display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <header class="lofi-header" style="justify-content: center; margin-bottom: 2rem;">
+                        <span style="font-size: 1.75rem;">🎧</span>
+                        <h3 style="font-family: 'Outfit'; font-size: 1.4rem; font-weight: 700;">Concentration Flow</h3>
+                    </header>
+
+                    <!-- Visual Equalizer bouncing animation -->
+                    <div class="lofi-visualizer" id="equalizer-bars-group" style="height: 40px; margin-bottom: 2rem;">
+                        <div class="visualizer-bar" style="width: 8px;"></div>
+                        <div class="visualizer-bar" style="width: 8px;"></div>
+                        <div class="visualizer-bar" style="width: 8px;"></div>
+                        <div class="visualizer-bar" style="width: 8px;"></div>
+                        <div class="visualizer-bar" style="width: 8px;"></div>
+                    </div>
+
+                    <!-- Select Ambient Track -->
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label
+                            style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: left;">Select
+                            Audio Stream:</label>
+                        <select id="lofi-select" class="lofi-select"
+                            style="padding: 0.85rem 1rem; font-size: 1rem; border-radius: 8px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); width: 100%; color: #fff;">
+                            <option value="lofi" selected>🎧 Lofi Chillhop Beats (Study / Work)</option>
+                            <option value="chillout">🌿 Deep Chillout & Ambient Flow</option>
+                            <option value="lounge">☕ Relaxing Lounge Vibes</option>
+                            <option value="zeno">🌙 Midnight Chill & Focus</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="lofi-controls" id="lofi-audio-controls"
+                    style="padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08);">
+                    <button class="btn btn-secondary" id="lofi-play"
+                        style="width: 60px; height: 60px; border-radius: 50%; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; border: var(--border-glass-glow); background: var(--accent-primary); color: #fff; box-shadow: 0 0 15px rgba(139,92,246,0.3);">
+                        ▶
+                    </button>
+
+                    <div class="volume-container"
+                        style="flex: 1; max-width: 200px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.25); padding: 0.5rem 1rem; border-radius: 50px; border: var(--border-glass);">
+                        <span style="font-size: 0.85rem; color: var(--text-secondary);">🔈</span>
+                        <input type="range" id="lofi-volume" class="volume-slider" min="0" max="1" step="0.05"
+                            value="0.3" style="flex: 1;">
+                        <span style="font-size: 0.85rem; color: var(--text-secondary);">🔊</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <footer style="text-align: center; margin-top: 3rem; color: var(--text-muted); font-size: 0.9rem;">
+            <span>💡 Tip: Keep this room open in a pinned browser tab while you work or study.</span>
+        </footer>
+    </div>
+</div>
+{% endblock %}

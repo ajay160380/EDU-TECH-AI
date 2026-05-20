@@ -1,0 +1,568 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}Certificate of Mastery - EduTech AI Professional Academy{% endblock %}
+
+{% block content %}
+<!-- Premium Certificate Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Alex+Brush&family=Mrs+Saint+Delafield&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap"
+    rel="stylesheet">
+
+<style>
+    /* Certificate Page Container */
+    .cert-page-wrapper {
+        min-height: calc(100vh - 80px);
+        background: #0b0f19;
+        padding: 3rem 1.5rem 5rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Action bar */
+    .cert-actions {
+        width: 100%;
+        max-width: 1100px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        z-index: 10;
+    }
+
+    /* Main Certificate Frame - True Physical Degree Dimensions & Palette */
+    .cert-frame {
+        width: 100%;
+        max-width: 1100px;
+        aspect-ratio: 1.414 / 1;
+        /* Standard ISO A4/Letter Landscape ratio */
+        background: #ffffff;
+        background-image: radial-gradient(#f1f5f9 1px, transparent 0);
+        background-size: 32px 32px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5), 0 0 0 12px rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        padding: 3.5rem;
+        position: relative;
+        color: #1e293b;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+    }
+
+    /* Intricate Professional Outer & Inner Border Pattern */
+    .cert-border-outer {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+        right: 24px;
+        bottom: 24px;
+        border: 4px solid #0f172a;
+        /* Deep Navy Executive Border */
+        pointer-events: none;
+    }
+
+    .cert-border-inner {
+        position: absolute;
+        top: 32px;
+        left: 32px;
+        right: 32px;
+        bottom: 32px;
+        border: 1px solid #94a3b8;
+        /* Fine inner rule */
+        pointer-events: none;
+    }
+
+    /* Golden Corner Accent Triangles */
+    .corner-accent {
+        position: absolute;
+        width: 48px;
+        height: 48px;
+        border-color: #b45309;
+        /* Deep Bronze Gold */
+        border-style: solid;
+        pointer-events: none;
+    }
+
+    .corner-tl {
+        top: 20px;
+        left: 20px;
+        border-width: 4px 0 0 4px;
+    }
+
+    .corner-tr {
+        top: 20px;
+        right: 20px;
+        border-width: 4px 4px 0 0;
+    }
+
+    .corner-bl {
+        bottom: 20px;
+        left: 20px;
+        border-width: 0 0 4px 4px;
+    }
+
+    .corner-br {
+        bottom: 20px;
+        right: 20px;
+        border-width: 0 4px 4px 0;
+    }
+
+    /* Faint Watermark Logo in Center */
+    .cert-watermark-crest {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(circle, rgba(15, 23, 42, 0.04) 0%, transparent 70%);
+        border: 2px solid rgba(15, 23, 42, 0.03);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Cinzel', serif;
+        font-size: 14rem;
+        color: rgba(15, 23, 42, 0.02);
+        user-select: none;
+        pointer-events: none;
+    }
+
+    /* Certificate Content Flow */
+    .cert-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem 4rem;
+    }
+
+    /* Header Org */
+    .org-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        font-size: 1.15rem;
+        letter-spacing: 0.4em;
+        color: #0f172a;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .org-title span {
+        color: #b45309;
+        /* Gold accent */
+    }
+
+    /* Main Certificate Heading */
+    .main-heading {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.75rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.01em;
+    }
+
+    /* Award Statement */
+    .award-statement {
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #64748b;
+        margin-bottom: 1.75rem;
+    }
+
+    /* Recipient Name Box */
+    .recipient-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.25rem;
+        font-weight: 700;
+        font-style: italic;
+        color: #0f172a;
+        margin-bottom: 2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #cbd5e1;
+        min-width: 60%;
+        display: inline-block;
+    }
+
+    /* Citation Body */
+    .citation-body {
+        font-size: 1.15rem;
+        line-height: 1.7;
+        color: #334155;
+        max-width: 780px;
+        margin-bottom: 2.5rem;
+        font-weight: 400;
+    }
+
+    .citation-body .course-title-highlight {
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 1.35rem;
+        display: inline;
+        border-bottom: 2px solid #d97706;
+    }
+
+    /* Bottom Section */
+    .cert-footer-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: flex-end;
+        width: 100%;
+        padding: 0 2rem;
+        margin-top: auto;
+    }
+
+    /* Meta Left */
+    .meta-col {
+        text-align: left;
+    }
+
+    .meta-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: #64748b;
+        margin-bottom: 0.25rem;
+    }
+
+    .meta-val {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #0f172a;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Verification Badge Center */
+    .seal-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 2rem;
+    }
+
+    .foil-seal {
+        width: 110px;
+        height: 110px;
+        background: #0f172a;
+        /* Deep Navy Seal */
+        border: 4px solid #d97706;
+        /* Gold Trim */
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+        text-align: center;
+    }
+
+    .foil-seal .seal-icon {
+        font-size: 1.75rem;
+        margin-bottom: 2px;
+        line-height: 1;
+    }
+
+    .foil-seal .seal-text {
+        font-family: 'Cinzel', serif;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        font-weight: 800;
+        color: #fef3c7;
+    }
+
+    /* Signature Right */
+    .sig-col {
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .sig-handwriting {
+        font-family: 'Alex Brush', cursive;
+        font-size: 3.5rem;
+        color: #0f172a;
+        line-height: 0.7;
+        margin-bottom: 0.5rem;
+        transform: rotate(-4deg);
+        padding-right: 1rem;
+    }
+
+    .sig-line {
+        width: 240px;
+        height: 1px;
+        background: #0f172a;
+        margin-bottom: 0.5rem;
+    }
+
+    .sig-name {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: 0.05em;
+    }
+
+    .sig-title {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #64748b;
+        letter-spacing: 0.05em;
+    }
+
+    /* Print Setup */
+    @media print {
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        @page {
+            size: landscape !important;
+            margin: 0 !important;
+        }
+
+        body,
+        html {
+            width: 100% !important;
+            height: 100% !important;
+            background: #ffffff !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        #main-navbar,
+        .messages-container,
+        .ambient-glow-1,
+        .ambient-glow-2,
+        .cert-actions {
+            display: none !important;
+        }
+
+        .cert-page-wrapper {
+            background: #ffffff !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100vh !important;
+            min-height: 100vh !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        .cert-frame {
+            width: 100% !important;
+            height: 100vh !important;
+            max-width: none !important;
+            max-height: none !important;
+            aspect-ratio: auto !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            padding: 2.25rem 3.5rem !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            justify-content: space-between !important;
+        }
+
+        .cert-content {
+            padding: 0.5rem 3rem !important;
+        }
+
+        .main-heading {
+            font-size: 3.25rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .recipient-name {
+            font-size: 2.75rem !important;
+            margin-bottom: 1.25rem !important;
+        }
+
+        .citation-body {
+            font-size: 1.05rem !important;
+            margin-bottom: 1.25rem !important;
+        }
+
+        .award-statement {
+            margin-bottom: 1rem !important;
+        }
+
+        .cert-footer-grid {
+            padding: 0 1rem !important;
+            margin-top: 0.5rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+
+        .cert-border-outer {
+            top: 15mm !important;
+            left: 15mm !important;
+            right: 15mm !important;
+            bottom: 15mm !important;
+            border: 4px solid #0f172a !important;
+        }
+
+        .cert-border-inner {
+            top: 19mm !important;
+            left: 19mm !important;
+            right: 19mm !important;
+            bottom: 19mm !important;
+            border: 1px solid #94a3b8 !important;
+        }
+
+        .corner-accent {
+            border-color: #b45309 !important;
+        }
+
+        .foil-seal {
+            background: #0f172a !important;
+            border-color: #d97706 !important;
+        }
+    }
+</style>
+
+<div class="cert-page-wrapper">
+
+    <!-- Action Control Bar -->
+    <div class="cert-actions">
+        <a href="{% url 'learn_view' course.id %}" class="btn btn-secondary"
+            style="border-radius: 50px; font-weight: 600; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff;">
+            ← Back to Classroom
+        </a>
+        <button onclick="downloadCertificate()" class="btn btn-primary"
+            style="border-radius: 50px; font-weight: 700; padding: 0.75rem 2rem; background: #38bdf8; color: #0f172a; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); border: none; cursor: pointer;">
+            🖨️ Download Certificate (PDF)
+        </button>
+    </div>
+
+    <!-- Main Professional Parchment Frame -->
+    <div class="cert-frame">
+
+        <!-- Intricate Borders -->
+        <div class="cert-border-outer"></div>
+        <div class="cert-border-inner"></div>
+        <div class="corner-accent corner-tl"></div>
+        <div class="corner-accent corner-tr"></div>
+        <div class="corner-accent corner-bl"></div>
+        <div class="corner-accent corner-br"></div>
+
+        <!-- Watermark Crest -->
+        <div class="cert-watermark-crest">ET</div>
+
+        <!-- Content Structure -->
+        <div class="cert-content">
+            <div class="org-title">
+                EduTech AI Verified
+            </div>
+
+            <h1 class="main-heading">Certificate of Mastery</h1>
+
+            <div class="award-statement">This professional credential is proudly conferred upon</div>
+
+            <div class="recipient-name">
+                {{ request.user.first_name }} {{ request.user.last_name|default:"" }}
+                {% if not request.user.first_name %}{{ request.user.username }}{% endif %}
+            </div>
+
+            <div class="citation-body">
+                has successfully fulfilled all rigorous curriculum benchmarks, conceptual evaluations, and focus hours
+                required for complete professional mastery of
+                <div class="course-title-highlight">{{ course.title }}</div>.
+            </div>
+
+            <div
+                style="margin: 0.5rem 0 2.5rem 0; display: inline-block; background: #f8fafc; border: 1px solid #cbd5e1; padding: 0.6rem 1.75rem; border-radius: 50px; font-size: 0.85rem; font-weight: 800; color: #334155; letter-spacing: 0.15em; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                YouTube Academic Partner: <span style="color: #dc2626;">{{ instructor_name }}</span>
+            </div>
+        </div>
+
+        <!-- Footer Signatures & Badges -->
+        <div class="cert-footer-grid">
+
+            <!-- Left Metadata -->
+            <div class="meta-col">
+                <div style="margin-bottom: 1rem;">
+                    <div class="meta-label">Date of Award</div>
+                    <div class="meta-val">{{ issue_date|date:"F d, Y" }}</div>
+                </div>
+                <div>
+                    <div class="meta-label">Credential ID</div>
+                    <div class="meta-val" style="font-family: monospace; font-size: 0.95rem; color: #475569;">{{ cert_id }}</div>
+                </div>
+            </div>
+
+            <!-- Center Official Foil Seal -->
+            <div class="seal-container">
+                <div class="foil-seal">
+                    <div class="seal-icon">🏛️</div>
+                    <div class="seal-text">VERIFIED<br>ACADEMY</div>
+                </div>
+            </div>
+
+            <!-- Right Official Signature Line -->
+            <div class="sig-col">
+                <div
+                    style="font-family: 'Mrs Saint Delafield', 'Alex Brush', cursive; font-size: 4.5rem; color: #0f172a; line-height: 0.6; margin-bottom: 0.5rem; transform: rotate(-5deg); padding-right: 1.5rem; font-weight: 500;">
+                    Gagan</div>
+                <div class="sig-line"></div>
+                <div class="sig-name">Ajay Vishwakarma</div>
+                <div class="sig-title">Founder & CEO, EduTech AI</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- html2pdf Library for Direct PDF Generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    function downloadCertificate() {
+        if (typeof showToast === 'function') {
+            showToast("⏳ Generating high-resolution verified PDF certificate...", "info");
+        }
+
+        const element = document.querySelector('.cert-frame');
+        const opt = {
+            margin: 0,
+            filename: `EduTech_AI_Certificate_{{ request.user.first_name|default:request.user.username }}.pdf`,
+            image: { type: 'jpeg', quality: 1.0 },
+            html2canvas: { scale: 3, useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (typeof showToast === 'function') {
+                showToast("✅ Certificate downloaded successfully!", "success");
+            }
+        });
+    }
+</script>
+{% endblock %}

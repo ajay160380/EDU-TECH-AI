@@ -1,0 +1,281 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}Final Certification Exam - {{ course.title }}{% endblock %}
+
+{% block content %}
+<style>
+/* Custom Premium Exam Styles */
+.exam-container {
+    max-width: 920px;
+    margin: 3rem auto 6rem auto;
+    padding: 0 1.5rem;
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+}
+
+/* Header Banner */
+.exam-header-card {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(5, 150, 105, 0.05) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: 24px;
+    padding: 3.5rem 2.5rem;
+    text-align: center;
+    margin-bottom: 4rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(12px);
+}
+
+.exam-header-icon {
+    font-size: 3.5rem;
+    display: inline-block;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.exam-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text-primary, #ffffff);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.exam-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary, #cbd5e1);
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+    line-height: 1.6;
+}
+
+.exam-badges {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.exam-badge {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.exam-badge.success {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #34d399;
+}
+
+/* Question Cards */
+.exam-q-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+    margin-bottom: 5rem;
+}
+
+.exam-q-card {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    padding: 3rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(16px);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.exam-q-card:hover {
+    border-color: rgba(56, 189, 248, 0.3);
+    transform: translateY(-2px);
+}
+
+.q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2.25rem;
+}
+
+.q-number-badge {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 12px;
+    flex-shrink: 0;
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
+}
+
+.q-text {
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: var(--text-primary, #ffffff);
+    line-height: 1.5;
+    margin: 0;
+    padding-top: 4px;
+}
+
+/* Options Vertical List */
+.options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-left: 4.5rem;
+}
+
+@media (max-width: 768px) {
+    .options-grid { padding-left: 0; mt-3; }
+    .exam-q-card { padding: 1.75rem; }
+    .q-header { gap: 1rem; }
+}
+
+.opt-label {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: rgba(11, 15, 25, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.35rem 1.75rem;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+    margin: 0;
+}
+
+.opt-label:hover {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.08);
+    transform: translateX(6px);
+}
+
+.opt-radio {
+    width: 24px;
+    height: 24px;
+    accent-color: #38bdf8;
+    cursor: pointer;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.opt-text {
+    font-size: 1.15rem;
+    color: #cbd5e1;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+}
+
+.opt-radio:checked ~ .opt-text {
+    color: #38bdf8;
+    font-weight: 700;
+}
+
+.opt-label:has(input:checked) {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+}
+
+/* Submit Panel */
+.submit-panel {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    padding: 3.5rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    backdrop-filter: blur(16px);
+}
+
+.btn-submit-exam {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.35rem;
+    padding: 1.25rem 3.5rem;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn-submit-exam:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(16, 185, 129, 0.6);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+</style>
+
+<div class="exam-container">
+    <!-- Exam Header Banner -->
+    <div class="exam-header-card">
+        <div class="exam-header-icon">🎓</div>
+        <h1 class="exam-title">Final Certification Exam</h1>
+        <p class="exam-subtitle">
+            You have successfully completed all lectures for <strong style="color: #fff;">{{ course.title }}</strong>. Prove your mastery by answering at least 7 out of 10 questions correctly to claim your verified credential.
+        </p>
+        <div class="exam-badges">
+            <span class="exam-badge">⏱️ Untimed Masterclass Test</span>
+            <span class="exam-badge success">🎯 Passing Criteria: 70% Score</span>
+        </div>
+    </div>
+
+    <!-- Questions Form -->
+    <form method="POST" id="examForm">
+        {% csrf_token %}
+        
+        <div class="exam-q-list">
+            {% for q in exam_data %}
+                <div class="exam-q-card" id="question-{{ q.id }}">
+                    <div class="q-header">
+                        <span class="q-number-badge">Q{{ q.id }}</span>
+                        <h3 class="q-text">{{ q.question }}</h3>
+                    </div>
+                    
+                    <div class="options-grid">
+                        {% for opt in q.options %}
+                            <label class="opt-label">
+                                <input type="radio" name="q_{{ q.id }}" value="{{ forloop.counter0 }}" required class="opt-radio">
+                                <span class="opt-text">{{ opt }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Submit Button Panel -->
+        <div class="submit-panel">
+            <p style="color: var(--text-secondary, #94a3b8); font-size: 1.05rem; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                ⚠️ Please review all answers before submitting. An unsuccessful attempt (< 7/10) will initiate a mandatory 1-hour study review period.
+            </p>
+            <button type="submit" class="btn-submit-exam">
+                🚀 Submit & Grade Exam
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

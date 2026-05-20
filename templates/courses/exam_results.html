@@ -1,0 +1,379 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}Exam Results - {{ course.title }}{% endblock %}
+
+{% block content %}
+<style>
+    /* Executive Premium Results Styles */
+    .results-container {
+        max-width: 900px;
+        margin: 3rem auto 8rem auto;
+        padding: 0 1.5rem;
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
+
+    /* Celebration Banner */
+    .celebration-card {
+        background: linear-gradient(145deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.85) 100%);
+        border: 2px solid #10b981;
+        border-radius: 32px;
+        padding: 4.5rem 3rem;
+        text-align: center;
+        box-shadow: 0 25px 60px rgba(16, 185, 129, 0.25);
+        backdrop-filter: blur(20px);
+        margin-bottom: 5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .trophy-container {
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .trophy-icon {
+        font-size: 5.5rem;
+        line-height: 1;
+        filter: drop-shadow(0 10px 25px rgba(245, 158, 11, 0.6));
+        animation: floatTrophy 3s ease-in-out infinite;
+    }
+
+    .congrats-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: #10b981;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 35px rgba(16, 185, 129, 0.4);
+    }
+
+    .congrats-subtitle {
+        font-size: 1.85rem;
+        color: #ffffff;
+        font-weight: 700;
+        margin-bottom: 2rem;
+    }
+
+    .score-badge-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(16, 185, 129, 0.25);
+        border: 1px solid rgba(16, 185, 129, 0.5);
+        padding: 0.85rem 2.5rem;
+        border-radius: 50px;
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 12px 30px rgba(16, 185, 129, 0.3);
+    }
+
+    .score-badge-pill span {
+        color: #34d399;
+    }
+
+    .btn-claim-cert {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #0f172a;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 900;
+        font-size: 1.4rem;
+        padding: 1.25rem 3.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        box-shadow: 0 15px 35px rgba(245, 158, 11, 0.4);
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .btn-claim-cert:hover {
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 20px 45px rgba(245, 158, 11, 0.6);
+        color: #000;
+    }
+
+    /* Retry Card */
+    .retry-card {
+        background: linear-gradient(145deg, rgba(239, 68, 68, 0.15) 0%, rgba(15, 23, 42, 0.85) 100%);
+        border: 2px solid #ef4444;
+        border-radius: 32px;
+        padding: 4.5rem 3rem;
+        text-align: center;
+        box-shadow: 0 25px 60px rgba(239, 68, 68, 0.25);
+        backdrop-filter: blur(20px);
+        margin-bottom: 5rem;
+    }
+
+    .retry-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: #ef4444;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 35px rgba(239, 68, 68, 0.4);
+    }
+
+    .retry-score-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(239, 68, 68, 0.25);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        padding: 0.85rem 2.5rem;
+        border-radius: 50px;
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 2.5rem;
+    }
+
+    .retry-score-badge span {
+        color: #f87171;
+    }
+
+    .btn-review-course {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: #ffffff;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 1.3rem;
+        padding: 1.25rem 3.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+        transition: all 0.3s ease;
+    }
+
+    .btn-review-course:hover {
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 20px 45px rgba(59, 130, 246, 0.6);
+    }
+
+    /* Analysis Section */
+    .analysis-heading {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 2.5rem;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 1.25rem;
+    }
+
+    .analysis-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    .analysis-card {
+        background: rgba(15, 23, 42, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 2.5rem;
+        backdrop-filter: blur(16px);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .analysis-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .analysis-card.correct {
+        border-left: 8px solid #10b981;
+    }
+
+    .analysis-card.incorrect {
+        border-left: 8px solid #ef4444;
+    }
+
+    .q-status-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .analysis-q-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #ffffff;
+        line-height: 1.5;
+        margin: 0;
+        flex: 1;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1.25rem;
+        border-radius: 50px;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .status-badge.correct {
+        background: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+    }
+
+    .status-badge.incorrect {
+        background: rgba(239, 68, 68, 0.2);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+    }
+
+    .ans-row {
+        font-size: 1.15rem;
+        color: #cbd5e1;
+        margin-bottom: 0.85rem;
+        padding-left: 0.5rem;
+    }
+
+    .ans-row strong {
+        font-weight: 700;
+    }
+
+    .explanation-box {
+        margin-top: 1.75rem;
+        background: rgba(56, 189, 248, 0.08);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-left: 4px solid #38bdf8;
+        padding: 1.5rem;
+        border-radius: 16px;
+        font-size: 1.1rem;
+        color: #f1f5f9;
+        line-height: 1.6;
+    }
+
+    @keyframes floatTrophy {
+
+        0%,
+        100% {
+            transform: translateY(0) scale(1);
+        }
+
+        50% {
+            transform: translateY(-12px) scale(1.05);
+        }
+    }
+</style>
+
+<div class="results-container">
+    {% if passed %}
+    <!-- Celebration Success Header -->
+    <div class="celebration-card">
+        <div class="trophy-container">
+            <span class="trophy-icon">🏆</span>
+        </div>
+        <h1 class="congrats-title">CONGRATULATIONS!</h1>
+        <h2 class="congrats-subtitle">You Passed the Certification Exam</h2>
+
+        <div class="score-badge-pill">
+            Final Score: <span>{{ score }} / {{ total }}</span>
+        </div>
+
+        <p
+            style="color: var(--text-secondary, #cbd5e1); font-size: 1.2rem; max-width: 650px; margin: 0 auto 2.5rem auto; line-height: 1.6;">
+            Your professional competence in <strong style="color: #fff;">{{ course.title }}</strong> has been officially
+            validated. You are now authorized to claim your Verified Certificate of Mastery.
+        </p>
+
+        <div>
+            <a href="{% url 'certificate' course.id %}" class="btn-claim-cert">
+                🎓 Claim Verified Certificate
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <!-- Retry Header -->
+    <div class="retry-card">
+        <div class="trophy-container" style="margin-bottom: 1.5rem;">
+            <span class="trophy-icon" style="filter: drop-shadow(0 10px 25px rgba(239, 68, 68, 0.6));">💡</span>
+        </div>
+        <h1 class="retry-title">Almost There!</h1>
+        <h2 class="congrats-subtitle">Exam Attempt Analysis</h2>
+
+        <div class="retry-score-badge">
+            Exam Score: <span>{{ score }} / {{ total }}</span>
+        </div>
+
+        <p
+            style="color: var(--text-secondary, #cbd5e1); font-size: 1.2rem; max-width: 650px; margin: 0 auto 2.5rem auto; line-height: 1.6;">
+            A minimum score of <strong style="color: #fff;">7 out of 10 (70%)</strong> is required to earn the verified
+            certification. Don't worry! Review your answer analysis below and retest after your mandatory 1-hour review
+            period.
+        </p>
+
+        <div>
+            <a href="{% url 'learn_view' course.id %}" class="btn-review-course">
+                📚 Return to Classroom & Review
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Detailed Answer Analysis -->
+    <div>
+        <h3 class="analysis-heading">
+            <span>📊 Question Analysis & Explanations</span>
+        </h3>
+
+        <div class="analysis-list">
+            {% for res in results %}
+            <div class="analysis-card {% if res.correct %}correct{% else %}incorrect{% endif %}">
+                <div class="q-status-head">
+                    <h4 class="analysis-q-title">{{ res.question }}</h4>
+                    <span class="status-badge {% if res.correct %}correct{% else %}incorrect{% endif %}">
+                        {% if res.correct %}✓ Correct{% else %}✗ Incorrect{% endif %}
+                    </span>
+                </div>
+
+                <div>
+                    <div class="ans-row">
+                        Your Answer: <strong style="color: {% if res.correct %}#34d399{% else %}#f87171{% endif %};">{{ res.user_ans }}</strong>
+                    </div>
+                    {% if not res.correct %}
+                    <div class="ans-row">
+                        Correct Answer: <strong style="color: #34d399;">{{ res.correct_ans }}</strong>
+                    </div>
+                    {% endif %}
+                    {% if res.explanation %}
+                    <div class="explanation-box">
+                        💡 <strong>Explanation:</strong> {{ res.explanation }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

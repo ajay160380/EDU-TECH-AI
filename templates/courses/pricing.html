@@ -1,0 +1,557 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI - Choose Your Study Power{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<!-- Load Tailwind CSS Play CDN specifically for the pricing page structure -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    darkBg: '#09090f',
+                    glassBg: 'rgba(255, 255, 255, 0.02)',
+                    borderGlass: 'rgba(255, 255, 255, 0.06)',
+                    accentPrimary: '#8b5cf6',
+                    accentSecondary: '#3b82f6',
+                    accentPink: '#ec4899',
+                }
+            }
+        }
+    }
+</script>
+
+<div class="min-h-screen text-slate-100 py-16 px-4 relative overflow-hidden bg-darkBg">
+    <!-- Ambient glowing meshes -->
+    <div
+        class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-violet-600/10 blur-[120px] pointer-events-none">
+    </div>
+    <div
+        class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 rounded-full bg-blue-600/10 blur-[120px] pointer-events-none">
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <span
+                class="px-3 py-1 rounded-full text-xs font-semibold bg-violet-500/10 text-violet-400 border border-violet-500/20 tracking-wider uppercase">Pricing
+                Plans</span>
+            <h1
+                class="text-4xl md:text-5xl font-extrabold mt-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400">
+                Unlock Your Learning Superpowers
+            </h1>
+            <p class="text-slate-400 mt-4 text-lg max-w-xl mx-auto">
+                Transform scattered YouTube playlists into beautifully structured, distraction-free premium courses.
+            </p>
+
+            <!-- Monthly / Yearly Billing Toggle -->
+            <div class="flex items-center justify-center gap-4 mt-8">
+                <span id="label-monthly" class="text-sm font-semibold text-white">Monthly</span>
+                <button type="button" id="billing-toggle-btn"
+                    class="w-14 h-8 rounded-full p-1 bg-violet-600/30 border border-violet-500/20 transition-all duration-300 relative focus:outline-none">
+                    <div id="toggle-dot"
+                        class="w-6 h-6 rounded-full bg-violet-500 shadow-md transform transition-all duration-300 translate-x-0">
+                    </div>
+                </button>
+                <div class="flex items-center gap-2">
+                    <span id="label-yearly" class="text-sm font-semibold text-slate-400">Yearly</span>
+                    <span
+                        class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-wide">
+                        Save 20%
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+
+            <!-- Tier 1: Free -->
+            <div
+                class="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 flex flex-col justify-between transition-all duration-300 hover:border-slate-700/50 backdrop-blur-xl relative">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-200">Free Plan</h3>
+                    <p class="text-xs text-slate-400 mt-1">Get started on your learning journey</p>
+
+                    <div class="my-6">
+                        <span class="text-4xl font-extrabold text-white">₹0</span>
+                        <span class="text-slate-400 text-sm">/month</span>
+                    </div>
+
+                    <div class="w-full h-px bg-white/[0.06] my-6"></div>
+
+                    <ul class="space-y-4 text-sm text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-emerald-400 mt-0.5">&check;</span>
+                            <span>Up to <strong>3</strong> course playlists</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-emerald-400 mt-0.5">&check;</span>
+                            <span>Plain text lecture notes</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-emerald-400 mt-0.5">&check;</span>
+                            <span>Calendar for your first course</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-emerald-400 mt-0.5">&check;</span>
+                            <span>Basic video progress tracking</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-8">
+                    {% if profile.plan_type == 'free' %}
+                    <button disabled
+                        class="w-full py-3 px-4 rounded-xl font-bold text-slate-400 bg-white/[0.04] border border-white/[0.08] cursor-not-allowed">
+                        Your Current Plan
+                    </button>
+                    {% else %}
+                    <a href="/dashboard/"
+                        class="w-full block text-center py-3 px-4 rounded-xl font-bold text-slate-300 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-all duration-200">
+                        Access Dashboard
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Tier 2: Pro (Most Popular) -->
+            <div
+                class="rounded-2xl bg-gradient-to-b from-violet-950/20 to-black/40 border-2 border-violet-500/50 p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)] backdrop-blur-xl relative">
+                <!-- Most Popular Banner -->
+                <div
+                    class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold bg-violet-600 text-white uppercase tracking-wider shadow-lg">
+                    Most Popular
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        Pro Plan
+                        <span
+                            class="text-[10px] py-0.5 px-1.5 rounded bg-violet-500/20 text-violet-300 border border-violet-500/30">Value</span>
+                    </h3>
+                    <p class="text-xs text-violet-300/70 mt-1">Accelerate your study workflow</p>
+
+                    <div class="my-6">
+                        <span class="text-4xl font-extrabold text-white" id="price-pro">₹99</span>
+                        <span class="text-slate-400 text-sm" id="period-pro">/month</span>
+                    </div>
+
+                    <div class="w-full h-px bg-violet-500/10 my-6"></div>
+
+                    <ul class="space-y-4 text-sm text-slate-200">
+                        <li class="flex items-start gap-3">
+                            <span class="text-violet-400 mt-0.5">&check;</span>
+                            <span>Up to <strong>20</strong> course playlists</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-violet-400 mt-0.5">&check;</span>
+                            <span>Rich text study notes editor</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-violet-400 mt-0.5">&check;</span>
+                            <span>AI-powered conceptual quizzes</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-violet-400 mt-0.5">&check;</span>
+                            <span>AI Dynamic study scheduler</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-violet-400 mt-0.5">&check;</span>
+                            <span>Study calendar for all courses</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-violet-400 mt-0.5">&check;</span>
+                            <span>Advanced study streak analytics</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-8">
+                    {% if profile.plan_type == 'pro' %}
+                    <button disabled
+                        class="w-full py-3 px-4 rounded-xl font-bold text-violet-300 bg-violet-500/10 border border-violet-500/20 cursor-not-allowed">
+                        Your Current Plan
+                    </button>
+                    {% elif profile.plan_type == 'ultra' %}
+                    <button disabled
+                        class="w-full py-3 px-4 rounded-xl font-bold text-slate-500 bg-white/[0.02] border border-white/[0.04] cursor-not-allowed">
+                        Already Subscribed to Ultra
+                    </button>
+                    {% else %}
+                    <button type="button"
+                        class="upgrade-btn w-full py-3 px-4 rounded-xl font-extrabold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 transition-all duration-300 transform hover:scale-[1.02] shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                        data-plan="pro">
+                        Upgrade to Pro
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Tier 3: Ultra -->
+            <div
+                class="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 flex flex-col justify-between transition-all duration-300 hover:border-pink-500/30 hover:shadow-[0_0_30px_rgba(236,72,153,0.1)] backdrop-blur-xl relative">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-200">Ultra Plan</h3>
+                    <p class="text-xs text-slate-400 mt-1">Unlimited learning with an AI Coach</p>
+
+                    <div class="my-6">
+                        <span class="text-4xl font-extrabold text-white" id="price-ultra">₹149</span>
+                        <span class="text-slate-400 text-sm" id="period-ultra">/month</span>
+                    </div>
+
+                    <div class="w-full h-px bg-white/[0.06] my-6"></div>
+
+                    <ul class="space-y-4 text-sm text-slate-200">
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-400 mt-0.5">&check;</span>
+                            <span><strong>Unlimited</strong> course playlists</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-400 mt-0.5">&check;</span>
+                            <span>AI Tutor Chatbot (Personal Assistant)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-400 mt-0.5">&check;</span>
+                            <span>Rich text study notes editor</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-400 mt-0.5">&check;</span>
+                            <span>AI-powered conceptual quizzes</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-400 mt-0.5">&check;</span>
+                            <span>AI Dynamic study scheduler</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-400 mt-0.5">&check;</span>
+                            <span>Priority 24/7 technical support</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-pink-400 mt-0.5">&check;</span>
+                            <span>Early access to all beta features</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-8">
+                    {% if profile.plan_type == 'ultra' %}
+                    <button disabled
+                        class="w-full py-3 px-4 rounded-xl font-bold text-pink-300 bg-pink-500/10 border border-pink-500/20 cursor-not-allowed">
+                        Your Current Plan
+                    </button>
+                    {% else %}
+                    <button type="button"
+                        class="upgrade-btn w-full py-3 px-4 rounded-xl font-extrabold text-white bg-gradient-to-r from-pink-600 to-violet-600 hover:from-pink-500 hover:to-violet-500 transition-all duration-300 transform hover:scale-[1.02] shadow-[0_0_20px_rgba(236,72,153,0.3)]"
+                        data-plan="ultra">
+                        Upgrade to Ultra
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ============================================== -->
+<!-- GORGEOUS CUSTOM RAZORPAY BILLING TEST SIMULATOR -->
+<!-- ============================================== -->
+<div id="test-checkout-modal"
+    class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[20000] p-4 hidden"
+    style="animation: fadeIn 0.2s ease-out;">
+    <div class="bg-[#11111e] border border-white/[0.08] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative"
+        style="animation: slideUp 0.25s ease-out;">
+
+        <!-- Header -->
+        <div class="bg-[#18182a] px-6 py-4 flex items-center justify-between border-b border-white/[0.05]">
+            <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-amber-500 animate-ping"></span>
+                <span class="font-bold text-sm text-amber-400 uppercase tracking-wide">Razorpay Sandbox Simulator</span>
+            </div>
+            <button type="button" id="close-test-checkout"
+                class="text-slate-400 hover:text-white text-xl">&times;</button>
+        </div>
+
+        <div class="p-6">
+            <!-- Product Info -->
+            <div class="bg-white/[0.02] border border-white/[0.04] rounded-xl p-4 mb-6">
+                <div class="text-xs text-slate-400">PRODUCT</div>
+                <div class="font-bold text-base text-white mt-0.5" id="simulated-product-name">Pro Subscription Plan
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-4 pt-3 border-t border-white/[0.05]">
+                    <div>
+                        <div class="text-[10px] text-slate-400 uppercase">AMOUNT</div>
+                        <div class="font-extrabold text-xl text-violet-400" id="simulated-amount">₹99</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-400 uppercase">TRANSACTION ID</div>
+                        <div class="font-mono text-xs text-slate-300 mt-1" id="simulated-order-id">order_sim_12345</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card simulation -->
+            <div class="mb-6">
+                <div class="text-xs text-slate-400 mb-2">SELECT TEST TRANSACTION STATE</div>
+                <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+                    This simulator mimics Razorpay checkout popups, allowing you to test backend database upgrades
+                    without inserting actual debit cards!
+                </p>
+
+                <div class="flex flex-col gap-3">
+                    <button type="button" id="btn-simulate-success"
+                        class="w-full py-3.5 px-4 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center gap-2 transition-all duration-200 shadow-lg shadow-emerald-600/20">
+                        &check; Complete Successful Payment (Upgrade Plan)
+                    </button>
+                    <button type="button" id="btn-simulate-failure"
+                        class="w-full py-3 px-4 rounded-xl font-semibold bg-red-950/20 hover:bg-red-950/40 text-red-400 border border-red-900/30 transition-all duration-200">
+                        &times; Simulate Payment Failed (Decline Upgrade)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Official Razorpay Checkout JS Integration -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    // State management
+    let billingCycle = 'monthly';
+    const toggleBtn = document.getElementById('billing-toggle-btn');
+    const toggleDot = document.getElementById('toggle-dot');
+    const labelMonthly = document.getElementById('label-monthly');
+    const labelYearly = document.getElementById('label-yearly');
+
+    const pricePro = document.getElementById('price-pro');
+    const priceUltra = document.getElementById('price-ultra');
+    const periodPro = document.getElementById('period-pro');
+    const periodUltra = document.getElementById('period-ultra');
+
+    // Toggle billing cycle click
+    toggleBtn.addEventListener('click', () => {
+        if (billingCycle === 'monthly') {
+            billingCycle = 'yearly';
+            toggleDot.style.transform = 'translateX(24px)';
+            labelMonthly.classList.replace('text-white', 'text-slate-400');
+            labelYearly.classList.replace('text-slate-400', 'text-white');
+
+            // Apply 20% discount prices
+            pricePro.textContent = '₹950';
+            priceUltra.textContent = '₹1430';
+            periodPro.textContent = '/year';
+            periodUltra.textContent = '/year';
+        } else {
+            billingCycle = 'monthly';
+            toggleDot.style.transform = 'translateX(0)';
+            labelMonthly.classList.replace('text-slate-400', 'text-white');
+            labelYearly.classList.replace('text-white', 'text-slate-400');
+
+            // Standard prices
+            pricePro.textContent = '₹99';
+            priceUltra.textContent = '₹149';
+            periodPro.textContent = '/month';
+            periodUltra.textContent = '/month';
+        }
+    });
+
+    // Handle Subscription Upgrade requests
+    document.querySelectorAll('.upgrade-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const plan = this.getAttribute('data-plan');
+            const originalText = this.innerHTML;
+
+            this.innerHTML = `<span class="w-4 h-4 border-2 border-white/20 border-top-white rounded-full inline-block animate-spin mr-2 align-middle"></span> Securing Order...`;
+            this.disabled = true;
+
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const formData = new FormData();
+            formData.append('plan', plan);
+            formData.append('billing_cycle', billingCycle);
+
+            // 1. Create order on the Django backend
+            fetch("{% url 'create_razorpay_order' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+
+                    if (data.status === 'success') {
+                        if (data.is_simulated) {
+                            // Open our awesome custom Sandbox Payment modal
+                            openSimulatedCheckout(data, plan);
+                        } else {
+                            // Launch actual Razorpay Modal integration
+                            launchRealRazorpayCheckout(data, plan);
+                        }
+                    } else {
+                        showToast(data.message || "Failed to initiate payment.", "error");
+                    }
+                })
+                .catch(err => {
+                    console.error("Order creation error:", err);
+                    showToast("Server connection error. Try again.", "error");
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                });
+        });
+    });
+
+    // ==============================================
+    // REAL RAZORPAY CHECKOUT POPUP HANDLER
+    // ==============================================
+    function launchRealRazorpayCheckout(orderData, plan) {
+        const options = {
+            "key": orderData.key_id,
+            "amount": orderData.amount,
+            "currency": orderData.currency,
+            "name": "EduTech AI",
+            "description": orderData.plan_name,
+            "image": "/static/images/logo.png",
+            "order_id": orderData.order_id,
+            "handler": function (response) {
+                // Post payment metadata to django callback
+                submitPaymentCallback({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    plan: plan,
+                    billing_cycle: billingCycle
+                });
+            },
+            "prefill": {
+                "name": orderData.user_name,
+                "email": orderData.user_email,
+                "contact": "9999999999"
+            },
+            "theme": {
+                "color": "#8b5cf6"
+            }
+        };
+        const rzp = new Razorpay(options);
+        rzp.on('payment.failed', function (response) {
+            showToast("Payment rejected by bank: " + response.error.description, "error");
+        });
+        rzp.open();
+    }
+
+    // ==============================================
+    // SIMULATED BILLING CHECKOUT POPUP HANDLER
+    // ==============================================
+    const simulatedModal = document.getElementById('test-checkout-modal');
+    const closeSimulatedBtn = document.getElementById('close-test-checkout');
+    const simulateSuccessBtn = document.getElementById('btn-simulate-success');
+    const simulateFailureBtn = document.getElementById('btn-simulate-failure');
+
+    let activeSimulatedData = null;
+    let activeSimulatedPlan = null;
+
+    function openSimulatedCheckout(orderData, plan) {
+        activeSimulatedData = orderData;
+        activeSimulatedPlan = plan;
+
+        document.getElementById('simulated-product-name').textContent = orderData.plan_name;
+        document.getElementById('simulated-amount').textContent = `₹${(orderData.amount / 100).toFixed(0)}`;
+        document.getElementById('simulated-order-id').textContent = orderData.order_id;
+
+        simulatedModal.classList.remove('hidden');
+    }
+
+    closeSimulatedBtn.addEventListener('click', () => {
+        simulatedModal.classList.add('hidden');
+    });
+
+    simulateFailureBtn.addEventListener('click', () => {
+        simulatedModal.classList.add('hidden');
+        showToast("Simulated Checkout: Payment cancelled by customer.", "error");
+    });
+
+    simulateSuccessBtn.addEventListener('click', () => {
+        simulatedModal.classList.add('hidden');
+
+        // Generate mock transaction payloads
+        const mockPaymentId = "pay_simulated_" + Math.random().toString(36).substr(2, 9);
+        const mockSignature = "sig_simulated_" + Math.random().toString(36).substr(2, 12);
+
+        submitPaymentCallback({
+            razorpay_order_id: activeSimulatedData.order_id,
+            razorpay_payment_id: mockPaymentId,
+            razorpay_signature: mockSignature,
+            plan: activeSimulatedPlan,
+            billing_cycle: billingCycle
+        });
+    });
+
+    function submitPaymentCallback(paymentPayload) {
+        showToast("Verifying payment transaction...", "info");
+
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const formData = new FormData();
+        for (const key in paymentPayload) {
+            formData.append(key, paymentPayload[key]);
+        }
+
+        fetch("{% url 'razorpay_callback' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showToast(data.message, "success");
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url;
+                    }, 1000);
+                } else {
+                    showToast(data.message || "Payment verification failed.", "error");
+                }
+            })
+            .catch(err => {
+                console.error("Signature verification error:", err);
+                showToast("Signature verification failed. Try again.", "error");
+            });
+    }
+</script>
+
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
