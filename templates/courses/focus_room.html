@@ -4,176 +4,318 @@
 {% block title %}Zen Focus Room 🎧 - EduTech AI{% endblock %}
 
 {% block content %}
-<!-- Metadata store for JavaScript parameters if needed -->
+<!-- Metadata store for JavaScript parameters -->
 <div id="course-meta-data" data-course-id="0" style="display:none;"></div>
 <form style="display:none;">{% csrf_token %}</form>
 
-<div class="focus-room-layout"
-    style="min-height: calc(100vh - 100px); display: flex; align-items: center; justify-content: center; padding: 3rem 1.5rem; position: relative;">
+<!-- Deep Ambient Glows -->
+<div style="position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;">
+    <div style="position: absolute; top: 10%; left: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(239, 35, 60, 0.08) 0%, rgba(0,0,0,0) 70%); filter: blur(60px); border-radius: 50%;"></div>
+    <div style="position: absolute; bottom: -20%; right: -10%; width: 800px; height: 800px; background: radial-gradient(circle, rgba(217, 4, 41, 0.06) 0%, rgba(0,0,0,0) 70%); filter: blur(80px); border-radius: 50%;"></div>
+</div>
 
-    <!-- Ambient Blur Glows for premium immersion -->
-    <div
-        style="position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(0,0,0,0) 70%); top: 10%; left: 20%; filter: blur(60px); z-index: 0; pointer-events: none;">
-    </div>
-    <div
-        style="position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(0,0,0,0) 70%); bottom: 10%; right: 20%; filter: blur(60px); z-index: 0; pointer-events: none;">
-    </div>
+<div class="container" style="min-height: calc(100vh - 100px); display: flex; flex-direction: column; align-items: center; padding: 2rem 1.5rem; position: relative; z-index: 1;">
 
-    <div style="width: 100%; max-width: 900px; z-index: 1;">
-        <header style="text-align: center; margin-bottom: 3rem;">
-            <span
-                style="font-size: 2.5rem; display: inline-block; margin-bottom: 0.5rem; animation: float 3s ease-in-out infinite;">🎧</span>
-            <h1
-                style="font-size: 2.75rem; font-family: 'Outfit'; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem;">
-                Zen <span class="text-gradient">Focus Room</span>
-            </h1>
-            <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto; font-size: 1.05rem;">
-                Lock into deep work with synchronized Pomodoro intervals and binaural concentration beats.
-            </p>
-        </header>
+    <header style="text-align: center; margin-bottom: 2.5rem;">
+        <span style="font-size: 2.5rem; display: inline-block; margin-bottom: 0.5rem; animation: float-gentle 4s ease-in-out infinite;">🎧</span>
+        <h1 style="font-size: 2.5rem; font-family: 'Outfit'; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; color: #fff;">
+            Deep <span style="background: linear-gradient(135deg, #ef233c, #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Focus Room</span>
+        </h1>
+        <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto; font-size: 0.95rem;">
+            Lock into deep work with synchronized Pomodoro intervals and binaural concentration beats.
+        </p>
+    </header>
 
-        <div
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 2.5rem; align-items: stretch;">
+    <div style="width: 100%; max-width: 950px; display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; align-items: start;">
 
-            <!-- Section 1: Pomodoro Timer -->
-            <section class="pomodoro-card glass-card" id="pomodoro-timer-widget"
-                style="padding: 2.5rem; box-shadow: var(--shadow-card); border: var(--border-glass-glow);">
-                <h3
-                    style="font-size: 1.15rem; font-family: 'Outfit'; text-transform: uppercase; color: var(--accent-primary); letter-spacing: 0.08em; margin-bottom: 1rem; text-align: center; font-weight: 700;">
-                    Pomodoro Focus
-                </h3>
+        <!-- Section 1: Pomodoro Timer -->
+        <section class="glass-card" style="padding: 2.5rem; border-radius: 24px; text-align: center; position: relative; overflow: hidden;">
+            
+            <h3 style="font-size: 1.15rem; font-family: 'Outfit'; text-transform: uppercase; color: #ef233c; letter-spacing: 0.08em; margin-bottom: 0.5rem; font-weight: 700;">
+                Focus Interval
+            </h3>
+            <div id="pomodoro-status" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 2rem;">Ready to focus</div>
 
-                <div class="pomodoro-status-text" id="pomodoro-status"
-                    style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">Ready to focus</div>
+            <!-- Pulsing Concentric Rings -->
+            <div style="position: relative; width: 260px; height: 260px; margin: 0 auto 2rem;">
+                <!-- Outer decorative dashed ring -->
+                <svg viewBox="0 0 160 160" style="position: absolute; inset: 0; width: 100%; height: 100%; animation: avatar-spin 30s linear infinite opacity: 0.5;">
+                    <circle cx="80" cy="80" r="76" style="fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 1; stroke-dasharray: 4 6;"></circle>
+                </svg>
+                
+                <svg viewBox="0 0 160 160" style="position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg);">
+                    <!-- Background Track -->
+                    <circle cx="80" cy="80" r="70" style="fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 6;"></circle>
+                    <!-- Progress Track -->
+                    <circle id="pomodoro-progress" cx="80" cy="80" r="70" style="fill: none; stroke: url(#redGradient); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 439.8; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear; filter: drop-shadow(0 0 8px rgba(239, 35, 60, 0.5));"></circle>
+                    
+                    <defs>
+                        <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ef233c" />
+                            <stop offset="100%" stop-color="#d90429" />
+                        </linearGradient>
+                    </defs>
+                </svg>
 
-                <!-- Circular Progress SVG Structure -->
-                <div class="pomodoro-circle-container" id="pomodoro-circle-box"
-                    style="width: 220px; height: 220px; margin: 1.5rem auto;">
-                    <svg class="pomodoro-svg" viewBox="0 0 160 160"
-                        style="width: 100%; height: 100%; transform: rotate(-90deg);">
-                        <circle class="pomodoro-bg-circle" cx="80" cy="80" r="72"
-                            style="fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 8;"></circle>
-                        <circle class="pomodoro-progress-circle" cx="80" cy="80" r="72" id="pomodoro-progress"
-                            style="fill: none; stroke: var(--accent-primary); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 452.4; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.3s;">
-                        </circle>
-                    </svg>
-                    <div class="pomodoro-time-display" id="pomodoro-time"
-                        style="position: absolute; font-size: 3rem; font-family: 'Outfit'; font-weight: 800; color: var(--text-primary); z-index: 10;">
-                        25:00</div>
+                <div id="pomodoro-time" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 4rem; font-family: 'Outfit'; font-weight: 800; color: #fff; text-shadow: 0 0 20px rgba(239, 35, 60, 0.4);">
+                    25:00
                 </div>
+            </div>
 
-                <!-- Presets -->
-                <div class="pomodoro-preset-btns" id="pomodoro-preset-triggers"
-                    style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1.5rem 0;">
-                    <button class="pomodoro-preset-btn active" data-mode="study" data-minutes="25"
-                        style="padding: 0.5rem 0.85rem; font-size: 0.85rem; font-weight: 600;">Study (25m)</button>
-                    <button class="pomodoro-preset-btn" data-mode="short" data-minutes="5"
-                        style="padding: 0.5rem 0.85rem; font-size: 0.85rem; font-weight: 600;">Rest (5m)</button>
-                    <button class="pomodoro-preset-btn" data-mode="long" data-minutes="15"
-                        style="padding: 0.5rem 0.85rem; font-weight: 600;">Rest (15m)</button>
-                    <button class="pomodoro-preset-btn" data-mode="custom" id="custom-timer-toggle"
-                        style="padding: 0.5rem 0.85rem; font-size: 0.85rem; font-weight: 600; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.3);">⚙️
-                        Custom</button>
+            <!-- Focus Task Input -->
+            <input type="text" class="focus-task-input" placeholder="What are you focusing on?" id="focus-task" style="margin-bottom: 2rem;">
+
+            <!-- Presets -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 2rem;" id="pomodoro-preset-triggers">
+                <button class="pomodoro-preset-btn active" data-mode="study" data-minutes="25" style="padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: rgba(239, 35, 60, 0.15); border: 1px solid rgba(239, 35, 60, 0.3); color: #ef233c;">Study (25m)</button>
+                <button class="pomodoro-preset-btn" data-mode="short" data-minutes="5" style="padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-secondary);">Rest (5m)</button>
+                <button class="pomodoro-preset-btn" data-mode="long" data-minutes="15" style="padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-secondary);">Rest (15m)</button>
+            </div>
+
+            <!-- Controls -->
+            <div style="display: flex; justify-content: center; gap: 1rem;">
+                <button class="btn btn-primary" id="pomodoro-start" style="padding: 0.75rem 2.5rem; font-size: 1.1rem; border-radius: 50px;">
+                    ▶ Start
+                </button>
+                <button class="btn btn-secondary" id="pomodoro-reset" style="padding: 0.75rem 1.5rem; font-size: 1rem; border-radius: 50px;">
+                    🔄
+                </button>
+            </div>
+        </section>
+
+        <!-- Section 2: Premium Music Player -->
+        <section class="glass-card" style="padding: 2.5rem; border-radius: 24px; position: relative;">
+            
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h3 style="font-family: 'Outfit'; font-size: 1.25rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Focus Audio</h3>
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">Binaural beats & ambient soundscapes</p>
+            </div>
+
+            <!-- SoundCloud Relaxing Track Embed -->
+            <iframe id="soundcloud-iframe" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" style="border-radius:12px; margin-bottom: 0.5rem;" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%23ef233c&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
+
+            <style>
+                .premium-controls-bar {
+                    display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
+                    background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+                    border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+                    padding: 0.75rem 1.25rem; border-radius: 16px; transition: transform 0.3s ease;
+                }
+                .premium-controls-bar:hover { border-color: rgba(255, 255, 255, 0.15); }
+                
+                .premium-volume-slider {
+                    -webkit-appearance: none; width: 120px; height: 6px; border-radius: 4px;
+                    background: rgba(255, 255, 255, 0.1); outline: none; transition: all 0.3s ease; cursor: pointer;
+                }
+                .premium-volume-slider:hover { background: rgba(255, 255, 255, 0.2); }
+                .premium-volume-slider::-webkit-slider-thumb {
+                    -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%;
+                    background: #fff; cursor: pointer; box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+                    transition: transform 0.2s ease;
+                }
+                .premium-volume-slider::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+                .premium-next-btn {
+                    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+                    border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.5rem 1rem; border-radius: 24px;
+                    font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease;
+                    display: none; align-items: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                }
+                .premium-next-btn:hover {
+                    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+                    border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+                    transform: translateX(3px);
+                }
+            </style>
+
+            <div class="premium-controls-bar">
+                <div style="display: flex; align-items: center; gap: 0.85rem; color: white;">
+                    <span style="font-size: 1.1rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🔊</span>
+                    <input type="range" min="0" max="100" value="100" oninput="setSoundcloudVolume(this.value)" class="premium-volume-slider">
                 </div>
+                <button id="next-track-btn" type="button" onclick="nextSoundcloudTrack()" class="premium-next-btn">
+                    <span>Next Track</span>
+                    <span style="font-size: 1rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">⏭️</span>
+                </button>
+            </div>
 
-                <!-- Custom Time Input Modal/Panel (Hidden by default) -->
-                <div id="custom-timer-panel"
-                    style="display: none; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; animation: fadeIn 0.3s ease;">
-                    <h4
-                        style="font-size: 0.9rem; color: var(--accent-primary); margin-bottom: 0.75rem; font-weight: 700; text-align: center;">
-                        Set Custom Focus Timer</h4>
-                    <div style="display: flex; gap: 0.75rem; justify-content: center; align-items: center;">
-                        <div style="text-align: center;">
-                            <label
-                                style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Hours</label>
-                            <input type="number" id="custom-hours" min="0" max="23" value="1"
-                                style="width: 65px; padding: 0.5rem; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; text-align: center; font-weight: 600;">
-                        </div>
-                        <span
-                            style="font-size: 1.25rem; font-weight: bold; color: var(--text-muted); align-self: flex-end; margin-bottom: 0.25rem;">:</span>
-                        <div style="text-align: center;">
-                            <label
-                                style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Minutes</label>
-                            <input type="number" id="custom-minutes" min="0" max="59" value="30"
-                                style="width: 65px; padding: 0.5rem; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; text-align: center; font-weight: 600;">
-                        </div>
-                        <div style="align-self: flex-end;">
-                            <button id="apply-custom-timer" class="btn btn-primary"
-                                style="padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight: 700; border-radius: 8px; height: 38px;">Apply</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Controls -->
-                <div class="pomodoro-controls" id="pomodoro-action-controls"
-                    style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
-                    <button class="btn btn-primary" id="pomodoro-start"
-                        style="padding: 0.75rem 2rem; font-size: 1rem; font-weight: 700; border-radius: 50px; box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);">
-                        ▶ Start
-                    </button>
-                    <button class="btn btn-secondary" id="pomodoro-reset"
-                        style="padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 50px;">
-                        🔄 Reset
-                    </button>
-                </div>
-            </section>
-
-            <!-- Section 2: Lo-Fi Concentration Music Player -->
-            <section class="lofi-card lofi-player glass-card" id="lofi-music-widget"
-                style="padding: 2.5rem; box-shadow: var(--shadow-card); border: var(--border-glass); display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <header class="lofi-header" style="justify-content: center; margin-bottom: 2rem;">
-                        <span style="font-size: 1.75rem;">🎧</span>
-                        <h3 style="font-family: 'Outfit'; font-size: 1.4rem; font-weight: 700;">Concentration Flow</h3>
-                    </header>
-
-                    <!-- Visual Equalizer bouncing animation -->
-                    <div class="lofi-visualizer" id="equalizer-bars-group" style="height: 40px; margin-bottom: 2rem;">
-                        <div class="visualizer-bar" style="width: 8px;"></div>
-                        <div class="visualizer-bar" style="width: 8px;"></div>
-                        <div class="visualizer-bar" style="width: 8px;"></div>
-                        <div class="visualizer-bar" style="width: 8px;"></div>
-                        <div class="visualizer-bar" style="width: 8px;"></div>
-                    </div>
-
-                    <!-- Select Ambient Track -->
-                    <div class="form-group" style="margin-bottom: 2rem;">
-                        <label
-                            style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: left;">Select
-                            Audio Stream:</label>
-                        <select id="lofi-select" class="lofi-select"
-                            style="padding: 0.85rem 1rem; font-size: 1rem; border-radius: 8px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); width: 100%; color: #fff;">
-                            <option value="lofi" selected>🎧 Lofi Chillhop Beats (Study / Work)</option>
-                            <option value="chillout">🌿 Deep Chillout & Ambient Flow</option>
-                            <option value="lounge">☕ Relaxing Lounge Vibes</option>
-                            <option value="zeno">🌙 Midnight Chill & Focus</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Controls -->
-                <div class="lofi-controls" id="lofi-audio-controls"
-                    style="padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08);">
-                    <button class="btn btn-secondary" id="lofi-play"
-                        style="width: 60px; height: 60px; border-radius: 50%; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; border: var(--border-glass-glow); background: var(--accent-primary); color: #fff; box-shadow: 0 0 15px rgba(139,92,246,0.3);">
-                        ▶
-                    </button>
-
-                    <div class="volume-container"
-                        style="flex: 1; max-width: 200px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.25); padding: 0.5rem 1rem; border-radius: 50px; border: var(--border-glass);">
-                        <span style="font-size: 0.85rem; color: var(--text-secondary);">🔈</span>
-                        <input type="range" id="lofi-volume" class="volume-slider" min="0" max="1" step="0.05"
-                            value="0.3" style="flex: 1;">
-                        <span style="font-size: 0.85rem; color: var(--text-secondary);">🔊</span>
-                    </div>
-                </div>
-            </section>
-
-        </div>
-
-        <footer style="text-align: center; margin-top: 3rem; color: var(--text-muted); font-size: 0.9rem;">
-            <span>💡 Tip: Keep this room open in a pinned browser tab while you work or study.</span>
-        </footer>
+            <!-- Neo-morphic Track Tiles Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(95px, 1fr)); gap: 0.75rem;">
+                <button type="button" class="track-tile active" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                    <span class="tile-icon">🎧</span>
+                    <span class="tile-label">Lofi</span>
+                </button>
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/tymur_khakimov/1-hour-deep-sleep-ambient-meditation-deeply-relaxing-sleep-music-binaural-beats&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                    <span class="tile-icon">🌙</span>
+                    <span class="tile-label">Relaxing</span>
+                </button>
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/helpmybabysleepsounds/relaxing-sound-of-an-english-rain-thunder-storm-for-1-hour&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                    <span class="tile-icon">⚡</span>
+                    <span class="tile-label">Thunder</span>
+                </button>
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-425188905/one-hour-of-rainy-minecraft&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                    <span class="tile-icon">🌧️</span>
+                    <span class="tile-label">Rain</span>
+                </button>
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/mila-vispi/sets/1-hour-sleep&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                    <span class="tile-icon">😴</span>
+                    <span class="tile-label">Sleep</span>
+                </button>
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/ibrahim-maazin-945735772/river-flows-in-you-yiruma-1&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                    <span class="tile-icon">🎹</span>
+                    <span class="tile-label">Piano</span>
+                </button>
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/relaxingwhitenoisesounds/endless-river-1-hour-of&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                    <span class="tile-icon">🌊</span>
+                    <span class="tile-label">River</span>
+                </button>
+                <button type="button" class="track-tile" data-is-playlist="true" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/jaskaran-singh-847899430/sets/karan-aujla-all-songs&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                    <span class="tile-icon">🔥</span>
+                    <span class="tile-label">Karan Aujla</span>
+                </button>
+            </div>        </section>
     </div>
 </div>
+
+<script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
+<script>
+    /* ==========================================================================
+       SOUNDCLOUD DYNAMIC PLAYLIST LOGIC
+       ========================================================================== */
+    var scWidget = null;
+
+    function initWidget() {
+        if (!scWidget) {
+            var iframeElement   = document.querySelector('#soundcloud-iframe');
+            scWidget = SC.Widget(iframeElement);
+        }
+    }
+
+    function changeSoundcloudTrack(element) {
+        if (!element.hasAttribute('data-url')) return;
+        
+        // Update active class on tiles
+        document.querySelectorAll('.track-tile').forEach(t => t.classList.remove('active'));
+        element.classList.add('active');
+        
+        // Update iframe source
+        const newUrl = element.getAttribute('data-url');
+        document.getElementById('soundcloud-iframe').src = newUrl;
+        
+        // Toggle Next button visibility based on whether it's a playlist
+        const nextBtn = document.getElementById('next-track-btn');
+        if (element.hasAttribute('data-is-playlist')) {
+            nextBtn.style.display = 'flex';
+        } else {
+            nextBtn.style.display = 'none';
+        }
+        
+        // Reset widget instance since iframe src changed
+        scWidget = null;
+    }
+
+    function nextSoundcloudTrack() {
+        initWidget();
+        scWidget.next();
+    }
+
+    function setSoundcloudVolume(vol) {
+        initWidget();
+        scWidget.setVolume(parseFloat(vol));
+    }
+
+    /* ==========================================================================
+       POMODORO TIMER LOGIC
+       ========================================================================== */
+    let timerInterval;
+    let totalSeconds = 25 * 60;
+    let remainingSeconds = totalSeconds;
+    let isTimerRunning = false;
+    
+    const timeDisplay = document.getElementById('pomodoro-time');
+    const progressCircle = document.getElementById('pomodoro-progress');
+    const statusText = document.getElementById('pomodoro-status');
+    const btnStart = document.getElementById('pomodoro-start');
+    const btnReset = document.getElementById('pomodoro-reset');
+    const presetBtns = document.querySelectorAll('.pomodoro-preset-btn');
+    
+    // Circle circumference (2 * pi * r) where r = 70
+    const circumference = 2 * Math.PI * 70; // ~439.8
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function updateProgress() {
+        timeDisplay.innerText = formatTime(remainingSeconds);
+        const offset = circumference - (remainingSeconds / totalSeconds) * circumference;
+        progressCircle.style.strokeDashoffset = offset;
+    }
+
+    function startTimer() {
+        if (isTimerRunning) {
+            // Pause
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            btnStart.innerHTML = '▶ Resume';
+            statusText.innerText = 'Paused';
+        } else {
+            // Start
+            if (remainingSeconds === 0) resetTimer(); // Auto reset if starting at 0
+            isTimerRunning = true;
+            btnStart.innerHTML = '⏸ Pause';
+            statusText.innerText = 'Deep work in progress...';
+            
+            timerInterval = setInterval(() => {
+                remainingSeconds--;
+                updateProgress();
+                
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    isTimerRunning = false;
+                    btnStart.innerHTML = '▶ Start';
+                    statusText.innerText = 'Session completed! Take a break.';
+                    timeDisplay.innerText = '00:00';
+                    progressCircle.style.strokeDashoffset = circumference;
+                    // Play a soft bell sound if possible, or just visual cue
+                }
+            }, 1000);
+        }
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        remainingSeconds = totalSeconds;
+        updateProgress();
+        btnStart.innerHTML = '▶ Start';
+        statusText.innerText = 'Ready to focus';
+    }
+
+    presetBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            presetBtns.forEach(b => {
+                b.classList.remove('active');
+                b.style.background = 'rgba(255,255,255,0.05)';
+                b.style.borderColor = 'rgba(255,255,255,0.1)';
+                b.style.color = 'var(--text-secondary)';
+            });
+            this.classList.add('active');
+            this.style.background = 'rgba(239, 35, 60, 0.15)';
+            this.style.borderColor = 'rgba(239, 35, 60, 0.3)';
+            this.style.color = '#ef233c';
+            
+            totalSeconds = parseInt(this.getAttribute('data-minutes')) * 60;
+            resetTimer();
+        });
+    });
+
+    btnStart.addEventListener('click', startTimer);
+    btnReset.addEventListener('click', resetTimer);
+    
+    // Initialize
+    updateProgress();
+</script>
 {% endblock %}
