@@ -1,0 +1,106 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI - Privacy Policy{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-12 relative z-10" id="privacy-view-container">
+    <div class="max-w-4xl mx-auto">
+
+        <!-- Header -->
+        <header class="text-center mb-16 animate-fade-up">
+            <div class="inline-block bg-[#ef233c]/10 border border-[#ef233c]/30 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#ef233c] mb-6">
+                Data Protection
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold font-manrope mb-4 text-white">
+                Privacy <span>Policy</span>
+            </h1>
+            <p class="text-zinc-400 text-sm md:text-base max-w-xl mx-auto">
+                Last updated: May 21, 2026. We respect your learning privacy and process personal data with total security.
+            </p>
+        </header>
+
+        <!-- Privacy Content Cards -->
+        <div class="bg-zinc-900/60 backdrop-blur-xl border border-white/10 p-8 md:p-10 rounded-2xl shadow-2xl space-y-8 text-zinc-300 leading-relaxed font-light mb-12">
+            
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    1. Information We Collect
+                </h2>
+                <p>
+                    We collect minimal personal data necessary to establish and operate your distraction-free learning profile:
+                </p>
+                <ul class="list-disc pl-6 space-y-1.5">
+                    <li><strong>Account Credentials</strong>: Username, email address, and encrypted passwords.</li>
+                    <li><strong>Workspace Progress</strong>: Imported courses, playlists, study session logs, completed lectures, and quiz results.</li>
+                    <li><strong>Interactive Notes</strong>: Personal Markdown notes and custom study briefs saved within the AI tutor workspace.</li>
+                </ul>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    2. How We Utilize Your Data
+                </h2>
+                <p>
+                    Your dynamic learning profile and user information are strictly utilized to:
+                </p>
+                <ul class="list-disc pl-6 space-y-1.5">
+                    <li>Deliver real-time progress calculations and GitHub-style learning targets.</li>
+                    <li>Process secure Firebase connections and SSO integrations.</li>
+                    <li>Power context-rich summaries and conceptual study questions using external AI APIs (like Groq LLM).</li>
+                    <li>Handle secure billing and upgrade subscriptions (Simulated Payments via Razorpay).</li>
+                </ul>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    3. Data Retention & Integrity
+                </h2>
+                <p>
+                    We retain your notes, courses, and study targets for as long as your account remains active. You possess complete rights to modify, download, or permanently delete your user profile and all associated data at any moment directly via your Profile Settings.
+                </p>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    4. Third-Party Integrations & APIs
+                </h2>
+                <p>
+                    To maintain our high-end educational tools, we securely exchange necessary metadata with verified third-party services:
+                </p>
+                <ul class="list-disc pl-6 space-y-1.5">
+                    <li><strong>YouTube API</strong>: Used solely to fetch public syllabus and timings (we never collect your personal YouTube account credentials).</li>
+                    <li><strong>Groq LLM / OpenAI</strong>: Utilized to parse lecture scripts and compile summaries (no personal identifiers are sent to AI servers).</li>
+                    <li><strong>Razorpay Checkout</strong>: Processes subscription upgrades under strict PCI-DSS security frameworks.</li>
+                </ul>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    5. Security Measures
+                </h2>
+                <p>
+                    We leverage advanced standard encryption, HTTPS protocols, and sandboxed database systems to protect all user details from unauthorized access, loss, or disclosure.
+                </p>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    6. Privacy Updates
+                </h2>
+                <p>
+                    We reserve the right to modify this Privacy Policy as our learning features evolve. We will post notification of changes immediately on this screen.
+                </p>
+            </section>
+        </div>
+
+        <!-- Back Call to Action -->
+        <div class="text-center">
+            <a href="{% url 'home' %}" class="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-sm font-medium">
+                &larr; Return to Home Screen
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

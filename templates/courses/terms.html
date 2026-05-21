@@ -1,0 +1,98 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI - Terms of Service{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-12 relative z-10" id="terms-view-container">
+    <div class="max-w-4xl mx-auto">
+
+        <!-- Header -->
+        <header class="text-center mb-16 animate-fade-up">
+            <div class="inline-block bg-[#ef233c]/10 border border-[#ef233c]/30 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#ef233c] mb-6">
+                Legal Framework
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold font-manrope mb-4 text-white">
+                Terms of <span>Service</span>
+            </h1>
+            <p class="text-zinc-400 text-sm md:text-base max-w-xl mx-auto">
+                Last updated: May 21, 2026. Please read these terms carefully before utilizing our distraction-free study environment.
+            </p>
+        </header>
+
+        <!-- Terms Content Cards -->
+        <div class="bg-zinc-900/60 backdrop-blur-xl border border-white/10 p-8 md:p-10 rounded-2xl shadow-2xl space-y-8 text-zinc-300 leading-relaxed font-light mb-12">
+            
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    1. Agreement to Terms
+                </h2>
+                <p>
+                    By accessing or using the EduTech AI platform, you agree to be bound by these Terms of Service. If you do not agree to all of these terms, you are prohibited from using or accessing our study rooms, automated course importers, and AI study companion services.
+                </p>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    2. Use License & Account Responsibility
+                </h2>
+                <p>
+                    Subject to your compliance, EduTech AI grants you a personal, non-transferable, and non-exclusive license to access and use the platform for individual educational learning purposes. 
+                </p>
+                <p>
+                    You are solely responsible for:
+                </p>
+                <ul class="list-disc pl-6 space-y-1.5">
+                    <li>Maintaining the security and confidentiality of your credentials and profile settings.</li>
+                    <li>All actions, requests, and interactions performed through your secure study dashboard.</li>
+                    <li>Ensuring all imported YouTube links comply with YouTube’s respective Terms of Service.</li>
+                </ul>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    3. Premium Subscriptions & Billing
+                </h2>
+                <p>
+                    We offer subscription plans (Free, Pro, and Ultra) simulated and billed securely through official payment provider APIs (e.g. Razorpay). By subscribing, you authorize us to process dynamic recurring charges in accordance with your plan selection. Cancellations take effect at the end of the current billing cycle.
+                </p>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    4. Intellectual Property & AI Usage
+                </h2>
+                <p>
+                    The technology, algorithms, custom styling systems, and AI modules embedded on EduTech AI are protected by international copyright and trademark laws. Quizzes and study notes generated through the Groq AI integrations are provided "as-is" for individual training and self-assessment purposes.
+                </p>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    5. Termination of Service
+                </h2>
+                <p>
+                    We reserve the right to immediately terminate or suspend your access, without notice or liability, for any violation of these Terms, or if we identify any attempts to reverse engineer or disrupt our secure isolation layers.
+                </p>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-xl md:text-2xl font-bold text-white font-manrope border-l-4 border-[#ef233c] pl-4">
+                    6. Limitation of Liability
+                </h2>
+                <p>
+                    In no event shall EduTech AI, its developers, or its suppliers be liable for any damages (including, without limitation, damages for loss of study progress data, subscription downtime, or AI service interruptions) arising out of the use or inability to use the learning rooms.
+                </p>
+            </section>
+        </div>
+
+        <!-- Back Call to Action -->
+        <div class="text-center">
+            <a href="{% url 'home' %}" class="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-sm font-medium">
+                &larr; Return to Home Screen
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

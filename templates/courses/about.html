@@ -4,7 +4,8 @@
 {% block title %}EduTech AI - Our Mission: Combatting Internet Distractions{% endblock %}
 
 {% block content %}
-<div class="container" id="about-view-container">
+
+<div class="container" id="about-view-container" style="position: relative; z-index: 2;">
     <div style="max-width: 800px; margin: 0 auto;">
 
         <!-- Header -->
@@ -78,10 +79,10 @@
         <div style="text-align: center; margin-top: 3.5rem;">
             {% if user.is_authenticated %}
             <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">You are signed in and ready to study!</h3>
-            <a href="{% url 'dashboard' %}" class="btn btn-primary" id="btn-about-signup">Go to Dashboard &rarr;</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary" id="btn-about-signup">Go to Dashboard</a>
             {% else %}
             <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Ready to study with 100% focus?</h3>
-            <a href="{% url 'register' %}" class="btn btn-primary" id="btn-about-signup">Create Your Account</a>
+            <a href="{% url 'register' %}" class="btn btn-primary" id="btn-about-signup">Create Account</a>
             {% endif %}
         </div>
 
