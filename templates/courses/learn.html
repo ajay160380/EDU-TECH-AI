@@ -56,7 +56,7 @@
                 {% if percentage == 100 %}
                 {% if profile.plan_type == 'free' %}
                 <a href="{% url 'pricing' %}" class="btn btn-primary"
-                    style="background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); color: #fff; font-weight: 800; border: none; padding: 0.25rem 0.65rem; font-size: 0.72rem; border-radius: 4px; box-shadow: 0 0 10px rgba(139,92,246,0.4); text-decoration: none;">
+                    style="background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); color: #fff; font-weight: 800; border: none; padding: 0.25rem 0.65rem; font-size: 0.72rem; border-radius: 4px; box-shadow: 0 0 10px rgba(139,92,246,0.4); text-decoration: none;">
                     🔒 Unlock Exam
                 </a>
                 {% else %}
@@ -77,12 +77,12 @@
             <div class="course-progress-bar"
                 style="height: 5px; max-width: 100%; border-radius: 10px; background: rgba(255, 255, 255, 0.05); overflow: hidden;">
                 <div class="course-progress-fill"
-                    style="width: {{ percentage }}%; height: 100%; background: linear-gradient(90deg, #9333ea 0%, #06b6d4 100%); border-radius: 10px;">
+                    style="width: {{ percentage }}%; height: 100%; background: linear-gradient(90deg, #1e40af 0%, #1d4ed8 100%); border-radius: 10px;">
                 </div>
             </div>
             <!-- Sleek Target Pace capsule badge under progress bar -->
             <div class="glass-badge badge-purple"
-                style="font-size: 0.72rem; padding: 0.35rem 0.75rem; display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 20px; font-weight: 500; background: rgba(147, 51, 234, 0.08); border: 1px solid rgba(147, 51, 234, 0.2); width: 100%; text-align: center;">
+                style="font-size: 0.72rem; padding: 0.35rem 0.75rem; display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 20px; font-weight: 500; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(30, 64, 175, 0.2); width: 100%; text-align: center;">
                 🎯 <span style="color: var(--text-secondary);">Target Pace: Finish in</span> <strong
                     style="color: #fff;">{{ course.target_days }} days</strong> <span
                     style="color: var(--text-muted);">({{ course.daily_target_videos }}/day)</span>
@@ -210,7 +210,7 @@
                         workspace.
                     </p>
                     <a href="{% url 'pricing' %}" class="btn-learn-action"
-                        style="background: linear-gradient(135deg, #ec4899, #8b5cf6); box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4); font-size: 0.85rem; padding: 0.8rem 1.80rem; border-radius: 8px; text-decoration: none;">
+                        style="background: linear-gradient(135deg, #1d4ed8, #1e40af); box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4); font-size: 0.85rem; padding: 0.8rem 1.80rem; border-radius: 8px; text-decoration: none;">
                         ✨ Upgrade to Pro / Ultra Plan
                     </a>
                 </div>
@@ -241,13 +241,13 @@
                                 {% if profile.plan_type == 'ultra' %}
                                 background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #000; box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
                                 {% else %}
-                                background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: #fff; box-shadow: 0 0 10px rgba(139, 92, 246, 0.35);
+                                background: linear-gradient(135deg, #1e40af 0%, #6d28d9 100%); color: #fff; box-shadow: 0 0 10px rgba(30, 64, 175, 0.35);
                                 {% endif %}">
                                 {{ profile.plan_type }} Plan
                             </span>
 
                             <span id="workspace-quota-badge"
-                                style="font-size: 0.8rem; font-weight: 600; color: #a78bfa; display: flex; align-items: center; gap: 4px;">
+                                style="font-size: 0.8rem; font-weight: 600; color: #1d4ed8; display: flex; align-items: center; gap: 4px;">
                                 {% if profile.plan_type == 'ultra' %}
                                 Unlimited ⚡
                                 {% else %}
@@ -265,7 +265,7 @@
                             style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.25rem; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.08) transparent;">
                             <!-- Welcome message -->
                             <div class="chat-bubble tutor"
-                                style="align-self: flex-start; max-width: 85%; padding: 0.95rem 1.35rem; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.15); border-radius: 16px; color: var(--text-primary); font-size: 0.9rem; line-height: 1.5; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                                style="align-self: flex-start; max-width: 85%; padding: 0.95rem 1.35rem; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(30, 64, 175, 0.15); border-radius: 16px; color: var(--text-primary); font-size: 0.9rem; line-height: 1.5; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
                                 👋 Namaste! I am your <strong>EduTech AI Tutor</strong>. Ask me anything about today's
                                 lecture: <strong>"{{ active_video.title }}"</strong>! I can explain core concepts, write
                                 code, or solve doubts!
@@ -277,12 +277,12 @@
                             style="padding: 1rem 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; gap: 0.85rem; background: rgba(10, 8, 20, 0.45); align-items: center;">
                             <input type="text" id="chat-input" placeholder="Type your doubt about this lecture..."
                                 style="flex: 1; padding: 0.8rem 1.2rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 30px; color: var(--text-primary); font-family: inherit; font-size: 0.9rem; outline: none; transition: all 0.2s;"
-                                onfocus="this.style.borderColor='rgba(139, 92, 246, 0.5)'; this.style.background='rgba(255, 255, 255, 0.05)';"
+                                onfocus="this.style.borderColor='rgba(30, 64, 175, 0.5)'; this.style.background='rgba(255, 255, 255, 0.05)';"
                                 onblur="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.03)';">
                             <button id="chat-send"
-                                style="padding: 0.8rem 1.6rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border: none; border-radius: 30px; color: #fff; font-family: inherit; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);"
-                                onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 4px 20px rgba(139, 92, 246, 0.45)';"
-                                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(139, 92, 246, 0.3)';"
+                                style="padding: 0.8rem 1.6rem; background: linear-gradient(135deg, #1e40af, #1d4ed8); border: none; border-radius: 30px; color: #fff; font-family: inherit; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);"
+                                onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 4px 20px rgba(30, 64, 175, 0.45)';"
+                                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(30, 64, 175, 0.3)';"
                                 onclick="sendChatMessage();">
                                 Send ⚡
                             </button>
@@ -317,7 +317,7 @@
                                     {% if profile.plan_type != 'ultra' %}
                                     opacity: 0.45; background: rgba(55, 65, 81, 0.2); border: 1px dashed rgba(255,255,255,0.08); color: #9ca3af; cursor: not-allowed;
                                     {% else %}
-                                    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.1) 100%); border: 1px solid rgba(139, 92, 246, 0.35); color: #c084fc; cursor: pointer; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+                                    background: linear-gradient(135deg, rgba(30, 64, 175, 0.2) 0%, rgba(236, 72, 153, 0.1) 100%); border: 1px solid rgba(30, 64, 175, 0.35); color: #c084fc; cursor: pointer; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
                                     {% endif %}
                                     font-size: 0.78rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 20px; display: flex; align-items: center; gap: 4px; transition: all 0.2s;"
                                     title="Inject dynamic Groq lecture summary into active notes" {% if profile.plan_type != 'ultra' %}data-locked="true"{% endif %}>
@@ -334,9 +334,9 @@
                                     Saved
                                 </span>
                                 <button id="notes-preview-toggle-btn" onclick="toggleNotesPreview()"
-                                    style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: #c084fc; font-size: 0.78rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;"
-                                    onmouseover="this.style.background='rgba(139, 92, 246, 0.18)';"
-                                    onmouseout="this.style.background='rgba(139, 92, 246, 0.1)';">
+                                    style="background: rgba(30, 64, 175, 0.1); border: 1px solid rgba(30, 64, 175, 0.3); color: #c084fc; font-size: 0.78rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;"
+                                    onmouseover="this.style.background='rgba(30, 64, 175, 0.18)';"
+                                    onmouseout="this.style.background='rgba(30, 64, 175, 0.1)';">
                                     👁️ Preview
                                 </button>
                                 <button id="notes-export-btn" onclick="exportNotes()"
@@ -395,7 +395,7 @@
                     {% if ai_bundle.quiz|length > 5 %}
                     <div style="text-align: center; margin-top: 1rem;">
                         <button id="load-more-quiz-btn" onclick="loadMoreQuizzes()"
-                            style="padding: 0.75rem 1.5rem; background: rgba(139, 92, 246, 0.15); border: 1px solid var(--accent-primary); border-radius: 6px; color: var(--text-primary); font-family: inherit; font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+                            style="padding: 0.75rem 1.5rem; background: rgba(30, 64, 175, 0.15); border: 1px solid var(--accent-primary); border-radius: 6px; color: var(--text-primary); font-family: inherit; font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
                             Load More Quizzes 📚
                         </button>
                     </div>
@@ -405,12 +405,12 @@
                 {% else %}
                 <!-- Premium Locked Glassmorphic Card for Free users -->
                 <div class="locked-feature-overlay"
-                    style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background: rgba(15, 10, 25, 0.45); border-radius: var(--radius-sm); border: 1px dashed rgba(139, 92, 246, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-align: center; padding: 2rem; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(139, 92, 246, 0.05);">
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background: rgba(15, 10, 25, 0.45); border-radius: var(--radius-sm); border: 1px dashed rgba(30, 64, 175, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-align: center; padding: 2rem; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(30, 64, 175, 0.05);">
                     <div
-                        style="position: absolute; top: -50px; right: -50px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%); pointer-events: none;">
+                        style="position: absolute; top: -50px; right: -50px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(30, 64, 175, 0.15) 0%, transparent 70%); pointer-events: none;">
                     </div>
                     <div
-                        style="font-size: 3.5rem; margin-bottom: 1rem; filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.4)); animation: float 3s ease-in-out infinite; cursor: default;">
+                        style="font-size: 3.5rem; margin-bottom: 1rem; filter: drop-shadow(0 0 12px rgba(30, 64, 175, 0.4)); animation: float 3s ease-in-out infinite; cursor: default;">
                         ✍️</div>
                     <h3
                         style="font-family: 'Outfit'; font-size: 1.65rem; color: #fff; margin-bottom: 0.75rem; text-shadow: 0 0 10px rgba(255,255,255,0.1);">
@@ -421,7 +421,7 @@
                         the exact moments of this lecture.
                     </p>
                     <a href="{% url 'pricing' %}" class="btn-learn-action"
-                        style="background: linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4); font-size: 0.85rem; padding: 0.8rem 1.80rem; border-radius: 8px; text-decoration: none;">
+                        style="background: linear-gradient(135deg, #1e40af, #1d4ed8); box-shadow: 0 4px 20px rgba(30, 64, 175, 0.4); font-size: 0.85rem; padding: 0.8rem 1.80rem; border-radius: 8px; text-decoration: none;">
                         ✨ Upgrade to Pro Plan
                     </a>
                 </div>
@@ -443,9 +443,9 @@
         let formatted = text.replace(/\r\n/g, '\n');
 
         // Code blocks
-        formatted = formatted.replace(/```([\s\S]*?)```/g, '<pre style="background: rgba(0,0,0,0.5); padding: 1.25rem; border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.2); overflow-x: auto; margin: 1.25rem 0;"><code style="font-family: monospace; color:#a78bfa; font-size: 0.9rem;">$1</code></pre>');
+        formatted = formatted.replace(/```([\s\S]*?)```/g, '<pre style="background: rgba(0,0,0,0.5); padding: 1.25rem; border-radius: 8px; border: 1px solid rgba(30, 64, 175, 0.2); overflow-x: auto; margin: 1.25rem 0;"><code style="font-family: monospace; color:#1d4ed8; font-size: 0.9rem;">$1</code></pre>');
         // Inline code
-        formatted = formatted.replace(/`([^`\n]+)`/g, '<code style="font-family: monospace; color:#a78bfa; background: rgba(139, 92, 246, 0.15); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em;">$1</code>');
+        formatted = formatted.replace(/`([^`\n]+)`/g, '<code style="font-family: monospace; color:#1d4ed8; background: rgba(30, 64, 175, 0.15); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em;">$1</code>');
 
         // Headings (Using ^ and $ with /gm to match line starts regardless of \n)
         formatted = formatted.replace(/^#### (.*)$/gm, '<h4 style="font-family: \'Outfit\'; color: #fff; font-size: 1.15rem; margin-top: 1.75rem; margin-bottom: 0.75rem; font-weight: 600;">$1</h4>');
@@ -453,7 +453,7 @@
         formatted = formatted.replace(/^## (.*)$/gm, '<h2 style="font-family: \'Outfit\'; color: #fff; font-size: 1.6rem; margin-top: 2rem; margin-bottom: 1rem;">$1</h2>');
 
         // Horizontal divider (---)
-        formatted = formatted.replace(/^---$/gm, '<hr style="border: 0; height: 1px; background: linear-gradient(to right, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.5), rgba(139, 92, 246, 0.1)); margin: 1.5rem 0;">');
+        formatted = formatted.replace(/^---$/gm, '<hr style="border: 0; height: 1px; background: linear-gradient(to right, rgba(30, 64, 175, 0.1), rgba(30, 64, 175, 0.5), rgba(30, 64, 175, 0.1)); margin: 1.5rem 0;">');
 
         // Bullet Points (Grouping into <ul>) - parsed BEFORE bold/italic to prevent asterisk eating
         formatted = formatted.replace(/(?:^\*\s+.*$\n?)+/gm, function (match) {
@@ -573,8 +573,8 @@
             textarea.style.display = 'block';
             textarea.focus();
             toggleBtn.innerHTML = '👁️ Preview';
-            toggleBtn.style.background = 'rgba(139, 92, 246, 0.1)';
-            toggleBtn.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+            toggleBtn.style.background = 'rgba(30, 64, 175, 0.1)';
+            toggleBtn.style.borderColor = 'rgba(30, 64, 175, 0.3)';
             toggleBtn.style.color = '#c084fc';
             showToast("Swapped to markdown editing editor ✏️", "info");
         }
@@ -862,13 +862,13 @@
         typingBubble.style.alignSelf = 'flex-start';
         typingBubble.style.maxWidth = '85%';
         typingBubble.style.padding = '0.85rem 1.15rem';
-        typingBubble.style.background = 'rgba(139, 92, 246, 0.12)';
-        typingBubble.style.border = '1px solid rgba(139, 92, 246, 0.25)';
+        typingBubble.style.background = 'rgba(30, 64, 175, 0.12)';
+        typingBubble.style.border = '1px solid rgba(30, 64, 175, 0.25)';
         typingBubble.style.borderRadius = '4px 18px 18px 18px';
         typingBubble.style.color = 'var(--text-secondary)';
         typingBubble.style.fontSize = '0.9rem';
 
-        const dotStyle = 'width:6px; height:6px; background:#a78bfa; border-radius:50%; display:inline-block; animation: chatBlink 1.4s infinite both;';
+        const dotStyle = 'width:6px; height:6px; background:#1d4ed8; border-radius:50%; display:inline-block; animation: chatBlink 1.4s infinite both;';
         typingBubble.innerHTML = `
         <span style="display:inline-flex; gap: 4px; align-items:center;">
             <span style="${dotStyle}"></span>
@@ -918,8 +918,8 @@
                     tutorBubble.style.alignSelf = 'flex-start';
                     tutorBubble.style.maxWidth = '85%';
                     tutorBubble.style.padding = '0.85rem 1.15rem';
-                    tutorBubble.style.background = 'rgba(139, 92, 246, 0.12)';
-                    tutorBubble.style.border = '1px solid rgba(139, 92, 246, 0.25)';
+                    tutorBubble.style.background = 'rgba(30, 64, 175, 0.12)';
+                    tutorBubble.style.border = '1px solid rgba(30, 64, 175, 0.25)';
                     tutorBubble.style.borderRadius = '4px 18px 18px 18px';
                     tutorBubble.style.color = 'var(--text-primary)';
                     tutorBubble.style.fontSize = '0.9rem';
