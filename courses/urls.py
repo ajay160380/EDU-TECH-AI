@@ -5,6 +5,8 @@ urlpatterns = [
     # Static pages
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
+    path('terms/', views.terms_view, name='terms'),
+    path('privacy/', views.privacy_view, name='privacy'),
     
     # User accounts
     path('register/', views.register_view, name='register'),

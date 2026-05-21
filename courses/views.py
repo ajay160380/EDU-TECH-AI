@@ -27,6 +27,18 @@ def about(request):
     """
     return render(request, 'courses/about.html')
 
+def terms_view(request):
+    """
+    Renders the platform Terms of Service page.
+    """
+    return render(request, 'courses/terms.html')
+
+def privacy_view(request):
+    """
+    Renders the platform Privacy Policy page.
+    """
+    return render(request, 'courses/privacy.html')
+
 @login_required
 def profile_view(request):
     """
@@ -46,6 +58,14 @@ def profile_view(request):
         playlist_limit = 99999
         limit_display = "Unlimited Playlists"
         
+    courses = request.user.courses.all()
+    total_courses = courses.count()
+    completed_courses = 0
+    
+    for c in courses:
+        if c.videos.count() > 0 and c.completed_percentage == 100:
+            completed_courses += 1
+            
     if playlist_limit == 99999:
         playlist_percentage = 0
     else:
@@ -57,6 +77,8 @@ def profile_view(request):
         'playlist_limit': playlist_limit,
         'limit_display': limit_display,
         'playlist_percentage': playlist_percentage,
+        'total_courses': total_courses,
+        'completed_courses': completed_courses,
     }
     return render(request, 'courses/profile.html', context)
 
