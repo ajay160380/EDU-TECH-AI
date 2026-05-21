@@ -3,748 +3,146 @@
 
 {% block title %}EduTech AI - Sign In to Your Study Room{% endblock %}
 
-{% block extra_head %}
-<!-- Google Fonts for Synapse Design System -->
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
-<div class="auth-wrapper synapse-auth-container" id="login-view-wrapper">
-    <!-- Ambient Floating Orbs (Synapse Style Spec) -->
-    <div class="synapse-orb violet-orb"></div>
-    <div class="synapse-orb cyan-orb"></div>
+<div class="auth-wrapper" style="position: relative; min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center; overflow: hidden; background: #050505;">
+    
+    <!-- Neural Network Background -->
+    <div class="neural-bg" style="opacity: 0.15; z-index: 0;">
+        <svg width="100%" height="100%">
+            <!-- A lightweight geometric node web pattern -->
+            <defs>
+                <pattern id="nodes" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                    <circle cx="20" cy="20" r="2" fill="#ef233c"/>
+                    <circle cx="80" cy="40" r="1.5" fill="#ef233c"/>
+                    <circle cx="40" cy="80" r="2.5" fill="#ef233c"/>
+                    <path d="M20 20 L80 40 L40 80 Z" fill="none" stroke="#ef233c" stroke-width="0.5" stroke-dasharray="2 4"/>
+                    <path d="M-20 80 L20 20 L40 -20" fill="none" stroke="#ef233c" stroke-width="0.5" opacity="0.5"/>
+                    <path d="M120 20 L80 40 L60 120" fill="none" stroke="#ef233c" stroke-width="0.5" opacity="0.5"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#nodes)" />
+        </svg>
+    </div>
 
-    <div class="glass-card auth-card synapse-auth-card" id="login-form-card">
+    <!-- Cinematic Lighting Glow -->
+    <div style="position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(239, 35, 60, 0.1) 0%, transparent 70%); filter: blur(60px); z-index: 0; pointer-events: none;"></div>
 
-        <header class="auth-header synapse-auth-header" id="login-form-header">
-            <div class="synapse-tag">EduTech AI Secure Access</div>
-            <h2 class="synapse-heading">Welcome <span class="shimmer-text">Back</span></h2>
-            <p class="synapse-subtext">Access your futuristic, distraction-free study courses.</p>
+    <div class="glass-card auth-card" style="position: relative; z-index: 1; padding: 3rem 2.5rem; max-width: 440px; width: 100%; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(20px);">
+        
+        <header style="text-align: center; margin-bottom: 2.5rem;">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #ef233c, #d90429); margin-bottom: 1.25rem; box-shadow: 0 8px 20px rgba(239, 35, 60, 0.4);">
+                <span style="color: white; font-size: 1.5rem; font-family: 'Outfit'; font-weight: 800; line-height: 1;">E</span>
+            </div>
+            <h2 style="font-size: 1.8rem; font-family: 'Outfit'; font-weight: 700; color: white; margin-bottom: 0.5rem; letter-spacing: -0.02em;">Welcome Back</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Sign in to access your distraction-free workspace.</p>
         </header>
 
-        <!-- Standard username/password login -->
         <form action="{% url 'login' %}" method="POST" id="login-form">
             {% csrf_token %}
 
-            <div class="form-group synapse-form-group">
-                <label for="login-username" class="form-label synapse-form-label">Username</label>
-                <div class="synapse-input-wrapper">
-                    <input type="text" name="username" id="login-username" class="form-input synapse-form-input" placeholder="Enter username"
-                        required autocomplete="username">
+            <div style="margin-bottom: 1.25rem;">
+                <label for="login-username" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Username</label>
+                <input type="text" name="username" id="login-username" class="form-input" placeholder="Enter your username" required autocomplete="username" style="width: 100%; padding: 0.85rem 1rem; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Inter'; transition: all 0.3s ease;">
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <label for="login-password" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Password</label>
+                </div>
+                <div class="password-wrapper">
+                    <input type="password" name="password" id="login-password" class="form-input" placeholder="Enter your password" required autocomplete="current-password" style="width: 100%; padding: 0.85rem 2.5rem 0.85rem 1rem; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Inter'; transition: all 0.3s ease;">
+                    <button type="button" class="password-eye-btn" id="toggle-password" tabindex="-1">
+                        <iconify-icon icon="lucide:eye" id="eye-icon"></iconify-icon>
+                    </button>
                 </div>
             </div>
 
-            <div class="form-group synapse-form-group" style="margin-bottom: 2rem;">
-                <label for="login-password" class="form-label synapse-form-label">Password</label>
-                <div class="synapse-input-wrapper">
-                    <input type="password" name="password" id="login-password" class="form-input synapse-form-input"
-                        placeholder="Enter password" required autocomplete="current-password">
-                </div>
-            </div>
-
-            <!-- Shiny Border Button (Synapse Style Spec) -->
-            <div class="shiny-border-btn-container">
-                <button type="submit" class="shiny-border-btn" id="btn-submit-login">
-                    <span>Log In &rarr;</span>
-                </button>
-            </div>
+            <button type="submit" class="btn btn-primary" id="btn-submit-login" style="width: 100%; padding: 0.9rem; font-size: 1rem; font-weight: 700; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                Sign In <iconify-icon icon="lucide:arrow-right"></iconify-icon>
+            </button>
         </form>
 
-        <!-- OR glowing divider -->
         <div style="display: flex; align-items: center; gap: 12px; margin: 2rem 0; width: 100%;">
-            <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></div>
-            <span style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: 0.2em; font-family: 'Inter', sans-serif;">Or connect with</span>
-            <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.06);"></div>
+            <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">or</span>
+            <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
         </div>
 
-        <!-- Google SSO authentication button -->
-        <button type="button" class="btn btn-secondary synapse-google-btn" id="btn-google-login">
-            <!-- SVG Google Icon -->
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    fill="#8b5cf6" />
-                <path
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    fill="#06b6d4" />
-                <path
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                    fill="#10b981" />
-                <path
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    fill="#a78bfa" />
+        <button type="button" class="btn btn-secondary" id="btn-google-login" style="width: 100%; padding: 0.85rem; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 0.75rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
-            Continue with Google
+            <span style="font-weight: 600; color: white;">Continue with Google</span>
         </button>
 
-        <!-- Dynamic Bypass trigger links -->
-        <div style="text-align: center; margin-top: 1rem;">
-            <button type="button" id="btn-sso-bypass" class="synapse-bypass-btn">
-                Trouble with Firebase setup? Use Demo SSO Mode instead
-            </button>
-        </div>
-
-        <!-- Live Firebase Auth Diagnostic Panel -->
-        <div id="auth-debug-panel" class="synapse-debug-panel">
-            <div class="synapse-debug-header">
-                <span class="pulse-dot"></span>
-                Firebase Auth Diagnostic Tracker
-            </div>
-            <div id="auth-debug-status" class="synapse-debug-status">Initializing listener...</div>
-            <div id="auth-debug-error" class="synapse-debug-error"></div>
-        </div>
-
-        <footer class="auth-footer synapse-auth-footer" id="login-form-footer">
-            New to EduTech AI? <a href="{% url 'register' %}" class="synapse-link">Sign Up Free</a>
+        <footer style="text-align: center; margin-top: 2rem; font-size: 0.85rem; color: var(--text-secondary);">
+            New to EduTech AI? <a href="{% url 'register' %}" style="color: #ef233c; font-weight: 600; transition: color 0.3s;">Create account</a>
         </footer>
-
     </div>
 </div>
 
-<!-- GORGEOUS CUSTOM GOOGLE ACCOUNT CHOOSER MODAL (Synapse Style) -->
-<div id="google-sso-modal" class="modal-overlay" style="display: none;">
-    <div class="glass-card modal-content synapse-modal-content" style="max-width: 420px; width: 92%; padding: 2.5rem; position: relative;">
-        <!-- Close button -->
-        <button type="button" id="modal-close-btn" class="synapse-modal-close">&times;</button>
+<!-- GORGEOUS CUSTOM GOOGLE ACCOUNT CHOOSER MODAL (Demo Fallback) -->
+<div id="google-sso-modal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center;">
+    <div class="glass-card" style="width: 100%; max-width: 400px; padding: 2rem; border-radius: 20px; position: relative; background: #0a0a0a;">
+        <button type="button" id="modal-close-btn" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer;">&times;</button>
 
-        <!-- Google Branding Header -->
         <div style="text-align: center; margin-bottom: 2rem;">
-            <div class="google-icon-wrapper">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
-                    <path
-                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                        fill="#8b5cf6" />
-                    <path
-                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                        fill="#06b6d4" />
-                    <path
-                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                        fill="#10b981" />
-                    <path
-                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                        fill="#a78bfa" />
-                </svg>
-            </div>
-            <h3 class="synapse-modal-title">Choose an account</h3>
-            <p class="synapse-modal-subtitle">to continue to <span class="shimmer-text">EduTech AI</span></p>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; margin-bottom: 0.5rem;">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+            </svg>
+            <h3 style="font-family: 'Outfit'; font-size: 1.25rem; font-weight: 600; color: white;">Choose an account</h3>
+            <p style="color: var(--text-secondary); font-size: 0.85rem;">to continue to EduTech AI</p>
         </div>
 
-        <!-- Account Rows -->
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 2rem;" id="sso-accounts-list">
-            <!-- Account 1 -->
-            <button type="button" class="sso-account-row synapse-account-row" data-email="ajay@gmail.com" data-name="Ajay Vishwakarma"
-                id="sso-row-ajay">
-                <div class="sso-avatar synapse-avatar">AV</div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="sso-accounts-list">
+            <!-- Account Rows -->
+            <button type="button" class="sso-account-row" data-email="ajay@gmail.com" data-name="Ajay Vishwakarma" style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s;">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: #4285F4; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem;">AV</div>
                 <div style="text-align: left; flex: 1;">
-                    <div class="synapse-account-name">Ajay Vishwakarma</div>
-                    <div class="synapse-account-email">ajay@gmail.com</div>
+                    <div style="color: white; font-weight: 600; font-size: 0.9rem;">Ajay Vishwakarma</div>
+                    <div style="color: var(--text-secondary); font-size: 0.75rem;">ajay@gmail.com</div>
                 </div>
-                <div class="synapse-account-status-dot"></div>
             </button>
-
-            <!-- Account 2 -->
-            <button type="button" class="sso-account-row synapse-account-row" data-email="student@gmail.com" data-name="Focus Student"
-                id="sso-row-student">
-                <div class="sso-avatar synapse-avatar" style="background: rgba(6, 182, 212, 0.2); border-color: #06b6d4; color: #06b6d4;">FS</div>
+            <button type="button" class="sso-account-row" data-email="student@gmail.com" data-name="Focus Student" style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s;">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: #ef233c; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem;">FS</div>
                 <div style="text-align: left; flex: 1;">
-                    <div class="synapse-account-name">Focus Student</div>
-                    <div class="synapse-account-email">student@gmail.com</div>
+                    <div style="color: white; font-weight: 600; font-size: 0.9rem;">Focus Student</div>
+                    <div style="color: var(--text-secondary); font-size: 0.75rem;">student@gmail.com</div>
                 </div>
-                <div class="synapse-account-status-dot" style="background: #06b6d4;"></div>
-            </button>
-
-            <!-- Account 3 -->
-            <button type="button" class="sso-account-row synapse-account-row" data-email="developer@gmail.com" data-name="Google Developer"
-                id="sso-row-developer">
-                <div class="sso-avatar synapse-avatar" style="background: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #10b981;">GD</div>
-                <div style="text-align: left; flex: 1;">
-                    <div class="synapse-account-name">Google Developer</div>
-                    <div class="synapse-account-email">developer@gmail.com</div>
-                </div>
-                <div class="synapse-account-status-dot" style="background: #10b981;"></div>
             </button>
         </div>
-
-        <!-- Custom Account form input -->
-        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem;">
-            <div class="synapse-modal-section-label">Use another account</div>
-            <div style="display: flex; gap: 10px;">
-                <input type="email" id="sso-custom-email" class="form-input synapse-form-input" style="padding: 0.6rem 1rem; font-size: 0.85rem;"
-                    placeholder="e.g. student@gmail.com">
-                <button type="button" id="sso-custom-submit-btn" class="synapse-sso-connect-btn">Connect</button>
-            </div>
-        </div>
-
     </div>
 </div>
 
-<style>
-    /* ==========================================================================
-       SYNAPSE DESIGN SYSTEM SPEC CUSTOM IMPLEMENTATION ( encapsulated inside page )
-       ========================================================================== */
-    
-    /* Vantablack solid backdrop */
-    .synapse-auth-container {
-        position: relative;
-        background: #030303 !important;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        padding: 2rem 1rem;
-        box-sizing: border-box;
-        font-family: 'Inter', sans-serif;
-    }
-
-    /* Ambient Floating Orbs */
-    .synapse-orb {
-        position: absolute;
-        border-radius: 50%;
-        pointer-events: none;
-        mix-blend-mode: screen;
-        will-change: transform, filter;
-    }
-
-    .violet-orb {
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(139, 92, 246, 0.28) 0%, rgba(0,0,0,0) 75%);
-        top: 10%;
-        left: -5%;
-        filter: blur(60px);
-        animation: floatViolet 14s infinite alternate ease-in-out;
-    }
-
-    .cyan-orb {
-        width: 380px;
-        height: 380px;
-        background: radial-gradient(circle, rgba(6, 182, 212, 0.22) 0%, rgba(0,0,0,0) 75%);
-        bottom: 5%;
-        right: -5%;
-        filter: blur(60px);
-        animation: floatCyan 11s infinite alternate ease-in-out;
-    }
-
-    @keyframes floatViolet {
-        0% { transform: translateY(0) scale(1); filter: blur(60px); }
-        50% { transform: translateY(-30px) scale(1.08); filter: blur(75px); }
-        100% { transform: translateY(15px) scale(0.95); filter: blur(60px); }
-    }
-
-    @keyframes floatCyan {
-        0% { transform: translateY(0) scale(1); filter: blur(60px); }
-        50% { transform: translateY(40px) scale(0.92); filter: blur(70px); }
-        100% { transform: translateY(-20px) scale(1.06); filter: blur(60px); }
-    }
-
-    /* Glassmorphism Auth Card */
-    .synapse-auth-card {
-        position: relative;
-        z-index: 10;
-        width: 100%;
-        max-width: 460px;
-        background: rgba(10, 10, 10, 0.7) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 24px !important;
-        padding: 3rem 2.5rem !important;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 
-                    0 0 20px -10px rgba(139, 92, 246, 0.3) !important;
-        box-sizing: border-box;
-        transition: border-color 0.4s cubic-bezier(0.23, 1, 0.32, 1), 
-                    box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .synapse-auth-card:hover {
-        border-color: rgba(139, 92, 246, 0.25) !important;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85), 
-                    0 0 35px -5px rgba(139, 92, 246, 0.25),
-                    0 0 2px rgba(6, 182, 212, 0.2) !important;
-    }
-
-    /* Header styling */
-    .synapse-tag {
-        display: inline-block;
-        background: rgba(139, 92, 246, 0.08);
-        border: 1px solid rgba(139, 92, 246, 0.15);
-        color: #a78bfa;
-        font-size: 0.65rem;
-        font-family: 'Inter', sans-serif;
-        text-transform: uppercase;
-        font-weight: 600;
-        letter-spacing: 0.2em;
-        padding: 4px 12px;
-        border-radius: 999px;
-        margin-bottom: 1.25rem;
-    }
-
-    .synapse-heading {
-        font-family: 'Instrument Serif', serif !important;
-        font-weight: 400 !important;
-        font-size: 3rem !important;
-        line-height: 1.05 !important;
-        letter-spacing: -0.03em !important;
-        color: #ffffff !important;
-        margin-bottom: 0.75rem !important;
-    }
-
-    .synapse-subtext {
-        font-family: 'Inter', sans-serif;
-        font-weight: 300;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        color: #94a3b8;
-        margin-bottom: 2rem;
-    }
-
-    /* Shimmer Text Effect */
-    .shimmer-text {
-        background: linear-gradient(90deg, #a78bfa 0%, #ffffff 35%, #ffffff 65%, #22d3ee 100%);
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: textShimmer 5s linear infinite;
-        font-family: 'Instrument Serif', serif;
-        font-style: italic;
-        display: inline-block;
-    }
-
-    @keyframes textShimmer {
-        0% { background-position: 0% center; }
-        100% { background-position: -200% center; }
-    }
-
-    /* Form and Inputs */
-    .synapse-form-group {
-        margin-bottom: 1.75rem;
-        text-align: left;
-    }
-
-    .synapse-form-label {
-        font-family: 'Inter', sans-serif;
-        font-weight: 600 !important;
-        font-size: 0.75rem !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.15em !important;
-        color: #94a3b8 !important;
-        margin-bottom: 0.6rem !important;
-        display: block;
-    }
-
-    .synapse-input-wrapper {
-        position: relative;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.02);
-        transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .synapse-form-input {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.02) !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 12px !important;
-        padding: 14px 18px !important;
-        color: #ffffff !important;
-        font-family: 'Inter', sans-serif !important;
-        font-size: 0.95rem !important;
-        font-weight: 400 !important;
-        box-sizing: border-box;
-        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1) !important;
-    }
-
-    .synapse-form-input::placeholder {
-        color: #475569 !important;
-    }
-
-    .synapse-form-input:focus {
-        background: rgba(10, 10, 10, 0.9) !important;
-        border-color: rgba(139, 92, 246, 0.4) !important;
-        outline: none !important;
-        box-shadow: 0 0 15px -5px rgba(139, 92, 246, 0.3), 
-                    0 0 1px 1px rgba(139, 92, 246, 0.2) !important;
-        transform: translateY(-1px);
-    }
-
-    /* Shiny Border Button Spec */
-    .shiny-border-btn-container {
-        position: relative;
-        padding: 1px;
-        border-radius: 9999px;
-        overflow: hidden;
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-        background: rgba(255, 255, 255, 0.05);
-        transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-        margin-top: 2rem;
-    }
-
-    .shiny-border-btn-container::before {
-        content: '';
-        position: absolute;
-        top: -100%;
-        left: -100%;
-        width: 300%;
-        height: 300%;
-        background: conic-gradient(from 0deg, transparent 0%, #8b5cf6 35%, #06b6d4 50%, transparent 65%);
-        animation: rotateConic 4s linear infinite;
-        z-index: 0;
-    }
-
-    .shiny-border-btn-container:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px -5px rgba(139, 92, 246, 0.4),
-                    0 0 20px -2px rgba(6, 182, 212, 0.2);
-    }
-
-    .shiny-border-btn-container:active {
-        transform: translateY(0);
-    }
-
-    .shiny-border-btn {
-        position: relative;
-        background: #0a0a0a;
-        color: #ffffff;
-        border: none;
-        border-radius: 9999px;
-        padding: 16px 40px;
-        width: 100%;
-        font-family: 'Inter', sans-serif;
-        font-size: 0.95rem;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        cursor: pointer;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-        transition: background 0.3s ease;
-    }
-
-    .shiny-border-btn:hover {
-        background: #0e0e0e;
-    }
-
-    @keyframes rotateConic {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    /* Google SSO button styles */
-    .synapse-google-btn {
-        width: 100%;
-        gap: 12px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.02) !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 999px !important;
-        padding: 14px 20px !important;
-        color: #e2e8f0 !important;
-        font-family: 'Inter', sans-serif !important;
-        font-size: 0.85rem !important;
-        text-transform: uppercase !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.08em !important;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1) !important;
-    }
-
-    .synapse-google-btn:hover {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border-color: rgba(6, 182, 212, 0.3) !important;
-        box-shadow: 0 0 15px -5px rgba(6, 182, 212, 0.25) !important;
-        transform: translateY(-1px);
-    }
-
-    .synapse-google-btn svg {
-        transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .synapse-google-btn:hover svg {
-        transform: scale(1.1) rotate(5deg);
-    }
-
-    /* Other control buttons */
-    .synapse-bypass-btn {
-        background: none;
-        border: none;
-        color: #64748b;
-        font-size: 0.75rem;
-        font-family: 'Inter', sans-serif;
-        text-decoration: underline;
-        cursor: pointer;
-        transition: color 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        margin-top: 0.5rem;
-    }
-
-    .synapse-bypass-btn:hover {
-        color: #a78bfa !important;
-    }
-
-    /* Diagnostics panel styles */
-    .synapse-debug-panel {
-        margin-top: 1.5rem;
-        padding: 1rem;
-        background: rgba(10, 10, 10, 0.6);
-        border: 1px dashed rgba(139, 92, 246, 0.2);
-        border-radius: 12px;
-        text-align: left;
-        display: none;
-    }
-
-    .synapse-debug-header {
-        font-size: 0.7rem;
-        font-family: 'Inter', sans-serif;
-        color: #a78bfa;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .pulse-dot {
-        width: 6px;
-        height: 6px;
-        background: #a78bfa;
-        border-radius: 50%;
-        display: inline-block;
-        animation: pulseDiagnostic 1.5s infinite alternate;
-    }
-
-    @keyframes pulseDiagnostic {
-        0% { transform: scale(1); opacity: 0.5; }
-        100% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 8px #a78bfa; }
-    }
-
-    .synapse-debug-status {
-        font-size: 0.75rem;
-        color: #94a3b8;
-        line-height: 1.4;
-    }
-
-    .synapse-debug-error {
-        font-size: 0.7rem;
-        color: #f87171;
-        margin-top: 0.5rem;
-        font-family: monospace;
-        white-space: pre-wrap;
-        display: none;
-        background: rgba(248, 113, 113, 0.03);
-        padding: 0.6rem;
-        border-radius: 6px;
-        border: 1px solid rgba(248, 113, 113, 0.1);
-    }
-
-    /* Footer link styling */
-    .synapse-auth-footer {
-        margin-top: 2.5rem !important;
-        font-size: 0.85rem !important;
-        color: #64748b !important;
-        font-family: 'Inter', sans-serif;
-    }
-
-    .synapse-link {
-        color: #a78bfa !important;
-        font-weight: 600 !important;
-        text-decoration: none !important;
-        transition: color 0.3s cubic-bezier(0.23, 1, 0.32, 1) !important;
-    }
-
-    .synapse-link:hover {
-        color: #22d3ee !important;
-        text-decoration: underline !important;
-    }
-
-    /* ==========================================================================
-       SYNAPSE MODAL WINDOW FOR Simulated Google SSO
-       ========================================================================== */
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(3, 3, 3, 0.85) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        animation: fadeIn 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .synapse-modal-content {
-        animation: slideUp 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        background: rgba(10, 10, 10, 0.85) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 28px !important;
-        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8),
-                    0 0 30px -10px rgba(6, 182, 212, 0.3) !important;
-    }
-
-    .synapse-modal-close {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: none;
-        border: none;
-        color: #475569;
-        font-size: 1.8rem;
-        cursor: pointer;
-        transition: color 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .synapse-modal-close:hover {
-        color: #ffffff;
-    }
-
-    .google-icon-wrapper {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 60px;
-        height: 60px;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 50%;
-        margin-bottom: 1rem;
-        box-shadow: 0 0 15px -5px rgba(139, 92, 246, 0.2);
-    }
-
-    .synapse-modal-title {
-        font-family: 'Instrument Serif', serif;
-        font-size: 2.2rem;
-        font-weight: 400;
-        color: #ffffff;
-        margin: 0.5rem 0 0 0;
-        letter-spacing: -0.02em;
-    }
-
-    .synapse-modal-subtitle {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.9rem;
-        color: #94a3b8;
-        margin: 0.25rem 0 0 0;
-    }
-
-    /* Simulated Account Rows */
-    .synapse-account-row {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        padding: 1rem 1.25rem !important;
-        background: rgba(255, 255, 255, 0.01) !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        border-radius: 16px !important;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1) !important;
-        gap: 14px;
-        text-align: left;
-    }
-
-    .synapse-account-row:hover {
-        background: rgba(139, 92, 246, 0.04) !important;
-        border-color: rgba(139, 92, 246, 0.3) !important;
-        box-shadow: 0 0 20px -5px rgba(139, 92, 246, 0.25) !important;
-        transform: translateY(-2px);
-    }
-
-    .synapse-avatar {
-        width: 38px !important;
-        height: 38px !important;
-        border-radius: 50% !important;
-        background: rgba(139, 92, 246, 0.2) !important;
-        border: 1px solid #8b5cf6 !important;
-        color: #a78bfa !important;
-        font-family: 'Inter', sans-serif;
-        font-weight: 700 !important;
-        font-size: 0.9rem !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .synapse-account-name {
-        font-family: 'Inter', sans-serif;
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: #ffffff;
-    }
-
-    .synapse-account-email {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.75rem;
-        color: #64748b;
-    }
-
-    .synapse-account-status-dot {
-        width: 6px;
-        height: 6px;
-        background: #8b5cf6;
-        border-radius: 50%;
-        opacity: 0.7;
-    }
-
-    .synapse-modal-section-label {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.7rem;
-        color: #475569;
-        margin-bottom: 0.75rem;
-        text-transform: uppercase;
-        font-weight: 700;
-        letter-spacing: 0.15em;
-        text-align: left;
-    }
-
-    .synapse-sso-connect-btn {
-        background: #ffffff !important;
-        color: #030303 !important;
-        border: none !important;
-        border-radius: 12px !important;
-        padding: 0.6rem 1.25rem !important;
-        font-family: 'Inter', sans-serif !important;
-        font-size: 0.85rem !important;
-        font-weight: 600 !important;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1) !important;
-    }
-
-    .synapse-sso-connect-btn:hover {
-        background: rgba(255, 255, 255, 0.9) !important;
-        box-shadow: 0 0 15px -3px rgba(255, 255, 255, 0.4) !important;
-        transform: translateY(-1px);
-    }
-
-    /* Core animations */
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-    }
-</style>
-{% endblock %}
-
-{% block extra_js %}
-<!-- Firebase App (the core Firebase SDK) and Firebase Auth -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 
 <script>
-    // Firebase Configuration parameters loaded dynamically
+    // --- UI Interactions ---
+    const eyeBtn = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('login-password');
+    const eyeIcon = document.getElementById('eye-icon');
+
+    eyeBtn.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.setAttribute('icon', 'lucide:eye-off');
+            eyeBtn.style.color = '#ef233c';
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.setAttribute('icon', 'lucide:eye');
+            eyeBtn.style.color = '#64748b';
+        }
+    });
+
+    // --- Firebase Auth Logic (Silent) ---
     const firebaseConfig = {
         apiKey: "{{ firebase_api_key|default:'' }}",
         authDomain: "{{ firebase_auth_domain|default:'' }}",
@@ -754,147 +152,67 @@
         appId: "{{ firebase_app_id|default:'' }}"
     };
 
-    // Firebase is initialized if the keys are populated in settings
     const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.authDomain;
-
-    // Helper to update the visible on-screen Diagnostic Tracker
-    function updateDebugStatus(message, isError = false, errorText = "") {
-        const panel = document.getElementById('auth-debug-panel');
-        const status = document.getElementById('auth-debug-status');
-        const errorDiv = document.getElementById('auth-debug-error');
-
-        panel.style.display = 'block';
-        status.innerHTML = message;
-
-        if (isError) {
-            status.innerHTML = `<span style="color: #f87171; font-weight: 600;">⚠️ Error:</span> ${message}`;
-            errorDiv.style.display = 'block';
-            errorDiv.textContent = errorText;
-        } else {
-            errorDiv.style.display = 'none';
-        }
-    }
 
     if (isFirebaseConfigured) {
         try {
             firebase.initializeApp(firebaseConfig);
             
-            // Check if current hostname is 127.0.0.1 and advise localhost
-            if (window.location.hostname === "127.0.0.1") {
-                const localhostUrl = window.location.href.replace("127.0.0.1", "localhost");
-                updateDebugStatus(`You are accessing via <b>127.0.0.1</b>. Google Sign-In requires <b>localhost</b>. <a href="${localhostUrl}" style="color: #a78bfa; text-decoration: underline; font-weight: bold; margin-left: 5px;">Click here to switch to localhost</a>`, false);
-            } else {
-                updateDebugStatus("Firebase initialized. Checking for redirect sign-in results...");
-            }
-
-            // Check for redirect result if popup was previously blocked and redirected
+            // Check for redirect result silently
             firebase.auth().getRedirectResult()
                 .then((result) => {
                     if (result && result.user) {
-                        updateDebugStatus(`Google account '${result.user.email}' authenticated via redirect! Generating token...`);
                         return result.user.getIdToken();
                     }
                 })
                 .then((idToken) => {
-                    if (idToken) {
-                        submitGoogleTokenToDjango(idToken);
-                    }
+                    if (idToken) submitGoogleTokenToDjango(idToken);
                 })
                 .catch((error) => {
                     console.error("Redirect Sign-in error:", error);
-                    let errMsg = "Google Authentication via redirect failed.";
-                    if (error.code === "auth/unauthorized-domain") {
-                        errMsg = "Error: This domain (localhost/127.0.0.1) is not listed as an 'Authorized Domain' in your Firebase console under Authentication -> Settings.";
-                    } else if (error.code === "auth/operation-not-allowed") {
-                        errMsg = "Error: Google Provider is not enabled in Firebase Console -> Authentication -> Sign-in Method.";
-                    } else if (error.message) {
-                        errMsg = `Redirect Auth Error: ${error.message}`;
-                    }
-                    updateDebugStatus("Google Sign-In redirect flow failed.", true, `Code: ${error.code}\nMessage: ${error.message}`);
-                    showToast(errMsg, "error");
+                    showToast("Google Authentication failed.", "error");
                 });
 
-            updateDebugStatus("Firebase initialized. Ready. Click 'Continue with Google' to start authentication.");
         } catch (initErr) {
             console.error("Firebase init failed:", initErr);
-            updateDebugStatus("Failed to initialize Firebase client SDK.", true, initErr.toString());
         }
-    } else {
-        updateDebugStatus("Firebase is NOT configured in your .env settings file. Using Developer Demo SSO Mode.");
     }
 
     // Modal elements
     const ssoModal = document.getElementById('google-sso-modal');
     const closeBtn = document.getElementById('modal-close-btn');
-    const customSubmitBtn = document.getElementById('sso-custom-submit-btn');
-    const customEmailInput = document.getElementById('sso-custom-email');
-    const bypassBtn = document.getElementById('btn-sso-bypass');
 
-    // Google Sign-In button click
     document.getElementById('btn-google-login').addEventListener('click', function () {
         if (isFirebaseConfigured) {
-            updateDebugStatus("Opening secure Google Sign-In popup window...");
             const btn = this;
-            btn.innerHTML = `<span style="width: 1rem; height: 1rem; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; display: inline-block; animation: spin 1s infinite linear; margin-right: 0.5rem; vertical-align: middle;"></span> Connecting...`;
+            btn.innerHTML = `<span style="width: 1.2rem; height: 1.2rem; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; display: inline-block; animation: spin 1s infinite linear;"></span>`;
             btn.disabled = true;
 
             const provider = new firebase.auth.GoogleAuthProvider();
             provider.setCustomParameters({ prompt: 'select_account' });
 
-            // Try popup mode first
             firebase.auth().signInWithPopup(provider)
                 .then((result) => {
-                    if (result && result.user) {
-                        updateDebugStatus(`Google account '${result.user.email}' authenticated successfully! Generating token...`);
-                        return result.user.getIdToken();
-                    }
-                    throw new Error("No user profile returned from Google.");
+                    if (result && result.user) return result.user.getIdToken();
+                    throw new Error("No user profile returned");
                 })
-                .then((idToken) => {
-                    updateDebugStatus("Secure Firebase token generated. Sending to Django backend...");
-                    submitGoogleTokenToDjango(idToken);
-                })
+                .then((idToken) => submitGoogleTokenToDjango(idToken))
                 .catch((error) => {
-                    console.error("Firebase Sign-In Error:", error);
-
-                    if (error.code === "auth/popup-closed-by-user") {
-                        updateDebugStatus("Sign-in cancelled. Popup was closed by the user.", true);
-                        showToast("Sign-in cancelled. Please complete the popup window.", "warning");
-                    } else if (error.code === "auth/popup-blocked") {
-                        updateDebugStatus("Browser popup blocked! Automatically falling back to secure redirect mode...", true);
-                        showToast("Popup blocked. Redirecting securely in the main window...", "info");
+                    if (error.code === "auth/popup-blocked") {
                         firebase.auth().signInWithRedirect(provider);
-                        return;
                     } else {
-                        let errMsg = "Google Authentication failed.";
-                        if (error.code === "auth/operation-not-allowed") {
-                            errMsg = "Error: 'Google' Sign-In Provider is not enabled in your Firebase Console! Go to Firebase Auth -> Sign-in Method to turn it ON.";
-                        } else {
-                            errMsg = `Auth Error: ${error.message}`;
-                        }
-                        updateDebugStatus("Google Sign-In failed.", true, `Code: ${error.code}\nMessage: ${error.message}`);
-                        showToast(errMsg, "error");
+                        showToast("Authentication cancelled or failed.", "error");
+                        resetButton();
                     }
-                    resetButton();
                 });
         } else {
-            // Show custom elegant account chooser modal overlay
+            // Fallback to Demo SSO if Firebase is missing
             ssoModal.style.display = 'flex';
         }
     });
 
-    // Toggle simulated modal instantly via bypass button
-    bypassBtn.addEventListener('click', () => {
-        ssoModal.style.display = 'flex';
-        showToast("Switched to Developer Demo SSO Mode!", "info");
-    });
+    closeBtn.addEventListener('click', () => ssoModal.style.display = 'none');
 
-    // Close Modal
-    closeBtn.addEventListener('click', () => {
-        ssoModal.style.display = 'none';
-    });
-
-    // Handle account rows click
     document.querySelectorAll('.sso-account-row').forEach(row => {
         row.addEventListener('click', function () {
             const email = this.getAttribute('data-email');
@@ -904,33 +222,15 @@
         });
     });
 
-    // Handle custom submit button click
-    customSubmitBtn.addEventListener('click', () => {
-        const email = customEmailInput.value.trim();
-        if (!email || !email.includes('@')) {
-            showToast("Please enter a valid Google email address.", "error");
-            return;
-        }
-        const name = email.split('@')[0];
-        ssoModal.style.display = 'none';
-        triggerSSOConnection(email, name);
-    });
-
-    // Trigger loading state on main Google button and post
     function triggerSSOConnection(email, name) {
         const btn = document.getElementById('btn-google-login');
-        const originalText = btn.innerHTML;
-
-        btn.innerHTML = `<span style="width: 1rem; height: 1rem; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; display: inline-block; animation: spin 1s infinite linear; margin-right: 0.5rem; vertical-align: middle;"></span> Connecting...`;
+        btn.innerHTML = `<span style="width: 1.2rem; height: 1.2rem; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; display: inline-block; animation: spin 1s infinite linear;"></span>`;
         btn.disabled = true;
 
         const simulatedUid = "demo_google_uid_" + Math.random().toString(36).substr(2, 9);
         const simulatedToken = `dev_google_token_${simulatedUid}|${email}|${name}`;
 
-        // Post mock token to backend after a brief connection delay
-        setTimeout(() => {
-            submitGoogleTokenToDjango(simulatedToken);
-        }, 1000);
+        setTimeout(() => submitGoogleTokenToDjango(simulatedToken), 1000);
     }
 
     function submitGoogleTokenToDjango(idToken) {
@@ -938,62 +238,46 @@
         const formData = new FormData();
         formData.append('id_token', idToken);
 
-        updateDebugStatus("Sending secure ID token to Django server endpoint `/login/google/`...");
-
         fetch("{% url 'login_google' %}", {
             method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken
-            },
+            headers: { 'X-CSRFToken': csrfToken },
             body: formData
         })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(errData => {
-                        throw new Error(errData.message || `Server returned status ${response.status}`);
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    updateDebugStatus(`Django verified successfully! Logged in as ${data.username}. Redirecting...`);
-                    showToast(`Successfully logged in as ${data.username}! Redirecting...`, "success");
-                    setTimeout(() => {
-                        window.location.href = data.redirect_url;
-                    }, 1000);
-                } else {
-                    updateDebugStatus("Django rejected token verification.", true, data.message || "Unknown verification rejection");
-                    showToast(data.message || "Authentication verification failed.", "error");
-                    resetButton();
-                }
-            })
-            .catch(err => {
-                console.error("SSO Verification Error:", err);
-                updateDebugStatus("SSO token exchange failed with Django server.", true, err.toString());
-                showToast("Server connection failed. Try again.", "error");
+        .then(response => {
+            if (!response.ok) return response.json().then(err => { throw new Error(err.message) });
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                showToast(`Successfully logged in as ${data.username}!`, "success");
+                setTimeout(() => window.location.href = data.redirect_url, 1000);
+            } else {
+                showToast(data.message || "Verification failed.", "error");
                 resetButton();
-            });
+            }
+        })
+        .catch(err => {
+            showToast("Server connection failed.", "error");
+            resetButton();
+        });
     }
 
     function resetButton() {
         const btn = document.getElementById('btn-google-login');
         btn.innerHTML = `
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#8b5cf6"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#06b6d4"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#10b981"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#a78bfa"/>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
-            Continue with Google
+            <span style="font-weight: 600; color: white;">Continue with Google</span>
         `;
         btn.disabled = false;
     }
 </script>
 
 <style>
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 {% endblock %}

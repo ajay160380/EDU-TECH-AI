@@ -1,179 +1,199 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}EduTech AI - Distraction-Free EdTech SaaS{% endblock %}</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description"
-        content="Personalized Zen-mode EdTech platform. Convert scattered video playlists into distraction-free structured curriculums with Pomodoro timers and AI study buddy support.">
-    <meta name="keywords"
-        content="EdTech, YouTube course importer, focus room, pomodoro timer, AI study buddy">
+    <meta name="description" content="Personalized Zen-mode EdTech platform. Convert scattered video playlists into distraction-free structured curriculums with Pomodoro timers and AI study buddy support.">
+    <meta name="keywords" content="EdTech, YouTube course importer, focus room, pomodoro timer, AI study buddy">
     <meta name="author" content="EduTech AI Team">
+
+    <!-- Tailwind CSS (via CDN for Red Noir Style) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
     <!-- Fonts and External Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@200;400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Master Premium Stylesheet with Cache-Busting Version -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=3.0.1">
+    <!-- Ensure CSS is never aggressively cached during development -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v={% now 'U' %}">
 
-    <!-- Premium Dynamic Ambient Themes Engine (FOUT-Prevention) -->
+    <!-- Red Noir Custom Styling -->
     <style>
         :root {
-            --glow-1-bg: radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
-            --glow-2-bg: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
-            --glow-speed: 25s;
-            --glow-scale: 1.0;
-            --glow-opacity: 1.0;
-            --glow-blur: 40px;
+            --accent-red: #ef233c;
+            --accent-red-glow: rgba(239, 35, 60, 0.5);
         }
-        @keyframes floatGlow1 {
-            0% { transform: translate(0px, 0px) scale(var(--glow-scale)); }
-            33% { transform: translate(50px, -70px) scale(calc(var(--glow-scale) * 1.12)); }
-            66% { transform: translate(-40px, 40px) scale(calc(var(--glow-scale) * 0.88)); }
-            100% { transform: translate(0px, 0px) scale(var(--glow-scale)); }
+
+        /* Custom Animations */
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes floatGlow2 {
-            0% { transform: translate(0px, 0px) scale(var(--glow-scale)); }
-            50% { transform: translate(-60px, 60px) scale(calc(var(--glow-scale) * 1.1)); }
-            100% { transform: translate(0px, 0px) scale(var(--glow-scale)); }
+
+        @keyframes border-spin {
+            from { --gradient-angle: 0deg; }
+            to { --gradient-angle: 360deg; }
         }
-        .ambient-glow-1 {
-            background: var(--glow-1-bg) !important;
-            transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
-            animation: floatGlow1 var(--glow-speed) infinite ease-in-out !important;
-            opacity: var(--glow-opacity) !important;
-            filter: blur(var(--glow-blur)) !important;
-            transform-origin: center;
+
+        @keyframes shimmer {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
         }
-        .ambient-glow-2 {
-            background: var(--glow-2-bg) !important;
-            transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
-            animation: floatGlow2 var(--glow-speed) infinite ease-in-out !important;
-            opacity: var(--glow-opacity) !important;
-            filter: blur(var(--glow-blur)) !important;
-            transform-origin: center;
+
+        @keyframes animStar {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-2000px); }
+        }
+
+        @property --gradient-angle { 
+            syntax: "<angle>"; 
+            initial-value: 0deg; 
+            inherits: false; 
+        }
+
+        .animate-fade-up {
+            animation: fade-in-up 0.8s ease-out forwards;
+        }
+
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+
+        /* Shiny CTA Button */
+        .shiny-cta {
+            --gradient-angle: 0deg;
+            position: relative;
+            overflow: hidden;
+            border-radius: 9999px;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(#000000, #000000) padding-box,
+            conic-gradient(from var(--gradient-angle), transparent 0%, #ef233c 5%, #ef233c 15%, #ef233c 30%, transparent 40%, transparent 100%) border-box;
+            border: 2px solid transparent;
+            cursor: pointer;
+            isolation: isolate;
+            animation: border-spin 2.5s linear infinite;
+        }
+
+        .shiny-cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, white 0.5px, transparent 0);
+            background-size: 4px 4px;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        /* Parallax Stars */
+        .stars-1 { box-shadow: 234px 124px #fff, 654px 345px #fff, 876px 12px #fff, 1200px 800px #fff, 400px 1500px #fff, 1800px 200px #fff, 100px 1000px #fff, 900px 1900px #fff, 500px 600px #fff, 1400px 100px #fff, 300px 400px #fff, 1600px 1200px #fff; }
+        .stars-2 { box-shadow: 123px 456px #fff, 789px 234px #fff, 456px 890px #fff, 1100px 300px #fff, 200px 1200px #fff, 1500px 500px #fff, 600px 1700px #fff, 1300px 900px #fff; }
+
+        .gradient-blur {
+            position: fixed;
+            z-index: 40;
+            inset: 0 0 auto 0;
+            height: 120px;
+            pointer-events: none;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            backdrop-filter: blur(8px);
+            mask-image: linear-gradient(to bottom, black, transparent);
+        }
+
+        .selection-red::selection {
+            background: #ef233c;
+            color: white;
+        }
+
+        .text-stroke {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+            color: transparent;
         }
     </style>
-    <script>
-        (function() {
-            try {
-                const activeTheme = localStorage.getItem('ambient-glow-theme') || 'nebula';
-                const themesConfig = {
-                    'nebula': {
-                        '--glow-1-bg': 'radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, rgba(0, 0, 0, 0) 70%)',
-                        '--glow-2-bg': 'radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(0, 0, 0, 0) 70%)'
-                    },
-                    'cyberpunk': {
-                        '--glow-1-bg': 'radial-gradient(circle, rgba(236, 72, 153, 0.18) 0%, rgba(0, 0, 0, 0) 70%)',
-                        '--glow-2-bg': 'radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(0, 0, 0, 0) 70%)'
-                    },
-                    'emerald': {
-                        '--glow-1-bg': 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, rgba(0, 0, 0, 0) 70%)',
-                        '--glow-2-bg': 'radial-gradient(circle, rgba(20, 184, 166, 0.15) 0%, rgba(0, 0, 0, 0) 70%)'
-                    },
-                    'sunset': {
-                        '--glow-1-bg': 'radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, rgba(0, 0, 0, 0) 70%)',
-                        '--glow-2-bg': 'radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(0, 0, 0, 0) 70%)'
-                    },
-                    'solar': {
-                        '--glow-1-bg': 'radial-gradient(circle, rgba(234, 179, 8, 0.22) 0%, rgba(0, 0, 0, 0) 70%)',
-                        '--glow-2-bg': 'radial-gradient(circle, rgba(146, 64, 14, 0.18) 0%, rgba(0, 0, 0, 0) 70%)'
-                    }
-                };
-                const config = themesConfig[activeTheme] || themesConfig['nebula'];
-                for (const [prop, value] of Object.entries(config)) {
-                    document.documentElement.style.setProperty(prop, value);
-                }
-                
-                // Dynamic Animation configs
-                const savedSpeed = localStorage.getItem('ambient-glow-speed') || '25s';
-                const savedScale = localStorage.getItem('ambient-glow-scale') || '1.0';
-                const savedOpacity = localStorage.getItem('ambient-glow-opacity') || '1.0';
-                const savedBlur = localStorage.getItem('ambient-glow-blur') || '40px';
-                
-                document.documentElement.style.setProperty('--glow-speed', savedSpeed);
-                document.documentElement.style.setProperty('--glow-scale', savedScale);
-                document.documentElement.style.setProperty('--glow-opacity', savedOpacity);
-                document.documentElement.style.setProperty('--glow-blur', savedBlur);
-            } catch (e) {
-                console.error("Theme Engine Exception:", e);
-            }
-        })();
-    </script>
 
     {% block extra_head %}{% endblock %}
 </head>
 
-<body>
-    <!-- Ambient Blur Background Glows -->
-    <div class="ambient-glow-1"></div>
-    <div class="ambient-glow-2"></div>
-
-    <!-- Django Flash Messages Toasts -->
-    {% if messages %}
-    <div class="messages-container">
-        {% for message in messages %}
-        <div
-            class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}success{% endif %}">
-            <span>{{ message }}</span>
-            <span class="close-alert" style="cursor:pointer; margin-left:1.5rem; font-weight:700;">&times;</span>
+<body class="selection-red bg-black text-white font-inter">
+    <div class="min-h-screen relative overflow-x-hidden">
+        
+        <!-- Global Background -->
+        <div class="fixed inset-0 z-0 pointer-events-none">
+            <div class="absolute inset-0 bg-gradient-to-b from-[#1a0505] to-black"></div>
+            <div class="absolute top-0 left-0 w-[1px] h-[1px] bg-transparent stars-1 animate-[animStar_50s_linear_infinite]"></div>
+            <div class="absolute top-0 left-0 w-[2px] h-[2px] bg-transparent stars-2 animate-[animStar_80s_linear_infinite]"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-600/5 rounded-full blur-[120px]"></div>
+            <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(circle_at_center,black_40%,transparent_80%)]"></div>
         </div>
-        {% endfor %}
+
+        <!-- Top Blur Header -->
+        <div class="gradient-blur"></div>
+
+        <!-- Navbar -->
+        <header class="fixed top-0 left-0 w-full z-50 pt-6 px-4">
+            <nav class="max-w-5xl mx-auto flex items-center justify-between bg-black/60 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 shadow-2xl">
+                <!-- Glowing Neon 'E' Logo -->
+                <a href="{% url 'home' %}" class="nav-brand flex items-center gap-2 hover:scale-105 transition-transform duration-300" style="text-decoration: none;">
+                    <div class="relative w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#111] to-black border border-[#ef233c]/30 shadow-[0_0_15px_rgba(239,35,60,0.4)] overflow-hidden group">
+                        <div class="absolute inset-0 bg-[#ef233c]/10 group-hover:bg-[#ef233c]/20 transition-colors duration-300"></div>
+                        <span class="relative text-[#ef233c] font-bold text-xl leading-none drop-shadow-[0_0_8px_rgba(239,35,60,0.8)]" style="font-family: 'Outfit', sans-serif;">E</span>
+                    </div>
+                    <span class="text-xl font-bold font-manrope tracking-tight text-white drop-shadow-md">EduTech AI</span>
+                </a>
+                
+                <div class="hidden md:flex items-center gap-8 relative">
+                    <a href="{% url 'home' %}" class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'home' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Home</a>
+                    <a href="{% url 'about' %}" class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'about' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">About</a>
+                    <a href="{% url 'pricing' %}" class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'pricing' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Pricing</a>
+                    
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'dashboard' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Dashboard</a>
+                    <a href="{% url 'import_course' %}" class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'import_course' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Import</a>
+                    <a href="{% url 'focus_room' %}" class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'focus_room' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Focus Room 🎧</a>
+                    {% endif %}
+                </div>
+
+                <div class="flex items-center gap-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'profile' %}" class="hidden md:block text-sm font-medium text-zinc-300 hover:text-white transition-colors">Profile</a>
+                        <a href="{% url 'logout' %}" class="btn-primary rounded-full px-6 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300">
+                            Logout
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="hidden md:block text-sm font-medium text-zinc-300 hover:text-white transition-colors">Log In</a>
+                        <a href="{% url 'register' %}" class="btn-primary rounded-full px-6 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 relative overflow-hidden group">
+                            <span class="relative z-10 flex items-center gap-2">
+                                Get Access <iconify-icon icon="lucide:arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></iconify-icon>
+                            </span>
+                        </a>
+                    {% endif %}
+                </div>
+            </nav>
+        </header>
+
+        <!-- Django Flash Messages Toasts -->
+        {% if messages %}
+        <div class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 w-full max-w-md px-4">
+            {% for message in messages %}
+            <div class="flex items-center justify-between p-4 rounded-xl border {% if message.tags == 'error' %}bg-red-950/80 border-red-500 text-red-200{% elif message.tags == 'warning' %}bg-yellow-950/80 border-yellow-500 text-yellow-200{% else %}bg-zinc-900/80 border-zinc-700 text-zinc-200{% endif %} backdrop-blur-md shadow-2xl">
+                <span class="text-sm font-medium">{{ message }}</span>
+                <span class="cursor-pointer font-bold ml-4 opacity-70 hover:opacity-100 transition-opacity" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <main class="relative z-10 w-full pt-24">
+            {% block content %}{% endblock %}
+        </main>
     </div>
-    {% endif %}
 
-    <!-- Premium Navigation Menu -->
-    <nav class="navbar" id="main-navbar">
-        <a href="{% url 'home' %}" class="nav-brand" id="navbar-logo">
-            Edu<span>Tech AI</span>
-        </a>
-
-        <ul class="nav-links" id="navbar-links-list">
-            <li><a href="{% url 'home' %}"
-                    class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
-            <li><a href="{% url 'about' %}"
-                    class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a></li>
-            <li><a href="{% url 'pricing' %}"
-                    class="nav-link {% if request.resolver_match.url_name == 'pricing' %}active{% endif %}">Pricing</a>
-            </li>
-            {% if user.is_authenticated %}
-            <li><a href="{% url 'dashboard' %}"
-                    class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
-            </li>
-            <li><a href="{% url 'focus_room' %}"
-                    class="nav-link {% if request.resolver_match.url_name == 'focus_room' %}active{% endif %}">Focus
-                    Room 🎧</a></li>
-            <li><a href="{% url 'import_course' %}"
-                    class="nav-link {% if request.resolver_match.url_name == 'import_course' %}active{% endif %}">Import
-                    Playlist</a></li>
-            <li><a href="{% url 'profile' %}"
-                    class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">Profile</a>
-            </li>
-            <li><a href="{% url 'logout' %}" class="btn btn-secondary" id="btn-logout"
-                    style="padding: 0.5rem 1rem; font-size: 0.85rem;">Logout</a></li>
-            {% else %}
-            <li><a href="{% url 'login' %}"
-                    class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}">Login</a></li>
-            <li><a href="{% url 'register' %}" class="btn btn-primary" id="btn-register-nav"
-                    style="padding: 0.5rem 1.25rem; font-size: 0.85rem;">Get Started</a></li>
-            {% endif %}
-        </ul>
-    </nav>
-
-    <!-- Main Content Injection Wrapper -->
-    <main class="main-content" id="main-container-slot">
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- JavaScript Interactive Scripts with Cache-Busting Version -->
-    <script src="{% static 'js/main.js' %}?v=3.0.1"></script>
+    <!-- JavaScript Interactive Scripts -->
+    <script src="{% static 'js/main.js' %}?v={% now 'U' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
-
 </html>
