@@ -1,0 +1,157 @@
+/* ==========================================================================
+   THEME SOFTLY — Digital Wellness Aesthetics
+   ========================================================================== */
+
+:root {
+    --soft-bg: #FDFCF8;
+    --soft-sage: #E8EFE8;
+    --soft-lavender: #EFEDF4;
+    --soft-coral: #FFB7B2;
+    --soft-dark: #292524;
+    --soft-muted: #78716C;
+    
+    --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    --shadow-heavy: 0 12px 40px -8px rgba(0, 0, 0, 0.15);
+    
+    --font-primary: 'Outfit', sans-serif;
+    --font-accent: 'Reenie Beanie', cursive;
+}
+
+/* Base Styles Overrides */
+body {
+    background-color: var(--soft-bg);
+    color: var(--soft-dark);
+    font-family: var(--font-primary);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Typography Utilities */
+.font-outfit { font-family: var(--font-primary); }
+.font-reenie { font-family: var(--font-accent); }
+
+.tracking-tight-custom { letter-spacing: -0.025em; }
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--soft-dark);
+}
+
+/* Grain Overlay Layer */
+.grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0.35;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Floating Animations */
+@keyframes soft-float {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+}
+
+@keyframes soft-float-reverse {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(20px) scale(0.95); }
+}
+
+.animate-soft-float {
+    animation: soft-float 6s ease-in-out infinite;
+}
+
+.animate-soft-float-reverse {
+    animation: soft-float-reverse 7s ease-in-out infinite;
+}
+
+/* Reveal On Scroll */
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Components */
+.soft-pill-nav {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: var(--shadow-soft);
+    border-radius: 9999px;
+}
+
+.soft-btn-primary {
+    background-color: var(--soft-coral);
+    color: var(--soft-dark);
+    border-radius: 9999px;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-weight: 500;
+}
+
+.soft-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-heavy);
+}
+
+.soft-btn-secondary {
+    background-color: white;
+    color: var(--soft-dark);
+    border: 1px solid #E7E5E4; /* stone-200 */
+    border-radius: 9999px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    font-weight: 500;
+}
+
+.soft-btn-secondary:hover {
+    background-color: #F5F5F4; /* stone-100 */
+}
+
+/* Hide tailwind text/bg colors when Softly theme is applied */
+.soft-theme-override .text-white { color: var(--soft-dark) !important; }
+.soft-theme-override .bg-black { background-color: var(--soft-bg) !important; }
+.soft-theme-override .text-zinc-400 { color: var(--soft-muted) !important; }
+
+/* Custom Rounded Corners */
+.rounded-soft-lg { border-radius: 2rem; }
+.rounded-soft-xl { border-radius: 3rem; }
+.rounded-soft-2xl { border-radius: 4rem; }
+
+/* Horizontal Scroll Hide Scrollbar */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Accordion Specific */
+.accordion-content {
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, padding 0.5s ease-in-out;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding-bottom: 0;
+}
+
+.accordion-item.is-open .accordion-content {
+    max-height: 500px; /* Arbitrary large number */
+    opacity: 1;
+    padding-bottom: 24px;
+}
+
+.accordion-icon {
+    transition: transform 0.4s ease;
+}
+
+.accordion-item.is-open .accordion-icon {
+    transform: rotate(45deg);
+}
