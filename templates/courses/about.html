@@ -1,91 +1,639 @@
 {% extends 'courses/base.html' %}
 {% load static %}
 
-{% block title %}EduTech AI - Our Mission: Combatting Internet Distractions{% endblock %}
+{% block title %}EduTech AI — Our Mission: Reclaiming Focus{% endblock %}
 
 {% block content %}
 
-<div class="container" id="about-view-container" style="position: relative; z-index: 2;">
-    <div style="max-width: 800px; margin: 0 auto;">
+<!-- Hero Section -->
+<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6">
+    <div class="text-center max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up"
+            style="animation-delay: 0.1s;">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span class="text-xs font-medium text-red-100/90 tracking-wide font-manrope">
+                Our Mission
+            </span>
+        </div>
 
-        <!-- Header -->
-        <header style="text-align: center; margin-bottom: 4rem;">
-            <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 1.5rem;" id="about-title-main">
-                Reclaiming Our <span>Focus</span> & Attention
-            </h1>
-            <p class="hero-subtitle" style="font-size: 1.15rem;" id="about-subtitle-desc">
-                YouTube holds the largest library of educational content on Earth—yet it was engineered to keep you
-                scrolling, not learning.
-            </p>
-        </header>
+        <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter font-manrope leading-[1.1] mb-8 animate-fade-up"
+            style="animation-delay: 0.2s;">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40">
+                Reclaiming Our
+            </span>
+            <span class="block text-primary">Focus & Attention</span>
+        </h1>
 
-        <!-- Mission Content Cards -->
-        <div class="glass-card" style="margin-bottom: 2.5rem; line-height: 1.7; color: var(--text-secondary);"
-            id="mission-card-challenge">
+        <p class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed animate-fade-up"
+            style="animation-delay: 0.3s;">
+            YouTube holds the largest library of educational content on Earth — yet it was engineered to keep you
+            scrolling, not learning. We're here to change that.
+        </p>
+    </div>
+</section>
+
+<!-- The Problem Section -->
+<section class="py-20 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <!-- Left: Visual -->
+            <div class="relative animate-fade-up" style="animation-delay: 0.2s;">
+                <div
+                    class="aspect-square rounded-3xl bg-gradient-to-br from-primary/10 to-primary/5 border border-white/[0.08] backdrop-blur-sm p-8 flex items-center justify-center overflow-hidden relative group">
+                    <div
+                        class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(239,35,60,0.15),transparent_70%)]">
+                    </div>
+                    <div class="relative text-center">
+                        <div class="text-8xl font-black text-[#991b1b] mb-4 font-manrope">67%</div>
+                        <p class="text-zinc-400 text-sm leading-relaxed max-w-xs mx-auto">
+                            Of students report significant focus degradation when learning through traditional
+                            social-media platforms
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Content -->
+            <div class="animate-fade-up" style="animation-delay: 0.35s;">
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">The Crisis</p>
+                <h2 class="text-3xl md:text-4xl font-semibold text-white tracking-tight font-manrope mb-6">
+                    The Dopamine Crisis in Modern Education
+                </h2>
+                <p class="text-zinc-400 leading-relaxed mb-5">
+                    When you open a brilliant Python programming playlist on standard YouTube, you're competing against
+                    one of the world's most powerful recommendation engines. Within seconds, you're bombarded with:
+                </p>
+                <ul class="space-y-4 mb-6">
+                    <li class="flex items-start gap-3">
+                        <span
+                            class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center mt-0.5">
+                            <iconify-icon icon="lucide:alert-triangle"
+                                class="w-3.5 h-3.5 text-primary"></iconify-icon>
+                        </span>
+                        <span class="text-zinc-300 text-sm leading-relaxed"><strong class="text-white">Clickbait
+                                Thumbnails</strong> — Vibrant, algorithmically-optimized recommendations designed to
+                            hijack your train of thought.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span
+                            class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center mt-0.5">
+                            <iconify-icon icon="lucide:message-circle"
+                                class="w-3.5 h-3.5 text-primary"></iconify-icon>
+                        </span>
+                        <span class="text-zinc-300 text-sm leading-relaxed"><strong class="text-white">Endless
+                                Comments</strong> — Debates, replies, and threads calling for your attention when you
+                            should be absorbing concepts.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span
+                            class="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center mt-0.5">
+                            <iconify-icon icon="lucide:tv" class="w-3.5 h-3.5 text-primary"></iconify-icon>
+                        </span>
+                        <span class="text-zinc-300 text-sm leading-relaxed"><strong class="text-white">Unskippable
+                                Ads</strong> — Repetitive advertisements breaking your cognitive flow right as complex
+                            concepts click.</span>
+                    </li>
+                </ul>
+                <p class="text-zinc-500 text-sm leading-relaxed border-l-2 border-primary/40 pl-4 italic">
+                    Distraction-free learning spaces are no longer a luxury — they are a critical educational necessity.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Premium Divider -->
+<div class="max-w-5xl mx-auto px-6">
+    <div class="section-divider-premium"></div>
+</div>
+
+<!-- What Makes Us Unique? — Stacked Timeline -->
+<section class="py-24 px-6 relative overflow-hidden" id="unique-section">
+    <!-- Ambient background glow -->
+    <div class="absolute inset-0 pointer-events-none">
+        <div
+            class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(239,35,60,0.06)_0%,transparent_70%)] blur-3xl">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(239,35,60,0.04)_0%,transparent_70%)] blur-3xl">
+        </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto relative z-10">
+        <!-- Section Header -->
+        <div class="text-center mb-20 reveal-on-scroll">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-md mb-6">
+                <span class="relative flex h-2 w-2">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                </span>
+                <span class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">What Makes Us
+                    Unique</span>
+            </div>
             <h2
-                style="color: var(--text-primary); font-size: 1.75rem; margin-bottom: 1rem; border-left: 4px solid var(--accent-primary); padding-left: 1rem;">
-                The Dopamine Crisis in Modern Education
+                class="text-3xl md:text-5xl lg:text-6xl font-semibold text-white tracking-tight font-manrope mb-5 leading-[1.15]">
+                Engineered for <br class="md:hidden" /><span class="text-primary">Deep Focus</span>
             </h2>
-            <p style="margin-bottom: 1rem;">
-                When you open a brilliant python programming playlist on standard YouTube, you are competing against one
-                of the world's most powerful recommendation engines. In seconds, you are bombarded with:
-            </p>
-            <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem;">
-                <li style="margin-bottom: 0.5rem;">Vibrant, clickbaity thumbnail recommendations designed to disrupt
-                    your train of thought.</li>
-                <li style="margin-bottom: 0.5rem;">Endless comments and comment replies calling for your debate and
-                    attention.</li>
-                <li style="margin-bottom: 0.5rem;">Repetitive unskippable advertisements breaking your cognitive flow
-                    right as concepts click.</li>
-            </ul>
-            <p>
-                Studies show that average student retention and focus spans are dropping steadily. Distraction-free
-                spaces are no longer a luxury; they are a critical educational necessity.
+            <p class="text-zinc-400 max-w-xl mx-auto text-base leading-relaxed">
+                We didn't just build another learning platform. We re-architected the entire experience around one
+                ruthless principle: <span class="text-zinc-200 font-medium">protect attention at all costs.</span>
             </p>
         </div>
 
-        <div class="glass-card" style="margin-bottom: 2.5rem; line-height: 1.7; color: var(--text-secondary);"
-            id="mission-card-solution">
-            <h2
-                style="color: var(--text-primary); font-size: 1.75rem; margin-bottom: 1rem; border-left: 4px solid var(--accent-secondary); padding-left: 1rem;">
-                Our Core Principles & Philosophy
+        <!-- Timeline -->
+        <div class="relative">
+            <!-- Central glowing timeline (desktop) -->
+            <div class="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 z-0">
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/40 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/10 to-transparent blur-sm">
+                </div>
+            </div>
+
+            <!-- Mobile timeline (left-aligned) -->
+            <div class="lg:hidden absolute left-6 top-8 bottom-8 w-0.5 z-0">
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/30 to-transparent"></div>
+            </div>
+
+            <!-- Card 1: AI Distraction Shield -->
+            <div class="relative mb-16 lg:mb-24 reveal-on-scroll">
+                <div class="lg:flex lg:items-center lg:gap-0">
+                    <!-- Left content (desktop) -->
+                    <div class="lg:w-1/2 lg:pr-16 lg:text-right">
+                        <div
+                            class="unique-card group relative bg-white/[0.03] border border-white/[0.07] rounded-2xl p-6 md:p-8 backdrop-blur-sm hover:bg-white/[0.05] hover:border-primary/30 transition-all duration-500 hover:shadow-[0_0_40px_rgba(239,35,60,0.08)] hover:-translate-y-1">
+                            <div class="flex lg:flex-row-reverse items-start gap-4 mb-4">
+                                <div
+                                    class="flex-shrink-0 w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/40 group-hover:shadow-[0_0_25px_rgba(239,35,60,0.25)] transition-all duration-500">
+                                    <iconify-icon icon="lucide:shield-alert"
+                                        class="w-5 h-5 text-primary"></iconify-icon>
+                                </div>
+                                <div class="lg:text-right">
+                                    <span
+                                        class="inline-block text-xs font-bold uppercase tracking-[0.15em] text-primary/70 mb-1">Core
+                                        Tech</span>
+                                    <h3 class="text-xl md:text-2xl font-semibold text-white font-manrope">AI Distraction
+                                        Shield</h3>
+                                </div>
+                            </div>
+                            <p class="text-zinc-400 text-sm leading-relaxed lg:text-right">
+                                Our proprietary filtering engine <span class="text-zinc-200 font-medium">strips YouTube
+                                    to the bone</span> — no thumbnails, no recommended rabbit holes, no comment threads.
+                                Just pure, uninterrupted curriculum delivery. The algorithm fights distraction so you
+                                don't have to.
+                            </p>
+                            <div class="mt-4 flex lg:justify-end gap-2 flex-wrap">
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary/80">Noise
+                                    Filtering</span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-400">Clean
+                                    Embed</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Center node -->
+                    <div
+                        class="hidden lg:flex absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[#0a0a0a] border-2 border-primary/30 items-center justify-center z-10 shadow-[0_0_20px_rgba(239,35,60,0.2)] group-hover:shadow-[0_0_35px_rgba(239,35,60,0.4)] transition-shadow duration-500">
+                        <span class="text-lg font-black text-primary font-manrope">01</span>
+                    </div>
+                    <!-- Right spacer -->
+                    <div class="hidden lg:block lg:w-1/2 lg:pl-16"></div>
+                </div>
+                <!-- Mobile layout -->
+                <div class="lg:hidden">
+                    <div
+                        class="unique-card group relative bg-white/[0.03] border border-white/[0.07] rounded-2xl p-6 backdrop-blur-sm hover:bg-white/[0.05] hover:border-primary/30 transition-all duration-500 ml-12">
+                        <div
+                            class="absolute left-0 top-8 -translate-x-[calc(100%+18px)] w-10 h-10 rounded-full bg-[#0a0a0a] border-2 border-primary/30 flex items-center justify-center shadow-[0_0_15px_rgba(239,35,60,0.2)]">
+                            <span class="text-sm font-black text-primary font-manrope">01</span>
+                        </div>
+                        <div class="flex items-start gap-3 mb-3">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                <iconify-icon icon="lucide:shield-alert" class="w-5 h-5 text-primary"></iconify-icon>
+                            </div>
+                            <div>
+                                <span
+                                    class="inline-block text-[10px] font-bold uppercase tracking-[0.15em] text-primary/70 mb-0.5">Core
+                                    Tech</span>
+                                <h3 class="text-lg font-semibold text-white font-manrope">AI Distraction Shield</h3>
+                            </div>
+                        </div>
+                        <p class="text-zinc-400 text-sm leading-relaxed">
+                            Our proprietary filtering engine <span class="text-zinc-200 font-medium">strips YouTube to
+                                the bone</span> — no thumbnails, no recommended rabbit holes, no comment threads. Just
+                            pure, uninterrupted curriculum delivery.
+                        </p>
+                        <div class="mt-3 flex gap-2 flex-wrap">
+                            <span
+                                class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary/80">Noise
+                                Filtering</span>
+                            <span
+                                class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-400">Clean
+                                Embed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Real-Time Focus Nudges -->
+            <div class="relative mb-16 lg:mb-24 reveal-on-scroll">
+                <div class="lg:flex lg:items-center lg:gap-0">
+                    <!-- Left spacer -->
+                    <div class="hidden lg:block lg:w-1/2 lg:pr-16"></div>
+                    <!-- Center node -->
+                    <div
+                        class="hidden lg:flex absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[#0a0a0a] border-2 border-primary/30 items-center justify-center z-10 shadow-[0_0_20px_rgba(239,35,60,0.2)]">
+                        <span class="text-lg font-black text-primary font-manrope">02</span>
+                    </div>
+                    <!-- Right content -->
+                    <div class="lg:w-1/2 lg:pl-16">
+                        <div
+                            class="unique-card group relative bg-white/[0.03] border border-white/[0.07] rounded-2xl p-6 md:p-8 backdrop-blur-sm hover:bg-white/[0.05] hover:border-primary/30 transition-all duration-500 hover:shadow-[0_0_40px_rgba(239,35,60,0.08)] hover:-translate-y-1">
+                            <div class="flex items-start gap-4 mb-4">
+                                <div
+                                    class="flex-shrink-0 w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/40 group-hover:shadow-[0_0_25px_rgba(239,35,60,0.25)] transition-all duration-500">
+                                    <iconify-icon icon="lucide:zap" class="w-5 h-5 text-primary"></iconify-icon>
+                                </div>
+                                <div>
+                                    <span
+                                        class="inline-block text-xs font-bold uppercase tracking-[0.15em] text-primary/70 mb-1">Behavioral
+                                        AI</span>
+                                    <h3 class="text-xl md:text-2xl font-semibold text-white font-manrope">Real-Time
+                                        Focus Nudges</h3>
+                                </div>
+                            </div>
+                            <p class="text-zinc-400 text-sm leading-relaxed">
+                                When attention drifts, <span class="text-zinc-200 font-medium">we catch it before you
+                                    do</span>. Gentle, context-aware nudges — a pulse on the Pomodoro, a subtle progress
+                                checkpoint — pull you back into flow without breaking your rhythm. Like having an
+                                invisible coach who wants you to win.
+                            </p>
+                            <div class="mt-4 flex gap-2 flex-wrap">
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary/80">Pomodoro
+                                    Sync</span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-400">Flow
+                                    State</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mobile layout -->
+                <div class="lg:hidden">
+                    <div
+                        class="unique-card group relative bg-white/[0.03] border border-white/[0.07] rounded-2xl p-6 backdrop-blur-sm hover:bg-white/[0.05] hover:border-primary/30 transition-all duration-500 ml-12">
+                        <div
+                            class="absolute left-0 top-8 -translate-x-[calc(100%+18px)] w-10 h-10 rounded-full bg-[#0a0a0a] border-2 border-primary/30 flex items-center justify-center shadow-[0_0_15px_rgba(239,35,60,0.2)]">
+                            <span class="text-sm font-black text-primary font-manrope">02</span>
+                        </div>
+                        <div class="flex items-start gap-3 mb-3">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                <iconify-icon icon="lucide:zap" class="w-5 h-5 text-primary"></iconify-icon>
+                            </div>
+                            <div>
+                                <span
+                                    class="inline-block text-[10px] font-bold uppercase tracking-[0.15em] text-primary/70 mb-0.5">Behavioral
+                                    AI</span>
+                                <h3 class="text-lg font-semibold text-white font-manrope">Real-Time Focus Nudges</h3>
+                            </div>
+                        </div>
+                        <p class="text-zinc-400 text-sm leading-relaxed">
+                            When attention drifts, <span class="text-zinc-200 font-medium">we catch it before you
+                                do</span>. Gentle, context-aware nudges pull you back into flow without breaking your
+                            rhythm.
+                        </p>
+                        <div class="mt-3 flex gap-2 flex-wrap">
+                            <span
+                                class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary/80">Pomodoro
+                                Sync</span>
+                            <span
+                                class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-400">Flow
+                                State</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Focus-First Architecture -->
+            <div class="relative mb-16 lg:mb-24 reveal-on-scroll">
+                <div class="lg:flex lg:items-center lg:gap-0">
+                    <!-- Left content -->
+                    <div class="lg:w-1/2 lg:pr-16 lg:text-right">
+                        <div
+                            class="unique-card group relative bg-white/[0.03] border border-white/[0.07] rounded-2xl p-6 md:p-8 backdrop-blur-sm hover:bg-white/[0.05] hover:border-primary/30 transition-all duration-500 hover:shadow-[0_0_40px_rgba(239,35,60,0.08)] hover:-translate-y-1">
+                            <div class="flex lg:flex-row-reverse items-start gap-4 mb-4">
+                                <div
+                                    class="flex-shrink-0 w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/40 group-hover:shadow-[0_0_25px_rgba(239,35,60,0.25)] transition-all duration-500">
+                                    <iconify-icon icon="lucide:layers" class="w-5 h-5 text-primary"></iconify-icon>
+                                </div>
+                                <div class="lg:text-right">
+                                    <span
+                                        class="inline-block text-xs font-bold uppercase tracking-[0.15em] text-primary/70 mb-1">Design
+                                        Philosophy</span>
+                                    <h3 class="text-xl md:text-2xl font-semibold text-white font-manrope">Focus-First
+                                        Architecture</h3>
+                                </div>
+                            </div>
+                            <p class="text-zinc-400 text-sm leading-relaxed lg:text-right">
+                                Every pixel, every interaction, every feature is <span
+                                    class="text-zinc-200 font-medium">measured against one question</span>: does this
+                                help the learner stay locked in? We say no to feature bloat and yes to a zen-mode
+                                sanctuary where deep work thrives — backed by lo-fi soundscapes and precision Pomodoro
+                                cycles.
+                            </p>
+                            <div class="mt-4 flex lg:justify-end gap-2 flex-wrap">
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary/80">Zen
+                                    Mode</span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-400">Lo-Fi
+                                    Beats</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Center node -->
+                    <div
+                        class="hidden lg:flex absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[#0a0a0a] border-2 border-primary/30 items-center justify-center z-10 shadow-[0_0_20px_rgba(239,35,60,0.2)]">
+                        <span class="text-lg font-black text-primary font-manrope">03</span>
+                    </div>
+                    <!-- Right spacer -->
+                    <div class="hidden lg:block lg:w-1/2 lg:pl-16"></div>
+                </div>
+                <!-- Mobile layout -->
+                <div class="lg:hidden">
+                    <div
+                        class="unique-card group relative bg-white/[0.03] border border-white/[0.07] rounded-2xl p-6 backdrop-blur-sm hover:bg-white/[0.05] hover:border-primary/30 transition-all duration-500 ml-12">
+                        <div
+                            class="absolute left-0 top-8 -translate-x-[calc(100%+18px)] w-10 h-10 rounded-full bg-[#0a0a0a] border-2 border-primary/30 flex items-center justify-center shadow-[0_0_15px_rgba(239,35,60,0.2)]">
+                            <span class="text-sm font-black text-primary font-manrope">03</span>
+                        </div>
+                        <div class="flex items-start gap-3 mb-3">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                <iconify-icon icon="lucide:layers" class="w-5 h-5 text-primary"></iconify-icon>
+                            </div>
+                            <div>
+                                <span
+                                    class="inline-block text-[10px] font-bold uppercase tracking-[0.15em] text-primary/70 mb-0.5">Design
+                                    Philosophy</span>
+                                <h3 class="text-lg font-semibold text-white font-manrope">Focus-First Architecture</h3>
+                            </div>
+                        </div>
+                        <p class="text-zinc-400 text-sm leading-relaxed">
+                            Every pixel is <span class="text-zinc-200 font-medium">measured against one question</span>:
+                            does this help the learner stay locked in? We say no to feature bloat and yes to a zen-mode
+                            sanctuary.
+                        </p>
+                        <div class="mt-3 flex gap-2 flex-wrap">
+                            <span
+                                class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary/80">Zen
+                                Mode</span>
+                            <span
+                                class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-400">Lo-Fi
+                                Beats</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Active Intelligence Layer -->
+            <div class="relative reveal-on-scroll">
+                <div class="lg:flex lg:items-center lg:gap-0">
+                    <!-- Left spacer -->
+                    <div class="hidden lg:block lg:w-1/2 lg:pr-16"></div>
+                    <!-- Center node -->
+                    <div
+                        class="hidden lg:flex absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[#0a0a0a] border-2 border-primary/30 items-center justify-center z-10 shadow-[0_0_20px_rgba(239,35,60,0.2)]">
+                        <span class="text-lg font-black text-primary font-manrope">04</span>
+                    </div>
+                    <!-- Right content -->
+                    <div class="lg:w-1/2 lg:pl-16">
+                        <div
+                            class="unique-card group relative bg-white/[0.03] border border-white/[0.07] rounded-2xl p-6 md:p-8 backdrop-blur-sm hover:bg-white/[0.05] hover:border-primary/30 transition-all duration-500 hover:shadow-[0_0_40px_rgba(239,35,60,0.08)] hover:-translate-y-1">
+                            <div class="flex items-start gap-4 mb-4">
+                                <div
+                                    class="flex-shrink-0 w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/40 group-hover:shadow-[0_0_25px_rgba(239,35,60,0.25)] transition-all duration-500">
+                                    <iconify-icon icon="lucide:brain-circuit"
+                                        class="w-5 h-5 text-primary"></iconify-icon>
+                                </div>
+                                <div>
+                                    <span
+                                        class="inline-block text-xs font-bold uppercase tracking-[0.15em] text-primary/70 mb-1">Groq-Powered
+                                        AI</span>
+                                    <h3 class="text-xl md:text-2xl font-semibold text-white font-manrope">Active
+                                        Intelligence Layer</h3>
+                                </div>
+                            </div>
+                            <p class="text-zinc-400 text-sm leading-relaxed">
+                                Passive watching is <span class="text-zinc-200 font-medium">the enemy of
+                                    retention</span>. Our Groq AI engine transforms every video into structured
+                                summaries, concept maps, and adaptive quizzes — forcing active recall that makes
+                                knowledge stick. You don't just watch. You <span
+                                    class="text-zinc-200 font-medium">master</span>.
+                            </p>
+                            <div class="mt-4 flex gap-2 flex-wrap">
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary/80">AI
+                                    Quizzes</span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-400">Smart
+                                    Summaries</span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-400">Certificates</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mobile layout -->
+                <div class="lg:hidden">
+                    <div
+                        class="unique-card group relative bg-white/[0.03] border border-white/[0.07] rounded-2xl p-6 backdrop-blur-sm hover:bg-white/[0.05] hover:border-primary/30 transition-all duration-500 ml-12">
+                        <div
+                            class="absolute left-0 top-8 -translate-x-[calc(100%+18px)] w-10 h-10 rounded-full bg-[#0a0a0a] border-2 border-primary/30 flex items-center justify-center shadow-[0_0_15px_rgba(239,35,60,0.2)]">
+                            <span class="text-sm font-black text-primary font-manrope">04</span>
+                        </div>
+                        <div class="flex items-start gap-3 mb-3">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                <iconify-icon icon="lucide:brain-circuit" class="w-5 h-5 text-primary"></iconify-icon>
+                            </div>
+                            <div>
+                                <span
+                                    class="inline-block text-[10px] font-bold uppercase tracking-[0.15em] text-primary/70 mb-0.5">Groq-Powered
+                                    AI</span>
+                                <h3 class="text-lg font-semibold text-white font-manrope">Active Intelligence Layer</h3>
+                            </div>
+                        </div>
+                        <p class="text-zinc-400 text-sm leading-relaxed">
+                            Passive watching is <span class="text-zinc-200 font-medium">the enemy of retention</span>.
+                            Our Groq AI transforms every video into summaries, concept maps, and adaptive quizzes —
+                            forcing active recall that sticks.
+                        </p>
+                        <div class="mt-3 flex gap-2 flex-wrap">
+                            <span
+                                class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary/80">AI
+                                Quizzes</span>
+                            <span
+                                class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-400">Smart
+                                Summaries</span>
+                            <span
+                                class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-zinc-400">Certificates</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Premium Divider -->
+<div class="max-w-5xl mx-auto px-6">
+    <div class="section-divider-premium"></div>
+</div>
+
+<!-- How It Works Section -->
+<section class="py-20 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-16 animate-fade-up">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">The Shield</p>
+            <h2 class="text-3xl md:text-5xl font-semibold text-white tracking-tight font-manrope mb-4">
+                How EduTech AI Protects Your Focus
             </h2>
-            <p style="margin-bottom: 1rem;">
-                We built EduTech AI around three foundational principles to construct a premium learning sanctuary:
-            </p>
-            <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem;">
-                <li style="margin-bottom: 0.75rem;">
-                    <strong>Isolation is Power</strong>: We embed the YouTube player under clean, distraction-free
-                    parameters—stripping recommended recommendations, autoplay lists, and comment panels.
-                </li>
-                <li style="margin-bottom: 0.75rem;">
-                    <strong>Active Pomodoro Cycles</strong>: Time-boxing prevents study burnout. Breaking study blocks
-                    into intervals sustains a healthy learning flow, and the built-in music player supplies steady lo-fi
-                    beats to keep you focused.
-                </li>
-                <li style="margin-bottom: 0.75rem;">
-                    <strong>Intelligent Assessment</strong>: Instead of passively watching hour-long lectures, we use
-                    Groq AI to generate quick structured summaries and concepts quizzes, prompting active retrieval
-                    practice.
-                </li>
-            </ol>
-            <p>
-                EduTech AI acts as a shield, converting scattered YouTube playlists into highly structured courses.
-                Reclaim your focus, track your learning consistency, and achieve true educational outcomes.
-            </p>
         </div>
 
-        <!-- Call to Action -->
-        <div style="text-align: center; margin-top: 3.5rem;">
+        <div class="relative">
+            <!-- Connecting Line (desktop) -->
+            <div
+                class="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-primary/30 to-transparent">
+            </div>
+
+            <div class="space-y-12">
+                <!-- Step 1 -->
+                <div class="relative flex flex-col md:flex-row items-center gap-6 md:gap-12 animate-fade-up"
+                    style="animation-delay: 0.2s;">
+                    <div class="md:w-1/2 md:text-right order-1 md:order-1">
+                        <span class="inline-block text-6xl font-black text-[#991b1b] font-manrope mb-2">01</span>
+                        <h3 class="text-xl font-semibold text-white font-manrope mb-2">Import Any Playlist</h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed">Paste a YouTube playlist URL. We strip away the
+                            noise and convert scattered videos into a structured, distraction-free curriculum.</p>
+                    </div>
+                    <div
+                        class="hidden md:flex w-10 h-10 rounded-full bg-primary/20 border border-primary/40 items-center justify-center z-10 flex-shrink-0 order-1">
+                        <iconify-icon icon="lucide:link" class="w-5 h-5 text-primary"></iconify-icon>
+                    </div>
+                    <div class="md:w-1/2 order-1 md:order-1 md:opacity-0"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative flex flex-col md:flex-row items-center gap-6 md:gap-12 animate-fade-up"
+                    style="animation-delay: 0.35s;">
+                    <div class="md:w-1/2 md:opacity-0 order-1 md:order-1"></div>
+                    <div
+                        class="hidden md:flex w-10 h-10 rounded-full bg-primary/20 border border-primary/40 items-center justify-center z-10 flex-shrink-0 order-1">
+                        <iconify-icon icon="lucide:focus" class="w-5 h-5 text-primary"></iconify-icon>
+                    </div>
+                    <div class="md:w-1/2 order-1 md:order-1">
+                        <span class="inline-block text-6xl font-black text-[#991b1b] font-manrope mb-2">02</span>
+                        <h3 class="text-xl font-semibold text-white font-manrope mb-2">Enter the Focus Room</h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed">Study inside a zen-mode environment. No
+                            thumbnails, no comments, no autoplay — just you and the content, with a Pomodoro timer and
+                            ambient lo-fi beats.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative flex flex-col md:flex-row items-center gap-6 md:gap-12 animate-fade-up"
+                    style="animation-delay: 0.5s;">
+                    <div class="md:w-1/2 md:text-right order-1 md:order-1">
+                        <span class="inline-block text-6xl font-black text-[#991b1b] font-manrope mb-2">03</span>
+                        <h3 class="text-xl font-semibold text-white font-manrope mb-2">Test & Retain</h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed">AI-generated quizzes and summaries ensure
+                            active recall. Track your progress, earn certificates, and prove your mastery.</p>
+                    </div>
+                    <div
+                        class="hidden md:flex w-10 h-10 rounded-full bg-primary/20 border border-primary/40 items-center justify-center z-10 flex-shrink-0 order-1">
+                        <iconify-icon icon="lucide:award" class="w-5 h-5 text-primary"></iconify-icon>
+                    </div>
+                    <div class="md:w-1/2 order-1 md:order-1 md:opacity-0"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Banner -->
+<section class="py-16 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div
+            class="rounded-3xl bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border border-primary/10 backdrop-blur-sm p-10 md:p-14">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="animate-fade-up" style="animation-delay: 0.2s;">
+                    <div class="text-4xl md:text-5xl font-black text-white font-manrope mb-2">100<span
+                            class="text-primary">%</span></div>
+                    <p class="text-zinc-400 text-sm">Distraction-Free Environment</p>
+                </div>
+                <div class="animate-fade-up" style="animation-delay: 0.35s;">
+                    <div class="text-4xl md:text-5xl font-black text-white font-manrope mb-2">3<span
+                            class="text-primary">x</span></div>
+                    <p class="text-zinc-400 text-sm">Better Retention vs. Raw YouTube</p>
+                </div>
+                <div class="animate-fade-up" style="animation-delay: 0.5s;">
+                    <div class="text-4xl md:text-5xl font-black text-white font-manrope mb-2">24<span
+                            class="text-primary">/7</span></div>
+                    <p class="text-zinc-400 text-sm">AI Study Buddy Availability</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 px-6">
+    <div class="max-w-3xl mx-auto text-center">
+        <div
+            class="rounded-3xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-sm p-10 md:p-16 animate-fade-up">
             {% if user.is_authenticated %}
-            <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">You are signed in and ready to study!</h3>
-            <a href="{% url 'dashboard' %}" class="btn btn-primary" id="btn-about-signup">Go to Dashboard</a>
+            <h3 class="text-2xl md:text-3xl font-semibold text-white font-manrope mb-4">
+                You're signed in and ready to study!
+            </h3>
+            <p class="text-zinc-400 mb-8 max-w-md mx-auto">
+                Head to your dashboard and pick up right where you left off.
+            </p>
+            <a href="{% url 'dashboard' %}" class="shiny-cta group inline-block">
+                <span class="relative z-10 flex items-center gap-2 text-white font-medium">
+                    Go to Dashboard
+                    <iconify-icon icon="lucide:arrow-right"
+                        class="transition-transform group-hover:translate-x-1"></iconify-icon>
+                </span>
+            </a>
             {% else %}
-            <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Ready to study with 100% focus?</h3>
-            <a href="{% url 'register' %}" class="btn btn-primary" id="btn-about-signup">Create Account</a>
+            <h3 class="text-2xl md:text-3xl font-semibold text-white font-manrope mb-4">
+                Ready to study with 100% focus?
+            </h3>
+            <p class="text-zinc-400 mb-8 max-w-md mx-auto">
+                Join learners who've reclaimed their attention. No credit card required to start.
+            </p>
+            <a href="{% url 'register' %}" class="shiny-cta group inline-block">
+                <span class="relative z-10 flex items-center gap-2 text-white font-medium">
+                    Create Free Account
+                    <iconify-icon icon="lucide:arrow-right"
+                        class="transition-transform group-hover:translate-x-1"></iconify-icon>
+                </span>
+            </a>
+            <p class="text-zinc-600 text-xs mt-6">
+                Already have an account? <a href="{% url 'login' %}" class="text-primary hover:underline">Log in</a>
+            </p>
             {% endif %}
         </div>
-
     </div>
-</div>
+</section>
+
 {% endblock %}
