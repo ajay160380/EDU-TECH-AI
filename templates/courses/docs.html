@@ -1,0 +1,113 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI — Documentation & Guides{% endblock %}
+
+{% block content %}
+
+<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6">
+    <div class="text-center max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up"
+            style="animation-delay: 0.1s;">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span class="text-xs font-medium text-red-100/90 tracking-wide font-manrope">Resources</span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter font-manrope leading-[1.1] mb-8 animate-fade-up"
+            style="animation-delay: 0.2s;">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40">
+                Documentation &
+            </span>
+            <span class="block text-primary">Guides</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed animate-fade-up"
+            style="animation-delay: 0.3s;">
+            Everything you need to master EduTech AI — from importing your first course to advanced AI study strategies.
+        </p>
+    </div>
+</section>
+
+<!-- Docs Grid -->
+<section class="py-20 px-6">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <a href="#"
+            class="p-8 border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl group block"
+            style="text-decoration: none;">
+            <div class="mb-4 inline-flex p-3 rounded-lg bg-white/5 border border-white/10 text-primary">
+                <iconify-icon icon="lucide:play-circle" class="w-5 h-5"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-white font-manrope mb-2 group-hover:text-primary transition-colors">
+                Getting Started Guide</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed">Learn how to import your first YouTube playlist, navigate
+                the dashboard, and start learning in under 5 minutes.</p>
+        </a>
+
+        <a href="#"
+            class="p-8 border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl group block"
+            style="text-decoration: none;">
+            <div class="mb-4 inline-flex p-3 rounded-lg bg-white/5 border border-white/10 text-blue-400">
+                <iconify-icon icon="lucide:bot" class="w-5 h-5"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-white font-manrope mb-2 group-hover:text-primary transition-colors">
+                AI Study Buddy Usage</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed">Master the AI chat assistant — generate summaries, ask
+                concept questions, and create custom quizzes from any video.</p>
+        </a>
+
+        <a href="#"
+            class="p-8 border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl group block"
+            style="text-decoration: none;">
+            <div class="mb-4 inline-flex p-3 rounded-lg bg-white/5 border border-white/10 text-purple-400">
+                <iconify-icon icon="lucide:timer" class="w-5 h-5"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-white font-manrope mb-2 group-hover:text-primary transition-colors">
+                Focus Room & Pomodoro</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed">Configure your ideal focus environment — customize timers,
+                choose ambient sounds, and track deep work sessions.</p>
+        </a>
+
+        <a href="#"
+            class="p-8 border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl group block"
+            style="text-decoration: none;">
+            <div class="mb-4 inline-flex p-3 rounded-lg bg-white/5 border border-white/10 text-emerald-400">
+                <iconify-icon icon="lucide:award" class="w-5 h-5"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-white font-manrope mb-2 group-hover:text-primary transition-colors">
+                Certificates & Exams</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed">How AI-generated final exams work, passing criteria, and
+                earning verifiable completion certificates for every course.</p>
+        </a>
+
+        <a href="#"
+            class="p-8 border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl group block"
+            style="text-decoration: none;">
+            <div class="mb-4 inline-flex p-3 rounded-lg bg-white/5 border border-white/10 text-orange-400">
+                <iconify-icon icon="lucide:credit-card" class="w-5 h-5"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-white font-manrope mb-2 group-hover:text-primary transition-colors">
+                Plans & Billing</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed">Compare Free, Pro, and Ultra plans. Understand playlist
+                limits, AI quotas, and how to upgrade or downgrade anytime.</p>
+        </a>
+
+        <a href="#"
+            class="p-8 border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl group block"
+            style="text-decoration: none;">
+            <div class="mb-4 inline-flex p-3 rounded-lg bg-white/5 border border-white/10 text-yellow-400">
+                <iconify-icon icon="lucide:help-circle" class="w-5 h-5"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-white font-manrope mb-2 group-hover:text-primary transition-colors">
+                FAQ & Troubleshooting</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed">Common questions answered — playlist import errors, video
+                availability, and account-related issues.</p>
+        </a>
+
+    </div>
+</section>
+
+{% endblock %}

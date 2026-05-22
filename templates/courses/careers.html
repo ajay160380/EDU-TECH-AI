@@ -1,0 +1,115 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI — Careers{% endblock %}
+
+{% block content %}
+
+<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6">
+    <div class="text-center max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up"
+            style="animation-delay: 0.1s;">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span class="text-xs font-medium text-red-100/90 tracking-wide font-manrope">Join Us</span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter font-manrope leading-[1.1] mb-8 animate-fade-up"
+            style="animation-delay: 0.2s;">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40">
+                Build the Future of
+            </span>
+            <span class="block text-primary">Education</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed animate-fade-up"
+            style="animation-delay: 0.3s;">
+            We're a small, fast-moving team on a mission to make distraction-free learning accessible to everyone. Join
+            us in reshaping how the world learns online.
+        </p>
+    </div>
+</section>
+
+<!-- Why Join -->
+<section class="py-20 px-6">
+    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div class="p-6">
+            <div class="mb-4 inline-flex p-4 rounded-full bg-primary/10 border border-primary/20">
+                <iconify-icon icon="lucide:zap" class="w-6 h-6 text-primary"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-white font-manrope mb-2">High Impact</h3>
+            <p class="text-zinc-400 text-sm">Your code directly shapes how thousands of learners study every day. No
+                bureaucracy, just shipping.</p>
+        </div>
+        <div class="p-6">
+            <div class="mb-4 inline-flex p-4 rounded-full bg-primary/10 border border-primary/20">
+                <iconify-icon icon="lucide:globe" class="w-6 h-6 text-primary"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-white font-manrope mb-2">Remote-First</h3>
+            <p class="text-zinc-400 text-sm">Work from anywhere. Async communication, flexible hours, and quarterly
+                in-person meetups.</p>
+        </div>
+        <div class="p-6">
+            <div class="mb-4 inline-flex p-4 rounded-full bg-primary/10 border border-primary/20">
+                <iconify-icon icon="lucide:heart" class="w-6 h-6 text-primary"></iconify-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-white font-manrope mb-2">Great Culture</h3>
+            <p class="text-zinc-400 text-sm">Competitive pay, equity options, learning stipends, and a team that
+                genuinely cares about education.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Open Positions -->
+<section class="py-20 px-6 border-t border-white/5">
+    <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold font-manrope text-white mb-12 text-center">Open Positions</h2>
+
+        <div class="space-y-4">
+            <div
+                class="p-6 border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 group">
+                <div>
+                    <h3
+                        class="text-lg font-semibold text-white font-manrope group-hover:text-primary transition-colors">
+                        Senior Django Backend Engineer</h3>
+                    <p class="text-zinc-500 text-sm mt-1">Remote · Full-time · ₹25L–40L/yr + Equity</p>
+                </div>
+                <a href="mailto:careers.edutechai@gmail.com?subject=Application: Senior Django Backend Engineer"
+                    class="shrink-0 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 hover:text-white hover:bg-white/10 transition-all text-center">Apply</a>
+            </div>
+
+            <div
+                class="p-6 border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 group">
+                <div>
+                    <h3
+                        class="text-lg font-semibold text-white font-manrope group-hover:text-primary transition-colors">
+                        AI/ML Engineer (LLM Fine-tuning)</h3>
+                    <p class="text-zinc-500 text-sm mt-1">Remote · Full-time · ₹30L–50L/yr + Equity</p>
+                </div>
+                <a href="mailto:careers.edutechai@gmail.com?subject=Application: AI/ML Engineer"
+                    class="shrink-0 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 hover:text-white hover:bg-white/10 transition-all text-center">Apply</a>
+            </div>
+
+            <div
+                class="p-6 border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 group">
+                <div>
+                    <h3
+                        class="text-lg font-semibold text-white font-manrope group-hover:text-primary transition-colors">
+                        Frontend Engineer (Tailwind + Alpine.js)</h3>
+                    <p class="text-zinc-500 text-sm mt-1">Remote · Full-time · ₹18L–30L/yr + Equity</p>
+                </div>
+                <a href="mailto:careers.edutechai@gmail.com?subject=Application: Frontend Engineer"
+                    class="shrink-0 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 hover:text-white hover:bg-white/10 transition-all text-center">Apply</a>
+            </div>
+        </div>
+
+        <p class="text-center text-zinc-500 text-sm mt-12">Don't see a role that fits? Send your resume to <a
+                href="mailto:careers.edutechai@gmail.com"
+                class="text-primary hover:underline">careers.edutechai@gmail.com</a> —
+            we're always looking for talented people.</p>
+    </div>
+</section>
+
+{% endblock %}

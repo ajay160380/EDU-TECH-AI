@@ -1,0 +1,103 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI — Shipping Policy{% endblock %}
+
+{% block content %}
+
+<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6">
+    <div class="text-center max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up"
+            style="animation-delay: 0.1s;">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span class="text-xs font-medium text-red-100/90 tracking-wide font-manrope">Legal</span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter font-manrope leading-[1.1] mb-8 animate-fade-up"
+            style="animation-delay: 0.2s;">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40">
+                Shipping & Delivery
+            </span>
+            <span class="block text-primary">Policy</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed animate-fade-up"
+            style="animation-delay: 0.3s;">
+            Information about digital delivery, certificate issuance, and physical merchandise shipping timelines.
+        </p>
+    </div>
+</section>
+
+<!-- Policy Content -->
+<section class="py-20 px-6">
+    <div class="max-w-3xl mx-auto prose prose-invert">
+        <div class="space-y-12 text-zinc-300 leading-relaxed">
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">1. Digital Services — Instant Delivery
+                </h2>
+                <p class="mb-4">EduTech AI is a digital-first platform. All core services — course imports, AI study
+                    buddy access, focus room features, and certificate generation — are delivered instantly upon
+                    subscription activation or account registration.</p>
+                <p>There are no physical shipping delays for digital products. Your access begins the moment your
+                    payment is confirmed.</p>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">2. Certificate Delivery</h2>
+                <p class="mb-4">Completion certificates are generated immediately after passing a final exam with a
+                    score of 70% or higher. Certificates are:</p>
+                <ul class="list-disc pl-6 space-y-2 text-zinc-400">
+                    <li>Available for instant download as PDF from your dashboard</li>
+                    <li>Stored permanently in your account for lifetime access</li>
+                    <li>Shareable via a unique verification URL</li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">3. Physical Merchandise (if applicable)
+                </h2>
+                <p class="mb-4">If EduTech AI offers physical merchandise (branded notebooks, stickers, etc.) in the
+                    future, the following timelines apply:</p>
+                <ul class="list-disc pl-6 space-y-2 text-zinc-400">
+                    <li><strong>Processing:</strong> 1–3 business days after order confirmation</li>
+                    <li><strong>Domestic Shipping (India):</strong> 5–10 business days via standard courier</li>
+                    <li><strong>International Shipping:</strong> 10–21 business days depending on destination</li>
+                    <li><strong>Tracking:</strong> A tracking number will be emailed once the order is dispatched</li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">4. Subscription Activation</h2>
+                <p class="mb-4">Paid subscriptions (Pro and Ultra plans) are activated automatically within 60 seconds
+                    of successful payment processing via Razorpay. If your subscription does not activate:</p>
+                <ul class="list-disc pl-6 space-y-2 text-zinc-400">
+                    <li>Check your email for a payment confirmation receipt</li>
+                    <li>Refresh your dashboard — the plan badge should update immediately</li>
+                    <li>Contact <a href="mailto:support@edutechai.com"
+                            class="text-primary hover:underline">support@edutechai.com</a> with your payment ID for
+                        manual activation (resolved within 2 hours)</li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">5. Shipping Costs</h2>
+                <p class="mb-4">Digital products: Free — no shipping costs. Physical merchandise (if offered): Shipping
+                    costs are calculated at checkout based on destination and package weight.</p>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">6. Contact</h2>
+                <p>For shipping-related inquiries, reach out to <a href="mailto:support@edutechai.com"
+                        class="text-primary hover:underline">support@edutechai.com</a>. Response time is typically
+                    under 4 hours during business days.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

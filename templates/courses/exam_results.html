@@ -104,12 +104,12 @@
 
     /* Retry Card */
     .retry-card {
-        background: linear-gradient(145deg, rgba(239, 68, 68, 0.15) 0%, rgba(15, 23, 42, 0.85) 100%);
-        border: 2px solid #ef4444;
+        background: linear-gradient(145deg, rgba(var(--primary-rgb), 0.15) 0%, rgba(15, 23, 42, 0.85) 100%);
+        border: 2px solid var(--primary-hex);
         border-radius: 32px;
         padding: 4.5rem 3rem;
         text-align: center;
-        box-shadow: 0 25px 60px rgba(239, 68, 68, 0.25);
+        box-shadow: 0 25px 60px rgba(var(--primary-rgb), 0.25);
         backdrop-filter: blur(20px);
         margin-bottom: 5rem;
     }
@@ -118,17 +118,17 @@
         font-family: 'Outfit', sans-serif;
         font-size: 3.5rem;
         font-weight: 900;
-        color: #ef4444;
+        color: var(--primary-hex);
         letter-spacing: -0.03em;
         margin-bottom: 0.5rem;
-        text-shadow: 0 0 35px rgba(239, 68, 68, 0.4);
+        text-shadow: 0 0 35px rgba(var(--primary-rgb), 0.4);
     }
 
     .retry-score-badge {
         display: inline-flex;
         align-items: center;
-        background: rgba(239, 68, 68, 0.25);
-        border: 1px solid rgba(239, 68, 68, 0.5);
+        background: rgba(var(--primary-rgb), 0.25);
+        border: 1px solid rgba(var(--primary-rgb), 0.5);
         padding: 0.85rem 2.5rem;
         border-radius: 50px;
         font-size: 1.75rem;
@@ -202,7 +202,7 @@
     }
 
     .analysis-card.incorrect {
-        border-left: 8px solid #ef4444;
+        border-left: 8px solid var(--primary-hex);
     }
 
     .q-status-head {
@@ -244,10 +244,10 @@
     }
 
     .status-badge.incorrect {
-        background: rgba(239, 68, 68, 0.2);
+        background: rgba(var(--primary-rgb), 0.2);
         color: #f87171;
-        border: 1px solid rgba(239, 68, 68, 0.4);
-        box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(var(--primary-rgb), 0.4);
+        box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.2);
     }
 
     .ans-row {
@@ -316,7 +316,7 @@
     <!-- Retry Header -->
     <div class="retry-card">
         <div class="trophy-container" style="margin-bottom: 1.5rem;">
-            <span class="trophy-icon" style="filter: drop-shadow(0 10px 25px rgba(239, 68, 68, 0.6));">💡</span>
+            <span class="trophy-icon" style="filter: drop-shadow(0 10px 25px rgba(var(--primary-rgb), 0.6));">💡</span>
         </div>
         <h1 class="retry-title">Almost There!</h1>
         <h2 class="congrats-subtitle">Exam Attempt Analysis</h2>

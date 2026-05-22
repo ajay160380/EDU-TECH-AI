@@ -1,0 +1,110 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI — Blog{% endblock %}
+
+{% block content %}
+
+<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6">
+    <div class="text-center max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up"
+            style="animation-delay: 0.1s;">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span class="text-xs font-medium text-red-100/90 tracking-wide font-manrope">Insights</span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter font-manrope leading-[1.1] mb-8 animate-fade-up"
+            style="animation-delay: 0.2s;">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40">
+                EduTech AI
+            </span>
+            <span class="block text-primary">Blog</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed animate-fade-up"
+            style="animation-delay: 0.3s;">
+            Insights on distraction-free learning, AI in education, productivity science, and product updates from the
+            EduTech AI team.
+        </p>
+    </div>
+</section>
+
+<!-- Blog Posts Grid -->
+<section class="py-20 px-6">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- Post 1 -->
+        <article
+            class="border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl overflow-hidden group cursor-pointer">
+            <div class="h-48 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                <iconify-icon icon="lucide:brain" class="w-12 h-12 text-primary/40"></iconify-icon>
+            </div>
+            <div class="p-6">
+                <span
+                    class="text-[10px] font-bold uppercase tracking-widest text-primary mb-2 block">Productivity</span>
+                <h3
+                    class="text-lg font-semibold text-white font-manrope mb-2 group-hover:text-primary transition-colors">
+                    Why Distraction-Free Learning Beats Traditional EdTech</h3>
+                <p class="text-zinc-500 text-sm leading-relaxed mb-4">The science behind focus-first education and why
+                    removing algorithmic distractions boosts retention by 3x.</p>
+                <span class="text-xs text-zinc-600">Mar 15, 2026 · 6 min read</span>
+            </div>
+        </article>
+
+        <!-- Post 2 -->
+        <article
+            class="border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl overflow-hidden group cursor-pointer">
+            <div class="h-48 bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center">
+                <iconify-icon icon="lucide:bot" class="w-12 h-12 text-blue-400/40"></iconify-icon>
+            </div>
+            <div class="p-6">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2 block">AI</span>
+                <h3
+                    class="text-lg font-semibold text-white font-manrope mb-2 group-hover:text-primary transition-colors">
+                    How Groq LLM Powers Real-Time AI Tutoring</h3>
+                <p class="text-zinc-500 text-sm leading-relaxed mb-4">Inside look at our AI infrastructure — sub-200ms
+                    response times for instant study help at any scale.</p>
+                <span class="text-xs text-zinc-600">Feb 28, 2026 · 8 min read</span>
+            </div>
+        </article>
+
+        <!-- Post 3 -->
+        <article
+            class="border border-white/10 bg-black hover:border-white/20 transition-all rounded-xl overflow-hidden group cursor-pointer">
+            <div class="h-48 bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 flex items-center justify-center">
+                <iconify-icon icon="lucide:trending-up" class="w-12 h-12 text-emerald-400/40"></iconify-icon>
+            </div>
+            <div class="p-6">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-2 block">Product</span>
+                <h3
+                    class="text-lg font-semibold text-white font-manrope mb-2 group-hover:text-primary transition-colors">
+                    Introducing Smart Streaks: GitHub-Style Learning Grids</h3>
+                <p class="text-zinc-500 text-sm leading-relaxed mb-4">Track your daily learning progress visually. Build
+                    momentum and never break your study chain again.</p>
+                <span class="text-xs text-zinc-600">Feb 10, 2026 · 5 min read</span>
+            </div>
+        </article>
+
+    </div>
+</section>
+
+<!-- Newsletter CTA -->
+<section class="py-20 px-6 text-center border-t border-white/5">
+    <div class="max-w-xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-bold font-manrope mb-4 text-white">Stay updated</h2>
+        <p class="text-zinc-400 mb-8">Get the latest articles, product updates, and learning tips delivered to your
+            inbox.</p>
+        <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <input type="email" placeholder="your@email.com"
+                class="flex-1 bg-white/5 border border-white/10 rounded-full px-6 py-3 text-sm text-white focus:outline-none focus:border-primary transition-all"
+                required>
+            <button type="submit"
+                class="bg-primary hover:bg-red-700 text-white text-sm font-bold rounded-full px-6 py-3 transition-all whitespace-nowrap">Subscribe</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

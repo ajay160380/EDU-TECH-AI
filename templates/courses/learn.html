@@ -595,7 +595,7 @@
                 content = content.slice(0, 1000);
                 textarea.value = content;
                 showToast("🔒 Pro limit reached! Notes cannot exceed 1,000 characters. Upgrade to Ultra for completely unlimited space!", "warning");
-                if (counterEl) counterEl.style.color = '#ef4444';
+                if (counterEl) counterEl.style.color = 'var(--primary-hex)';
             } else {
                 if (counterEl) counterEl.style.color = '';
             }
@@ -937,10 +937,10 @@
                     limitBubble.style.alignSelf = 'flex-start';
                     limitBubble.style.maxWidth = '85%';
                     limitBubble.style.padding = '0.85rem 1.15rem';
-                    limitBubble.style.background = 'rgba(239, 68, 68, 0.15)';
-                    limitBubble.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                    limitBubble.style.background = 'rgba(var(--primary-rgb), 0.15)';
+                    limitBubble.style.border = '1px solid rgba(var(--primary-rgb), 0.3)';
                     limitBubble.style.borderRadius = '4px 18px 18px 18px';
-                    limitBubble.style.color = '#ef4444';
+                    limitBubble.style.color = 'var(--primary-hex)';
                     limitBubble.style.fontSize = '0.9rem';
                     limitBubble.style.lineHeight = '1.4';
                     limitBubble.innerHTML = `<strong>🔒 Quota Exhausted!</strong><br><br>${data.message}`;
