@@ -1,243 +1,662 @@
 {% extends 'courses/base.html' %}
 {% load static %}
-
-{% block title %}EduTech AI - Your Learning Profile & Plan{% endblock %}
-
+{% block title %}EduTech AI — Your Learning Profile{% endblock %}
 {% block content %}
-<div class="container" id="profile-view-container" style="max-width: 900px; margin: 0 auto; padding-top: 1rem;">
+<div class="min-h-screen relative">
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary/[0.06] rounded-full blur-[100px]">
+        </div>
+        <div class="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-primary/[0.04] rounded-full blur-[90px]">
+        </div>
+    </div>
+    <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-24">
+        <header class="mb-10">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-2">Settings</p>
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white"
+                style="font-family:'Outfit',sans-serif;">
+                {{ phead }}'s <span class="text-primary">Profile</span>
+            </h1>
+        </header>
+        <div class="flex flex-col lg:flex-row gap-8">
+            <aside class="lg:w-72 flex-shrink-0">
+                <nav class="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+                    <button onclick="switchSection('personal')" id="nav-personal"
+                        class="profile-nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap bg-white/[0.06] border border-white/[0.10] text-white shadow-sm">
+                        <iconify-icon icon="lucide:user-circle" class="w-5 h-5 text-primary"></iconify-icon>
+                        Personal Info
+                    </button>
+                    <button onclick="switchSection('security')" id="nav-security"
+                        class="profile-nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap bg-transparent border border-transparent text-zinc-400 hover:text-white hover:bg-white/[0.04]">
+                        <iconify-icon icon="lucide:shield-check" class="w-5 h-5 text-zinc-500"></iconify-icon>
+                        Sign-In & Security
+                    </button>
+                    <button onclick="switchSection('learning')" id="nav-learning"
+                        class="profile-nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap bg-transparent border border-transparent text-zinc-400 hover:text-white hover:bg-white/[0.04]">
+                        <iconify-icon icon="lucide:compass" class="w-5 h-5 text-zinc-500"></iconify-icon>
+                        My Learning Journey
+                    </button>
+                    <button onclick="switchSection('courses')" id="nav-courses"
+                        class="profile-nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap bg-transparent border border-transparent text-zinc-400 hover:text-white hover:bg-white/[0.04]">
+                        <iconify-icon icon="lucide:play-circle" class="w-5 h-5 text-zinc-500"></iconify-icon>
+                        Active Courses
+                    </button>
+                    <button onclick="switchSection('subscription')" id="nav-subscription"
+                        class="profile-nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap bg-transparent border border-transparent text-zinc-400 hover:text-white hover:bg-white/[0.04]">
+                        <iconify-icon icon="lucide:crown" class="w-5 h-5 text-zinc-500"></iconify-icon>
+                        Subscription
+                    </button>
+                </nav>
+            </aside>
+            <main class="flex-1 min-w-0">
 
-    <!-- Cinematic Hero Background -->
-    <div style="position: absolute; top: 0; left: 0; right: 0; height: 300px; background: linear-gradient(180deg, rgba(239,35,60,0.08) 0%, transparent 100%); pointer-events: none; z-index: 0;"></div>
-    <div style="position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(239, 35, 60, 0.1) 0%, rgba(0,0,0,0) 70%); filter: blur(40px); z-index: 0; pointer-events: none;"></div>
+                {# ─── SECTION 1: PERSONAL INFO ─── #}
+                <section id="section-personal" class="profile-section active">
 
-    <!-- Profile Header -->
-    <header style="margin-bottom: 2.5rem; position: relative; z-index: 1;">
-        <h1 class="hero-title" style="font-size: 2.5rem; text-align: center; margin-bottom: 0.5rem;"
-            id="profile-title-main">
-            Your Study <span>Sanctuary</span>
-        </h1>
-        <p class="hero-subtitle" style="font-size: 0.95rem; text-align: center; margin-bottom: 1.5rem;" id="profile-subtitle-desc">
-            Monitor your subscription, learning consistency, and account settings.
-        </p>
-
-    </header>
-
-    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; position: relative; z-index: 1;" id="profile-main-grid">
-
-        <!-- Main Profile Info Card -->
-        <div class="glass-card"
-            style="position: relative; overflow: hidden; padding: 2.5rem; display: flex; flex-direction: row; gap: 2.5rem; align-items: center; flex-wrap: wrap;"
-            id="profile-card-details">
-
-            <!-- Glow Accent -->
-            <div
-                style="position: absolute; top: 0; right: 0; width: 150px; height: 150px; background: radial-gradient(circle, {% if profile.plan_type == 'ultra' %}rgba(239, 35, 60, 0.12){% elif profile.plan_type == 'pro' %}rgba(239, 35, 60, 0.08){% else %}rgba(255, 255, 255, 0.04){% endif %} 0%, rgba(0,0,0,0) 70%); pointer-events: none;">
-            </div>
-
-            <!-- Left Avatar Block -->
-            <div style="text-align: center; flex-shrink: 0;" id="profile-avatar-block">
-                <!-- Animated Avatar Ring -->
-                <div class="avatar-ring">
-                    {% if user.first_name %}
-                    <div class="avatar-inner">
-                        {{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1"|default:"" }}
-                    </div>
-                    {% else %}
-                    <div class="avatar-inner">
-                        {{ user.username|slice:":2"|upper }}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <h2 style="font-family: 'Outfit'; font-size: 1.5rem; color: var(--text-primary); margin-bottom: 0.25rem;">
-                    {{ user.first_name|default:user.username }} {{ user.last_name|default:"" }}
-                </h2>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-                    {{ user.email }}
-                </p>
-
-                <!-- Streak Flame Tag -->
-                <div
-                    style="display: inline-flex; align-items: center; gap: 8px; background: rgba(249, 115, 22, 0.08); border: 1px solid rgba(249, 115, 22, 0.2); padding: 0.4rem 1rem; border-radius: 20px; color: #f97316; font-weight: 600; font-size: 0.8rem; box-shadow: 0 0 10px rgba(249, 115, 22, 0.05); animation: float-gentle 3s infinite ease-in-out;">
-                    🔥 {{ profile.streak_count }} Day Study Streak
-                </div>
-            </div>
-
-            <!-- Right Info Block -->
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 1.5rem; min-width: 280px;" id="profile-info-block">
-
-                <!-- Subscription details -->
-                <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.06); padding-bottom: 1.5rem;">
-                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
-                        Current Plan</div>
-                    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                        {% if profile.plan_type == 'ultra' %}
-                        <span
-                            style="background: linear-gradient(135deg, rgba(239, 35, 60, 0.25) 0%, rgba(217, 4, 41, 0.25) 100%); border: 1px solid rgba(239, 35, 60, 0.4); box-shadow: 0 0 15px rgba(239, 35, 60, 0.3); color: #fff; padding: 0.4rem 1.2rem; border-radius: 6px; font-weight: 700; font-family: 'Outfit'; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                            Ultra Plan
-                        </span>
-                        {% elif profile.plan_type == 'pro' %}
-                        <span
-                            style="background: rgba(239, 35, 60, 0.15); border: 1px solid rgba(239, 35, 60, 0.3); box-shadow: 0 0 15px rgba(239, 35, 60, 0.2); color: #fff; padding: 0.4rem 1.2rem; border-radius: 6px; font-weight: 700; font-family: 'Outfit'; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                            Pro Plan
-                        </span>
-                        {% else %}
-                        <span
-                            style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15); color: var(--text-secondary); padding: 0.4rem 1.2rem; border-radius: 6px; font-weight: 700; font-family: 'Outfit'; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                            Free Plan
-                        </span>
-                        {% endif %}
-                        <div style="font-size: 0.85rem; color: var(--text-secondary);">
-                            {% if profile.plan_type == 'free' %}
-                            Basic platform usage
-                            {% else %}
-                            Active until <span style="font-weight: 600; color: var(--text-primary);">{% if profile.subscription_end_date %}{{ profile.subscription_end_date|date:"M d, Y" }}{% else %}Active (Ongoing){% endif %}</span>
-                            {% endif %}
+                    {# Avatar Card #}
+                    <div class="glass-card-profile mb-6 flex flex-col sm:flex-row items-center gap-6 p-6 sm:p-8">
+                        <div class="avatar-upload-wrapper relative flex-shrink-0 group cursor-pointer"
+                            onclick="document.getElementById('avatar-input').click()">
+                            <div
+                                class="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-white/[0.15] shadow-[0_0_30px_rgba(239,35,60,0.15)] transition-all duration-300 group-hover:shadow-[0_0_40px_rgba(239,35,60,0.3)] group-hover:border-primary/40">
+                                {% if has_avatar %}
+                                <img src="{{ avatar_url }}" alt="Avatar" id="avatar-preview"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                {% else %}
+                                <div id="avatar-preview"
+                                    class="w-full h-full bg-gradient-to-br from-primary/20 to-[var(--primary-dark)]/10 flex items-center justify-center text-3xl font-bold text-primary transition-all duration-500 group-hover:scale-105"
+                                    style="font-family:'Outfit',sans-serif;">
+                                    {{ avt_init }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div
+                                class="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[2px]">
+                                <div class="flex flex-col items-center gap-1 text-white">
+                                    <iconify-icon icon="lucide:camera" class="w-6 h-6"></iconify-icon>
+                                    <span class="text-[10px] font-semibold uppercase tracking-wider">Change Photo</span>
+                                </div>
+                            </div>
+                            <input type="file" id="avatar-input" accept="image/jpeg,image/png,image/webp,image/gif"
+                                class="hidden" onchange="handleAvatar(this)" />
+                        </div>
+                        <div>
+                            <h2 class="text-xl sm:text-2xl font-bold text-white mb-1"
+                                style="font-family:'Outfit',sans-serif;">
+                                {{ phead }} {{ phead_ln }}
+                            </h2>
+                            <p class="text-sm text-zinc-400">
+                                {{ disp_email }}
+                            </p>
+                            <p class="text-xs text-zinc-500 mt-2 uppercase tracking-wider font-semibold">
+                                <span class="{{ member_badge_class }}">{{ member_badge_text }}</span>
+                            </p>
                         </div>
                     </div>
-                </div>
 
-                <!-- Action Buttons -->
-                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    {% if profile.plan_type == 'free' %}
-                    <a href="{% url 'pricing' %}" class="btn btn-primary"
-                        style="padding: 0.65rem 1.5rem; font-size: 0.85rem;">
-                        Upgrade Plan &rarr;
-                    </a>
-                    {% elif profile.plan_type == 'pro' %}
-                    <a href="{% url 'pricing' %}" class="btn btn-primary"
-                        style="padding: 0.65rem 1.5rem; font-size: 0.85rem;">
-                        Upgrade to Ultra
-                    </a>
+                    {# Editable Field Cards #}
+                    <div class="space-y-2">
+
+                        <div class="profile-field-card" data-pf-field="first_name"
+                            data-pf-value="{{ fname_raw|escape }}" data-pf-label="First Name" data-pf-icon="lucide:user"
+                            onclick="openEdit(this)">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                                    <iconify-icon icon="lucide:user" class="w-4 h-4 text-primary"></iconify-icon>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-0.5">First
+                                        Name</p>
+                                    <p id="display-first_name" class="text-sm text-white font-medium truncate">
+                                        {{ disp_fname }}
+                                    </p>
+                                </div>
+                            </div>
+                            <iconify-icon icon="lucide:chevron-right"
+                                class="w-5 h-5 text-zinc-500 flex-shrink-0"></iconify-icon>
+                        </div>
+
+                        <div class="profile-field-card" data-pf-field="last_name" data-pf-value="{{ lname_raw|escape }}"
+                            data-pf-label="Last Name" data-pf-icon="lucide:user" onclick="openEdit(this)">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                                    <iconify-icon icon="lucide:user" class="w-4 h-4 text-primary"></iconify-icon>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-0.5">Last
+                                        Name</p>
+                                    <p id="display-last_name" class="text-sm text-white font-medium truncate">
+                                        {{ disp_lname }}
+                                    </p>
+                                </div>
+                            </div>
+                            <iconify-icon icon="lucide:chevron-right"
+                                class="w-5 h-5 text-zinc-500 flex-shrink-0"></iconify-icon>
+                        </div>
+
+                        <div class="profile-field-card" data-pf-field="email" data-pf-value="{{ email_raw|escape }}"
+                            data-pf-label="Email" data-pf-icon="lucide:mail" onclick="openEdit(this)">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                                    <iconify-icon icon="lucide:mail" class="w-4 h-4 text-primary"></iconify-icon>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-0.5">Email
+                                    </p>
+                                    <p id="display-email" class="text-sm text-white font-medium truncate">
+                                        {{ disp_email }}
+                                    </p>
+                                </div>
+                            </div>
+                            <iconify-icon icon="lucide:chevron-right"
+                                class="w-5 h-5 text-zinc-500 flex-shrink-0"></iconify-icon>
+                        </div>
+
+                        <div class="profile-field-card" data-pf-field="username" data-pf-value="{{ uname_raw|escape }}"
+                            data-pf-label="Username" data-pf-icon="lucide:at-sign" onclick="openEdit(this)">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                                    <iconify-icon icon="lucide:at-sign" class="w-4 h-4 text-primary"></iconify-icon>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-0.5">
+                                        Username</p>
+                                    <p id="display-username" class="text-sm text-white font-medium truncate">
+                                        {{ disp_uname }}
+                                    </p>
+                                </div>
+                            </div>
+                            <iconify-icon icon="lucide:chevron-right"
+                                class="w-5 h-5 text-zinc-500 flex-shrink-0"></iconify-icon>
+                        </div>
+
+                        <!-- Theme Settings -->
+                        <div class="glass-card-profile p-6 sm:p-8 mt-6">
+                            <div class="flex items-center gap-3 mb-6">
+                                <iconify-icon icon="lucide:palette" class="w-5 h-5 text-primary"></iconify-icon>
+                                <h3 class="text-lg font-bold text-white" style="font-family:'Outfit',sans-serif;">Theme Appearance</h3>
+                            </div>
+                            <p class="text-sm text-zinc-400 mb-6">Select your preferred color theme. This will apply globally to your dashboard and focus room.</p>
+                            
+                            <div class="flex flex-wrap gap-4">
+                                <!-- Theme Swatches -->
+                                <button type="button" onclick="setTheme('red')" class="w-12 h-12 rounded-full bg-[#ef233c] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#09090b] focus:ring-[#ef233c] hover:scale-110 transition-transform theme-btn" data-theme-val="red" title="Red Noir"></button>
+                                
+                                <button type="button" onclick="setTheme('blue')" class="w-12 h-12 rounded-full bg-[#3b82f6] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#09090b] focus:ring-[#3b82f6] hover:scale-110 transition-transform theme-btn" data-theme-val="blue" title="Ocean Blue"></button>
+                                
+                                <button type="button" onclick="setTheme('green')" class="w-12 h-12 rounded-full bg-[#10b981] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#09090b] focus:ring-[#10b981] hover:scale-110 transition-transform theme-btn" data-theme-val="green" title="Emerald Green"></button>
+                                
+                                <button type="button" onclick="setTheme('purple')" class="w-12 h-12 rounded-full bg-[#8b5cf6] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#09090b] focus:ring-[#8b5cf6] hover:scale-110 transition-transform theme-btn" data-theme-val="purple" title="Royal Purple"></button>
+
+                                <button type="button" onclick="setTheme('yellow')" class="w-12 h-12 rounded-full bg-[#eab308] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#09090b] focus:ring-[#eab308] hover:scale-110 transition-transform theme-btn" data-theme-val="yellow" title="Cyber Yellow"></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                {# ─── SECTION 2: SIGN-IN & SECURITY ─── #}
+                <section id="section-security" class="profile-section hidden">
+                    <div class="glass-card-profile p-6 sm:p-8">
+                        <h3 class="text-lg font-bold text-white mb-6" style="font-family:'Outfit',sans-serif;">Account
+                            Security</h3>
+                        <div class="space-y-2">
+                            <div class="profile-field-card cursor-default">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-9 h-9 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center flex-shrink-0">
+                                        <iconify-icon icon="lucide:check-circle"
+                                            class="w-4 h-4 text-green-400"></iconify-icon>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-0.5">
+                                            Password</p>
+                                        <p class="text-sm text-white font-medium">•••••••••••</p>
+                                    </div>
+                                </div>
+                                <span
+                                    class="text-xs text-green-400 font-medium px-2 py-1 rounded-full bg-green-500/10 border border-green-500/20">Secure</span>
+                            </div>
+                            <div class="profile-field-card cursor-default">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+                                        <iconify-icon icon="lucide:smartphone"
+                                            class="w-4 h-4 text-blue-400"></iconify-icon>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-0.5">
+                                            Two-Factor Authentication</p>
+                                        <p class="text-sm text-zinc-400 font-medium">Not enabled</p>
+                                    </div>
+                                </div>
+                                <iconify-icon icon="lucide:chevron-right"
+                                    class="w-5 h-5 text-zinc-500 flex-shrink-0"></iconify-icon>
+                            </div>
+                            <div class="profile-field-card cursor-default">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-9 h-9 rounded-lg bg-zinc-700/30 border border-white/[0.08] flex items-center justify-center flex-shrink-0">
+                                        <iconify-icon icon="lucide:calendar"
+                                            class="w-4 h-4 text-zinc-400"></iconify-icon>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-0.5">
+                                            Account Created</p>
+                                        <p class="text-sm text-white font-medium">
+                                            {{ user.date_joined|date:"F j, Y" }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {# ─── SECTION 3: MY LEARNING JOURNEY ─── #}
+                <section id="section-learning" class="profile-section hidden">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                        <div class="glass-card-profile p-5 text-center relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 w-20 h-20 bg-orange-500/[0.06] rounded-full blur-2xl -translate-y-1/2 translate-x-1/2">
+                            </div>
+                            <div class="relative z-10">
+                                <div class="text-3xl mb-2">🔥</div>
+                                <div class="text-3xl font-bold text-white mb-1"
+                                    style="font-family:'Outfit',sans-serif;">
+                                    {{ study_streak }}
+                                </div>
+                                <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Day Study Streak
+                                </p>
+                            </div>
+                        </div>
+                        <div class="glass-card-profile p-5 text-center relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 w-20 h-20 bg-green-500/[0.06] rounded-full blur-2xl -translate-y-1/2 translate-x-1/2">
+                            </div>
+                            <div class="relative z-10">
+                                <div class="text-3xl mb-2">📚</div>
+                                <div class="text-3xl font-bold text-white mb-1"
+                                    style="font-family:'Outfit',sans-serif;">
+                                    {{ completed_playlists }}
+                                </div>
+                                <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Completed
+                                    Playlists</p>
+                            </div>
+                        </div>
+                        <div class="glass-card-profile p-5 text-center relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 w-20 h-20 bg-yellow-500/[0.06] rounded-full blur-2xl -translate-y-1/2 translate-x-1/2">
+                            </div>
+                            <div class="relative z-10">
+                                <div class="text-3xl mb-2">🏅</div>
+                                <div class="text-3xl font-bold text-white mb-1"
+                                    style="font-family:'Outfit',sans-serif;">
+                                    {{ certified_skills }}
+                                </div>
+                                <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Certified Skills
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card-profile p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                    <iconify-icon icon="lucide:clock" class="w-4 h-4 text-primary"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Total Focus
+                                        Time</p>
+                                    <p class="text-lg font-bold text-white" style="font-family:'Outfit',sans-serif;">
+                                        {{ total_study_hours }} Hours
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Overall Courses
+                                </p>
+                                <p class="text-lg font-bold text-white" style="font-family:'Outfit',sans-serif;">
+                                    {{ total_courses }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {# ─── SECTION 4: ACTIVE COURSES ─── #}
+                <section id="section-courses" class="profile-section hidden">
+                    {% if active_courses %}
+                    <div class="space-y-3">
+                        {% for course in active_courses %}
+                        <a href="{% url 'learn_view' course.id %}"
+                            class="profile-field-card block no-underline hover:border-primary/30 group">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 border border-white/[0.08] bg-zinc-900">
+                                    {% if course.thumbnail_url %}
+                                    <img src="{{ course.thumbnail_url }}" alt="{{ course.title }}"
+                                        class="w-full h-full object-cover" />
+                                    {% else %}
+                                    <div class="w-full h-full flex items-center justify-center text-zinc-600">
+                                        <iconify-icon icon="lucide:play" class="w-5 h-5"></iconify-icon>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p
+                                        class="text-sm text-white font-medium truncate group-hover:text-primary transition-colors">
+                                        {{ course.title }}
+                                    </p>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        <div
+                                            class="h-1.5 flex-1 max-w-[180px] bg-white/[0.06] rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-primary to-[var(--primary-dark)] rounded-full shadow-[0_0_6px_rgba(239,35,60,0.4)]"
+                                                style="width:{{ course.progress }}%"></div>
+                                        </div>
+                                        <span class="text-[10px] text-zinc-500 font-medium">
+                                            {{ course.progress }}%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <iconify-icon icon="lucide:chevron-right"
+                                class="w-5 h-5 text-zinc-500 flex-shrink-0 group-hover:text-primary transition-colors"></iconify-icon>
+                        </a>
+                        {% endfor %}
+                    </div>
                     {% else %}
-                    <div
-                        style="font-size: 0.8rem; color: #10b981; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.5rem 1rem; border-radius: 6px;">
-                        <span style="width: 6px; height: 6px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
-                        Maximum EduTech AI privileges unlocked!
+                    <div class="glass-card-profile p-10 text-center">
+                        <div class="text-4xl mb-4">🚀</div>
+                        <h3 class="text-lg font-bold text-white mb-2" style="font-family:'Outfit',sans-serif;">No Active
+                            Courses Yet</h3>
+                        <p class="text-sm text-zinc-400 mb-6 max-w-sm mx-auto">Import your first YouTube playlist to
+                            start building your learning journey!</p>
+                        <a href="{% url 'import_course' %}"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-[var(--primary-dark)] text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-[0_8px_25px_rgba(239,35,60,0.3)]">
+                            <iconify-icon icon="lucide:plus" class="w-4 h-4"></iconify-icon>
+                            Import Course
+                        </a>
                     </div>
                     {% endif %}
-                    <a href="{% url 'dashboard' %}" class="btn btn-secondary"
-                        style="padding: 0.65rem 1.5rem; font-size: 0.85rem;">
-                        Back to Dashboard
-                    </a>
-                </div>
-            </div>
-        </div>
+                </section>
 
-        <!-- Multi-Tab Section -->
-        <div class="glass-card" style="padding: 2rem;" id="profile-tabs-container">
-            <div class="profile-tabs" id="profile-tab-bar">
-                <button class="profile-tab-btn active" onclick="switchProfileTab('subscription', this)">📋 Subscription</button>
-                <button class="profile-tab-btn" onclick="switchProfileTab('usage', this)">📊 Usage Limits</button>
-                <button class="profile-tab-btn" onclick="switchProfileTab('history', this)">📈 Study Stats</button>
-            </div>
-
-            <!-- Tab 1: Subscription -->
-            <div class="profile-tab-content active" id="tab-subscription">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
-                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 1.25rem; text-align: center;">
-                        <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">📚</div>
-                        <div style="font-size: 1.5rem; font-family: 'Outfit'; font-weight: 700; color: #fff;">{{ total_courses }}</div>
-                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">Active Courses</div>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 1.25rem; text-align: center;">
-                        <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">🏆</div>
-                        <div style="font-size: 1.5rem; font-family: 'Outfit'; font-weight: 700; color: #10b981;">{{ completed_courses }}</div>
-                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">Mastered</div>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 1.25rem; text-align: center;">
-                        <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">🔥</div>
-                        <div style="font-size: 1.5rem; font-family: 'Outfit'; font-weight: 700; color: #f97316;">{{ profile.streak_count }}</div>
-                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">Day Streak</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab 2: Usage Limits -->
-            <div class="profile-tab-content" id="tab-usage">
-                <div style="margin-bottom: 1.5rem;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 0.5rem;">
-                        <span style="color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Playlist Import Limit</span>
-                        <span style="color: var(--text-primary); font-weight: 600;">
-                            {{ playlist_count }} / {% if profile.plan_type == 'ultra' %}Unlimited{% else %}{{ playlist_limit }}{% endif %} Used
-                        </span>
-                    </div>
-                    <div style="width: 100%; height: 8px; background: rgba(255, 255, 255, 0.04); border-radius: 4px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.03);">
-                        {% if profile.plan_type == 'ultra' %}
-                        <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #ef233c, #d90429); border-radius: 4px; box-shadow: 0 0 10px rgba(239, 35, 60, 0.5);"></div>
+                {# ─── SECTION 5: SUBSCRIPTION ─── #}
+                <section id="section-subscription" class="profile-section hidden">
+                    <div class="glass-card-profile p-6 sm:p-8">
+                        <h3 class="text-lg font-bold text-white mb-6" style="font-family:'Outfit',sans-serif;">Your Plan
+                        </h3>
+                        <div class="flex items-center gap-4 mb-6 p-5 rounded-2xl {{ plan_badge_class }}">
+                            <div
+                                class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 {{ plan_icon_class }}">
+                                <iconify-icon icon="lucide:crown" class="w-6 h-6 {{ plan_icon_color }}"></iconify-icon>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-lg font-bold text-white" style="font-family:'Outfit',sans-serif;">
+                                    {{ plan_name }}
+                                </p>
+                                <p class="text-xs text-zinc-400">
+                                    {{ plan_subtitle }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="text-zinc-500 uppercase tracking-wider font-semibold">Playlist
+                                    Imports</span>
+                                <span class="text-zinc-300 font-semibold">
+                                    {{ playlist_count }} / {{ usage_display_text }}
+                                </span>
+                            </div>
+                            <div class="h-2 bg-white/[0.04] rounded-full overflow-hidden border border-white/[0.04]">
+                                {% if usage_bar_full %}
+                                <div
+                                    class="h-full bg-gradient-to-r from-[#d4af37] to-[#f0c040] rounded-full shadow-[0_0_8px_rgba(212,175,55,0.5)] w-full">
+                                </div>
+                                {% else %}
+                                <div class="h-full bg-gradient-to-r from-primary to-[var(--primary-dark)] rounded-full shadow-[0_0_8px_rgba(239,35,60,0.4)] transition-all duration-700"
+                                    style="width:{{ playlist_percentage }}%"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 mt-6">
+                            <div class="p-3 rounded-xl text-center bg-white/[0.02] border border-white/[0.06]">
+                                <p class="text-xs font-bold text-zinc-400 mb-1">Free</p>
+                                <p class="text-[10px] text-zinc-500">3 Playlists</p>
+                            </div>
+                            <div class="p-3 rounded-xl text-center bg-primary/[0.05] border border-primary/15">
+                                <p class="text-xs font-bold text-primary mb-1">Pro</p>
+                                <p class="text-[10px] text-zinc-400">20 + AI Tools</p>
+                            </div>
+                            <div class="p-3 rounded-xl text-center bg-[#d4af37]/[0.05] border border-[#d4af37]/15">
+                                <p class="text-xs font-bold text-[#d4af37] mb-1">Ultra</p>
+                                <p class="text-[10px] text-zinc-400">Unlimited</p>
+                            </div>
+                        </div>
+                        {% if show_upgrade_btn %}
+                        <a href="{% url 'pricing' %}"
+                            class="mt-6 w-full flex items-center justify-center gap-2 px-5 py-3 bg-primary hover:bg-[var(--primary-dark)] text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-[0_8px_25px_rgba(239,35,60,0.3)]">
+                            <iconify-icon icon="lucide:arrow-up-circle" class="w-4 h-4"></iconify-icon>
+                            {{ upgrade_btn_text }}
+                        </a>
                         {% else %}
-                        <div style="width: {{ playlist_percentage }}%; height: 100%; background: linear-gradient(90deg, #ef233c, #d90429); border-radius: 4px; box-shadow: 0 0 10px rgba(239, 35, 60, 0.4); transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+                        <div
+                            class="mt-6 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-semibold">
+                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                            Maximum privileges unlocked!
+                        </div>
                         {% endif %}
                     </div>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
-                        {% if profile.plan_type == 'free' %}
-                        Free plan allows up to 3 playlist imports. Upgrade to unlock 20 or unlimited!
-                        {% elif profile.plan_type == 'pro' %}
-                        Pro plan allows up to 20 playlist imports, AI quizzes, and planners.
-                        {% else %}
-                        Ultra plan — unlimited imports, AI quizzes, planners, and priority AI Tutor!
-                        {% endif %}
-                    </p>
-                </div>
+                </section>
 
-                <!-- Feature Comparison -->
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 1rem;">
-                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 0.75rem; text-align: center; font-size: 0.7rem;">
-                        <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">Free</div>
-                        <div style="color: var(--text-muted);">3 playlists</div>
-                    </div>
-                    <div style="background: rgba(239,35,60,0.05); border: 1px solid rgba(239,35,60,0.15); border-radius: 10px; padding: 0.75rem; text-align: center; font-size: 0.7rem;">
-                        <div style="font-weight: 700; color: #ef233c; margin-bottom: 0.25rem;">Pro</div>
-                        <div style="color: var(--text-muted);">20 playlists + AI</div>
-                    </div>
-                    <div style="background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.15); border-radius: 10px; padding: 0.75rem; text-align: center; font-size: 0.7rem;">
-                        <div style="font-weight: 700; color: #d4af37; margin-bottom: 0.25rem;">Ultra</div>
-                        <div style="color: var(--text-muted);">Unlimited + Priority</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab 3: Study Stats -->
-            <div class="profile-tab-content" id="tab-history">
-                <div style="text-align: center; padding: 2rem 1rem;">
-                    <div style="font-size: 2.5rem; margin-bottom: 1rem; animation: float-gentle 3s ease-in-out infinite;">📊</div>
-                    <h3 style="font-family: 'Outfit'; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.5rem;">Study Analytics</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.85rem; max-width: 400px; margin: 0 auto; line-height: 1.5;">
-                        Your detailed study analytics and focus time charts will appear here as you continue learning. Keep building your streak!
-                    </p>
-                    <!-- Mini Stats Bar Chart -->
-                    <div style="display: flex; align-items: flex-end; justify-content: center; gap: 8px; height: 80px; margin-top: 1.5rem;">
-                        <div style="width: 12px; height: 20%; background: rgba(239,35,60,0.3); border-radius: 4px 4px 0 0; transition: height 0.5s;"></div>
-                        <div style="width: 12px; height: 40%; background: rgba(239,35,60,0.4); border-radius: 4px 4px 0 0; transition: height 0.5s;"></div>
-                        <div style="width: 12px; height: 65%; background: rgba(239,35,60,0.5); border-radius: 4px 4px 0 0; transition: height 0.5s;"></div>
-                        <div style="width: 12px; height: 45%; background: rgba(239,35,60,0.45); border-radius: 4px 4px 0 0; transition: height 0.5s;"></div>
-                        <div style="width: 12px; height: 80%; background: rgba(239,35,60,0.6); border-radius: 4px 4px 0 0; transition: height 0.5s;"></div>
-                        <div style="width: 12px; height: 55%; background: rgba(239,35,60,0.5); border-radius: 4px 4px 0 0; transition: height 0.5s;"></div>
-                        <div style="width: 12px; height: 90%; background: linear-gradient(180deg, #ef233c, #d90429); border-radius: 4px 4px 0 0; box-shadow: 0 0 10px rgba(239,35,60,0.4); transition: height 0.5s;"></div>
-                    </div>
-                    <div style="display: flex; justify-content: center; gap: 8px; margin-top: 0.5rem;">
-                        <span style="font-size: 0.6rem; color: var(--text-muted); width: 12px; text-align: center;">M</span>
-                        <span style="font-size: 0.6rem; color: var(--text-muted); width: 12px; text-align: center;">T</span>
-                        <span style="font-size: 0.6rem; color: var(--text-muted); width: 12px; text-align: center;">W</span>
-                        <span style="font-size: 0.6rem; color: var(--text-muted); width: 12px; text-align: center;">T</span>
-                        <span style="font-size: 0.6rem; color: var(--text-muted); width: 12px; text-align: center;">F</span>
-                        <span style="font-size: 0.6rem; color: var(--text-muted); width: 12px; text-align: center;">S</span>
-                        <span style="font-size: 0.6rem; color: #ef233c; width: 12px; text-align: center; font-weight: 700;">S</span>
-                    </div>
-                </div>
-            </div>
+            </main>
         </div>
+    </div>
 
+    {# ═══ EDIT MODAL ═══ #}
+    <div id="edit-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeEdit()"></div>
+        <div
+            class="relative z-10 w-full max-w-md bg-zinc-900/95 backdrop-blur-xl border border-white/[0.10] rounded-2xl p-6 shadow-2xl animate-fade-in-up">
+            <div class="flex items-center gap-4 mb-6">
+                <div
+                    class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <iconify-icon id="modal-icon" icon="lucide:user" class="w-5 h-5 text-primary"></iconify-icon>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white" style="font-family:'Outfit',sans-serif;" id="modal-label">
+                        Edit Field</h3>
+                    <p class="text-xs text-zinc-500">Update your profile information</p>
+                </div>
+            </div>
+            <form id="edit-form" onsubmit="return handleEditSubmit(event)">
+                <input type="hidden" id="edit-field" name="field" value="" />
+                <div class="mb-4">
+                    <label for="edit-value"
+                        class="block text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-2">New
+                        Value</label>
+                    <input type="text" id="edit-value" name="value"
+                        class="w-full px-4 py-3 bg-black/40 border border-white/[0.12] rounded-xl text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-primary focus:shadow-[0_0_20px_rgba(239,35,60,0.2)] transition-all duration-200"
+                        placeholder="Enter new value..." autocomplete="off" />
+                </div>
+                <div id="edit-error"
+                    class="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs hidden">
+                </div>
+                <div id="edit-success"
+                    class="mb-4 p-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-xs hidden">
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" onclick="closeEdit()"
+                        class="flex-1 px-4 py-2.5 rounded-xl border border-white/[0.10] text-zinc-300 text-sm font-semibold hover:bg-white/[0.04] transition-all duration-200">Cancel</button>
+                    <button type="submit"
+                        class="flex-1 px-4 py-2.5 rounded-xl bg-primary hover:bg-[var(--primary-dark)] text-white text-sm font-semibold transition-all duration-200 shadow-[0_4px_15px_rgba(239,35,60,0.3)]">Save
+                        Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="profile-toast"
+        class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[120] bg-zinc-900/90 backdrop-blur-md border border-white/[0.12] rounded-xl px-5 py-3 shadow-2xl text-sm text-white font-medium hidden animate-fade-in-up">
+        <span id="profile-toast-msg"></span>
     </div>
 </div>
+{% endblock %}
 
+{% block extra_js %}
 <script>
-    // Profile Tab Switching
-    function switchProfileTab(tabId, btn) {
-        document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('tab-' + tabId).classList.add('active');
-        btn.classList.add('active');
-    }
+    (function () {
+        window.switchSection = function (id) {
+            document.querySelectorAll('.profile-section').forEach(function (s) { s.classList.add('hidden'); s.classList.remove('active'); });
+            var t = document.getElementById('section-' + id); if (t) { t.classList.remove('hidden'); t.classList.add('active'); }
+            document.querySelectorAll('.profile-nav-btn').forEach(function (b) { b.classList.remove('bg-white/[0.06]', 'border-white/[0.10]', 'text-white', 'shadow-sm'); b.classList.add('bg-transparent', 'border-transparent', 'text-zinc-400'); });
+            var n = document.getElementById('nav-' + id); if (n) { n.classList.remove('bg-transparent', 'border-transparent', 'text-zinc-400'); n.classList.add('bg-white/[0.06]', 'border-white/[0.10]', 'text-white', 'shadow-sm'); }
+        };
+        window.handleAvatar = function (i) {
+            if (!i.files || !i.files.length) return;
+            var f = i.files[0], r = new FileReader();
+            r.onload = function (e) {
+                var p = document.getElementById('avatar-preview');
+                if (p && p.tagName === 'IMG') { p.src = e.target.result; }
+                else if (p) { var w = p.parentElement, img = document.createElement('img'); img.id = 'avatar-preview'; img.src = e.target.result; img.alt = 'Avatar'; img.className = 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'; p.replaceWith(img); }
+            };
+            r.readAsDataURL(f);
+            var fd = new FormData(); fd.append('avatar', f);
+            fetch('{% url "profile_avatar_upload" %}', { method: 'POST', headers: { 'X-CSRFToken': getCSRF() }, body: fd })
+                .then(function (r) { return r.json(); }).then(function (d) { showToast(d.message || 'Avatar updated!', d.status !== 'success'); })
+                .catch(function () { showToast('Network error.', true); });
+        };
+        window.openEdit = function (c) {
+            document.getElementById('edit-field').value = c.getAttribute('data-pf-field');
+            document.getElementById('edit-value').value = c.getAttribute('data-pf-value');
+            document.getElementById('modal-label').textContent = c.getAttribute('data-pf-label');
+            document.getElementById('modal-icon').setAttribute('icon', c.getAttribute('data-pf-icon') || 'lucide:user');
+            var err = document.getElementById('edit-error'), ok = document.getElementById('edit-success');
+            if (err) err.classList.add('hidden'); if (ok) ok.classList.add('hidden');
+            var m = document.getElementById('edit-modal'); if (m) m.classList.remove('hidden');
+            var inp = document.getElementById('edit-value'); if (inp) setTimeout(function () { inp.focus(); }, 50);
+        };
+        window.closeEdit = function () { var m = document.getElementById('edit-modal'); if (m) m.classList.add('hidden'); };
+        window.handleEditSubmit = function (e) {
+            if (e) e.preventDefault();
+            var field = document.getElementById('edit-field').value, value = document.getElementById('edit-value').value.trim();
+            var errEl = document.getElementById('edit-error'), okEl = document.getElementById('edit-success');
+            if (errEl) errEl.classList.add('hidden'); if (okEl) okEl.classList.add('hidden');
+            var fd = new FormData(); fd.append('field', field); fd.append('value', value);
+            fetch('{% url "profile_update_info" %}', { method: 'POST', headers: { 'X-CSRFToken': getCSRF() }, body: fd })
+                .then(function (r) { return r.json(); }).then(function (d) {
+                    if (d.status === 'success') {
+                        var disp = document.getElementById('display-' + field);
+                        if (disp) disp.textContent = value || '\u2014';
+                        if (okEl) { okEl.textContent = d.message || 'Updated!'; okEl.classList.remove('hidden'); }
+                        showToast(d.message || 'Updated!');
+                        setTimeout(function () { closeEdit(); }, 1200);
+                    } else { if (errEl) { errEl.textContent = d.message || 'Update failed.'; errEl.classList.remove('hidden'); } }
+                }).catch(function () { if (errEl) { errEl.textContent = 'Network error.'; errEl.classList.remove('hidden'); } });
+            return false;
+        };
+        var toastTimer;
+        window.showToast = function (m, isErr) {
+            var t = document.getElementById('profile-toast'), s = document.getElementById('profile-toast-msg');
+            if (!t || !s) return;
+            s.textContent = m; t.style.borderColor = isErr ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.12)';
+            s.style.color = isErr ? '#fca5a5' : '#fff'; t.classList.remove('hidden');
+            clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.add('hidden'); }, 3500);
+        };
+        window.getCSRF = function () {
+            var n = 'csrftoken', dc = document.cookie;
+            if (dc && dc !== '') { var cs = dc.split(';'); for (var i = 0; i < cs.length; i++) { var c = cs[i].trim(); if (c.substring(0, n.length + 1) === (n + '=')) return decodeURIComponent(c.substring(n.length + 1)); } }
+            return null;
+        };
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeEdit(); });
+
+        window.setTheme = function(color) {
+            // Apply visually
+            document.documentElement.setAttribute('data-theme-color', color);
+            localStorage.setItem('eduThemeColor', color);
+            showToast('Theme updated to ' + color);
+            
+            // Save to backend
+            var fd = new FormData();
+            fd.append('theme_color', color);
+            fetch('{% url "profile_update_theme" %}', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCSRF() },
+                body: fd
+            }).catch(console.error);
+        };
+    })();
 </script>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .glass-card-profile {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-card-profile:hover {
+        border-color: rgba(var(--primary-rgb), 0.25);
+        box-shadow: 0 12px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px rgba(var(--primary-rgb), 0.08);
+    }
+
+    .profile-field-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.005));
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .profile-field-card:hover {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+        border-color: rgba(var(--primary-rgb), 0.25);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 25px -10px rgba(0, 0, 0, 0.6), 0 0 15px rgba(var(--primary-rgb), 0.06);
+    }
+
+    .profile-section.hidden {
+        display: none;
+    }
+
+    .profile-section.active {
+        display: block;
+    }
+
+    @keyframes fade-in-up {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in-up {
+        animation: fade-in-up 0.3s ease-out forwards;
+    }
+
+    .avatar-upload-wrapper {
+        cursor: pointer;
+    }
+</style>
 {% endblock %}
