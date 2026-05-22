@@ -1,0 +1,98 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI — AI Study Planner{% endblock %}
+
+{% block content %}
+
+<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6">
+    <div class="text-center max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up"
+            style="animation-delay: 0.1s;">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span class="text-xs font-medium text-red-100/90 tracking-wide font-manrope">Product</span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter font-manrope leading-[1.1] mb-8 animate-fade-up"
+            style="animation-delay: 0.2s;">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40">
+                AI-Powered
+            </span>
+            <span class="block text-primary">Study Planner</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed animate-fade-up"
+            style="animation-delay: 0.3s;">
+            Let AI analyze your course structure and automatically create an optimized study schedule based on your
+            goals, deadlines, and learning pace.
+        </p>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-20 px-6">
+    <div class="max-w-4xl mx-auto space-y-12">
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+            <div
+                class="shrink-0 w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-lg">
+                1</div>
+            <div>
+                <h3 class="text-xl font-semibold text-white font-manrope mb-2">Import Your Course</h3>
+                <p class="text-zinc-400 leading-relaxed">Paste your YouTube playlist URL. EduTech AI extracts all
+                    videos, estimates total learning time, and builds the syllabus structure.</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+            <div
+                class="shrink-0 w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-lg">
+                2</div>
+            <div>
+                <h3 class="text-xl font-semibold text-white font-manrope mb-2">Set Your Goals</h3>
+                <p class="text-zinc-400 leading-relaxed">Define how many hours per day you can study, your target
+                    completion date, and preferred study times. The AI adapts to your lifestyle.</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+            <div
+                class="shrink-0 w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-lg">
+                3</div>
+            <div>
+                <h3 class="text-xl font-semibold text-white font-manrope mb-2">Get Your Personalized Schedule</h3>
+                <p class="text-zinc-400 leading-relaxed">The AI generates a day-by-day study plan with specific video
+                    assignments, quiz checkpoints, and built-in review sessions using spaced repetition.</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+            <div
+                class="shrink-0 w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-lg">
+                4</div>
+            <div>
+                <h3 class="text-xl font-semibold text-white font-manrope mb-2">Track & Adapt</h3>
+                <p class="text-zinc-400 leading-relaxed">As you progress, the planner dynamically adjusts based on your
+                    actual pace. Fall behind? It reshuffles. Ahead? It unlocks bonus material.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-20 px-6 text-center border-t border-white/5">
+    <div class="max-w-2xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold font-manrope mb-6 text-white">Start planning your learning journey
+        </h2>
+        <a href="{% url 'register' %}" class="shiny-cta inline-block">
+            <span class="relative z-10 flex items-center gap-2 text-white font-medium">
+                Get Started Free <iconify-icon icon="lucide:arrow-right"
+                    class="transition-transform group-hover:translate-x-1"></iconify-icon>
+            </span>
+        </a>
+    </div>
+</section>
+
+{% endblock %}
