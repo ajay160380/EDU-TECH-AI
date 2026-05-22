@@ -16,6 +16,7 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
     path('profile/avatar/upload/', views.profile_avatar_upload, name='profile_avatar_upload'),
     path('profile/update/', views.profile_update_info, name='profile_update_info'),
+    path('profile/theme/update/', views.profile_update_theme, name='profile_update_theme'),
     
     # Dashboard & course actions
     path('dashboard/', views.dashboard, name='dashboard'),
