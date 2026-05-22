@@ -1,232 +1,211 @@
 {% extends 'courses/base.html' %}
 {% load static %}
 
-{% block title %}EduTech AI - Personalized Learner Dashboard{% endblock %}
+{% block title %}EduTech AI — Learner Dashboard{% endblock %}
 
 {% block content %}
-<!-- Mesmerizing High-Performance WebGL LightRays Ambient Background -->
-<div id="dashboard-lightrays" style="position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.85;"></div>
+<!-- ===== AMBIENT BACKGROUND ORBS ===== -->
+<div class="dash-ambient-orbs" aria-hidden="true">
+    <div class="dash-orb dash-orb-1"></div>
+    <div class="dash-orb dash-orb-2"></div>
+    <div class="dash-orb dash-orb-3"></div>
+</div>
 
-<div class="container" id="dashboard-view-container" style="position: relative; z-index: 2;">
+<div class="dashboard-container">
 
-    <!-- User Welcome Greeting -->
-    <header class="dashboard-header"
-        style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); padding: 2rem 2.25rem; border-radius: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05); backdrop-filter: blur(16px); margin-bottom: 2rem;">
-        <div>
-            <div
-                style="display: inline-block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: #ef233c; background: rgba(239, 35, 60, 0.08); padding: 0.25rem 0.7rem; border-radius: 50px; border: 1px solid rgba(239, 35, 60, 0.15); margin-bottom: 0.5rem;">
-                ✨ Central Command Center
-            </div>
-            <h1
-                style="font-size: 2rem; font-family: 'Outfit', sans-serif; font-weight: 600; letter-spacing: -0.01em; background: linear-gradient(135deg, #fff, #ff8fa3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                Focus Workspace
-            </h1>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem; max-width: 600px;">
-                Keep up the momentum, <span style="color: #fff; font-weight: 600;">{{ user.username }}</span>! Welcome back to your
-                distraction-free edtech environment.
+    <!-- ===== HEADER: Welcome + Actions ===== -->
+    <header class="dash-header">
+        <div class="dash-header-greeting">
+            <h1>Welcome back, {{ user.first_name|default:user.username }}</h1>
+            <p>
+                {% if profile.plan_type == 'ultra' %}
+                ✦ Ultra Member ·
+                {% elif profile.plan_type == 'pro' %}
+                Pro Member ·
+                {% else %}
+                Free Plan ·
+                {% endif %}
+                Keep up the momentum
             </p>
         </div>
-        <div>
-            <a href="{% url 'import_course' %}" class="btn btn-primary"
-                id="btn-dashboard-import">Import Playlist</a>
+        <div class="dash-header-actions">
+            <div class="dash-data-freshness">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                </svg>
+                Updated <time datetime="{{ last_updated|date:'c' }}">{{ last_updated|date:'H:i' }}</time>
+            </div>
+            <a href="{% url 'import_course' %}" class="dash-btn-import">
+                + Import Playlist
+            </a>
         </div>
     </header>
 
-    <!-- Compact At-a-Glance Metrics Strip -->
-    <section class="metric-strip" id="dashboard-stats-row" style="margin-bottom: 2.5rem;">
-        <!-- Metric 1: Active Courses -->
-        <div class="metric-strip-item glass-card" id="stat-active-courses" style="flex: 1; padding: 1.25rem 1.5rem; border-radius: 20px; border: 1px solid rgba(239,35,60,0.1); background: linear-gradient(145deg, rgba(20,5,5,0.6), rgba(5,5,5,0.8)); box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: default;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 20px 40px rgba(239,35,60,0.15), inset 0 1px 0 rgba(255,255,255,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)';">
-            <div class="compact-gauge" style="position: relative; width: 56px; height: 56px; flex-shrink: 0;">
-                <svg viewBox="0 0 48 48" width="56" height="56" style="transform: rotate(-90deg); overflow: visible; width: 56px; height: 56px;">
-                    <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="4"/>
-                    <circle id="circle-active" cx="24" cy="24" r="20" fill="none" stroke="#ef233c" stroke-width="4" stroke-linecap="round"
-                        stroke-dasharray="125.7" stroke-dashoffset="125.7"
-                        style="filter: drop-shadow(0 0 6px rgba(239,35,60,0.6)); transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);"/>
-                </svg>
-                <div class="gauge-value" style="color: #ef233c; font-size: 0.9rem;">📚</div>
-            </div>
-            <div>
-                <div style="font-size: 1.75rem; font-family: 'Outfit'; font-weight: 800; color: #fff; line-height: 1.1;">{{ total_courses }}</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-top: 0.1rem;">Active</div>
-            </div>
+    <!-- ===== KPI ROW: 4 Key Metrics ===== -->
+    <section class="dash-kpi-row" aria-label="Key performance indicators">
+        <!-- Streak -->
+        <div class="dash-kpi-card kpi-streak" tabindex="0" aria-label="Study streak: {{ profile.streak_count }} days">
+            <div class="dash-kpi-icon">🔥</div>
+            <div class="dash-kpi-value">{{ profile.streak_count }}</div>
+            <div class="dash-kpi-label">Day Streak</div>
+            {% if profile.streak_count > 0 %}
+            <span class="dash-kpi-trend up">Keep going</span>
+            {% endif %}
         </div>
 
-        <!-- Metric 2: Completed -->
-        <div class="metric-strip-item glass-card" id="stat-completed-courses" style="flex: 1; padding: 1.25rem 1.5rem; border-radius: 20px; border: 1px solid rgba(16,185,129,0.1); background: linear-gradient(145deg, rgba(5,20,10,0.6), rgba(5,5,5,0.8)); box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: default;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 20px 40px rgba(16,185,129,0.15), inset 0 1px 0 rgba(255,255,255,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)';">
-            <div class="compact-gauge" style="position: relative; width: 56px; height: 56px; flex-shrink: 0;">
-                <svg viewBox="0 0 48 48" width="56" height="56" style="transform: rotate(-90deg); overflow: visible; width: 56px; height: 56px;">
-                    <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="4"/>
-                    <circle id="circle-mastered" cx="24" cy="24" r="20" fill="none" stroke="#10b981" stroke-width="4" stroke-linecap="round"
-                        stroke-dasharray="125.7" stroke-dashoffset="125.7"
-                        style="filter: drop-shadow(0 0 6px rgba(16,185,129,0.6)); transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);"/>
-                </svg>
-                <div class="gauge-value" style="color: #10b981; font-size: 0.9rem;">🏆</div>
-            </div>
-            <div>
-                <div style="font-size: 1.75rem; font-family: 'Outfit'; font-weight: 800; color: #fff; line-height: 1.1;">{{ completed_courses }}</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-top: 0.1rem;">Mastered</div>
-            </div>
+        <!-- Active Courses -->
+        <div class="dash-kpi-card kpi-courses" tabindex="0" aria-label="Active courses: {{ total_courses }}">
+            <div class="dash-kpi-icon">📚</div>
+            <div class="dash-kpi-value">{{ total_courses }}</div>
+            <div class="dash-kpi-label">Active Courses</div>
         </div>
 
-        <!-- Metric 3: Videos -->
-        <div class="metric-strip-item glass-card" id="stat-completed-videos" style="flex: 1; padding: 1.25rem 1.5rem; border-radius: 20px; border: 1px solid rgba(245,158,11,0.1); background: linear-gradient(145deg, rgba(25,15,5,0.6), rgba(5,5,5,0.8)); box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: default;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 20px 40px rgba(245,158,11,0.15), inset 0 1px 0 rgba(255,255,255,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)';">
-            <div class="compact-gauge" style="position: relative; width: 56px; height: 56px; flex-shrink: 0;">
-                <svg viewBox="0 0 48 48" width="56" height="56" style="transform: rotate(-90deg); overflow: visible; width: 56px; height: 56px;">
-                    <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="4"/>
-                    <circle id="circle-videos" cx="24" cy="24" r="20" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"
-                        stroke-dasharray="125.7" stroke-dashoffset="125.7"
-                        style="filter: drop-shadow(0 0 6px rgba(245,158,11,0.6)); transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);"/>
+        <!-- Weekly Hours -->
+        <div class="dash-kpi-card kpi-hours{% if weekly_goal_pct < 50 %} kpi-warning{% elif weekly_goal_pct < 25 %} kpi-danger{% endif %}"
+            tabindex="0" aria-label="Weekly study: {{ weekly_hours }} hours, {{ weekly_goal_pct }}% of goal">
+            <div class="dash-kpi-icon">⏱️</div>
+            <div class="dash-kpi-value">{{ weekly_hours }}<span class="dash-kpi-unit">h</span></div>
+            <div class="dash-kpi-label">This Week</div>
+            <span class="dash-kpi-trend {% if weekly_goal_pct >= 70 %}up{% elif weekly_goal_pct < 40 %}down{% endif %}">
+                {{ weekly_goal_pct }}% of {{ weekly_goal_hours }}h goal
+            </span>
+            {% if sparkline_data %}
+            <div class="dash-kpi-sparkline">
+                <svg viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
+                    <polyline
+                        points="{% for d in sparkline_data %}{{ forloop.counter0|add:forloop.counter0|add:5 }},{{ d.minutes|default:0|add:1|floatformat:'0'|add:'-1'|cut:'--' }}{% if not forloop.last %} {% endif %}{% endfor %}"
+                        style="fill:none;stroke:#3b82f6;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" />
                 </svg>
-                <div class="gauge-value" style="color: #f59e0b; font-size: 0.9rem;">🎥</div>
             </div>
-            <div>
-                <div style="font-size: 1.75rem; font-family: 'Outfit'; font-weight: 800; color: #fff; line-height: 1.1;">{{ total_completed_videos }}<span style="font-size: 0.9rem; color: rgba(255,255,255,0.3); font-weight: 500;">/{{ total_videos_count }}</span></div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-top: 0.1rem;">Lectures</div>
-            </div>
+            {% endif %}
         </div>
 
-        <!-- Metric 4: Streak -->
-        <div class="metric-strip-item glass-card" id="stat-streak-inline" style="flex: 1; padding: 1.25rem 1.5rem; border-radius: 20px; border: 1px solid rgba(249,115,22,0.1); background: linear-gradient(145deg, rgba(25,10,5,0.6), rgba(5,5,5,0.8)); box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: default;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 20px 40px rgba(249,115,22,0.15), inset 0 1px 0 rgba(255,255,255,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)';">
-            <div class="compact-gauge" style="position: relative; width: 56px; height: 56px; flex-shrink: 0;">
-                <svg viewBox="0 0 48 48" width="56" height="56" style="transform: rotate(-90deg); overflow: visible; width: 56px; height: 56px;">
-                    <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="4"/>
-                    <circle id="circle-streak" cx="24" cy="24" r="20" fill="none" stroke="#f97316" stroke-width="4" stroke-linecap="round"
-                        stroke-dasharray="125.7" stroke-dashoffset="125.7"
-                        style="filter: drop-shadow(0 0 6px rgba(249,115,22,0.6)); transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);"/>
-                </svg>
-                <div class="gauge-value" style="color: #f97316; font-size: 0.9rem;">🔥</div>
-            </div>
-            <div>
-                <div style="font-size: 1.75rem; font-family: 'Outfit'; font-weight: 800; color: #fff; line-height: 1.1;">{{ profile.streak_count }}</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-top: 0.1rem;">Day Streak</div>
-            </div>
+        <!-- Completed -->
+        <div class="dash-kpi-card kpi-completed" tabindex="0" aria-label="Courses mastered: {{ completed_courses }}">
+            <div class="dash-kpi-icon">🏆</div>
+            <div class="dash-kpi-value">{{ completed_courses }}</div>
+            <div class="dash-kpi-label">Mastered</div>
+            {% if total_completed_videos > 0 %}
+            <span class="dash-kpi-trend up">{{ total_completed_videos }} videos done</span>
+            {% endif %}
         </div>
     </section>
 
-    <!-- Dynamic Circular Progress Script -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            setTimeout(() => {
-                const circum = 125.7; 
-                
-                // Fetch dynamic Django values
-                const activeCourses = {{ total_courses|default:0 }};
-                const masteredCourses = {{ completed_courses|default:0 }};
-                const totalCourses = activeCourses + masteredCourses;
-                const totalVideos = {{ total_videos_count|default:1 }};
-                const completedVideos = {{ total_completed_videos|default:0 }};
-                const streak = {{ profile.streak_count|default:0 }};
-                
-                // Calculate precise percentages
-                let pActive = totalCourses > 0 ? (activeCourses / totalCourses) : 0;
-                let pMastered = totalCourses > 0 ? (masteredCourses / totalCourses) : 0;
-                let pVideos = totalVideos > 0 ? (completedVideos / totalVideos) : 0;
-                
-                // Streak math (assuming milestones at 7, 30, 100, 365)
-                let maxStreak = 7; 
-                if (streak >= 7) maxStreak = 30;
-                if (streak >= 30) maxStreak = 100;
-                if (streak >= 100) maxStreak = 365;
-                let pStreak = streak > 0 ? (streak / maxStreak) : 0;
-
-                // Calculate dashoffsets
-                const offActive = circum - (pActive * circum);
-                const offMastered = circum - (pMastered * circum);
-                const offVideos = circum - (pVideos * circum);
-                const offStreak = circum - (pStreak * circum);
-
-                // Apply to elements triggering CSS transition
-                document.getElementById('circle-active').style.strokeDashoffset = offActive;
-                document.getElementById('circle-mastered').style.strokeDashoffset = offMastered;
-                document.getElementById('circle-videos').style.strokeDashoffset = offVideos;
-                document.getElementById('circle-streak').style.strokeDashoffset = offStreak;
-            }, 150); // slight delay to allow smooth load-in animation
-        });
-    </script>
-
-    <!-- Courses Section Title -->
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
-        <h2 style="font-size: 1.35rem; font-family: 'Outfit', sans-serif; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
-            <span style="color: #ef233c;">🎯</span> Your Curriculums
-        </h2>
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">{{ courses.count }} Enrolled Course{{ courses.count|pluralize }}</span>
-            <a href="{% url 'import_course' %}" style="background: rgba(239,35,60,0.15); border: 1px solid rgba(239,35,60,0.4); color: #ef233c; padding: 0.4rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 4px 15px rgba(239,35,60,0.1);" onmouseover="this.style.background='#ef233c'; this.style.color='white'; this.style.boxShadow='0 4px 20px rgba(239,35,60,0.4)';" onmouseout="this.style.background='rgba(239,35,60,0.15)'; this.style.color='#ef233c'; this.style.boxShadow='0 4px 15px rgba(239,35,60,0.1)';">
-                <span>➕</span> Import Playlist
-            </a>
+    <!-- ===== CONTEXTUAL INSIGHT BAR ===== -->
+    {% if insight %}
+    <div class="dash-insight-bar insight-{{ insight.type }}" role="alert" aria-live="polite">
+        <span class="dash-insight-icon" aria-hidden="true">{{ insight.icon }}</span>
+        <div class="dash-insight-content">
+            <p class="dash-insight-title">{{ insight.title }}</p>
+            <p class="dash-insight-message">{{ insight.message }}</p>
         </div>
+        {% if insight.cta_url %}
+        <a href="{{ insight.cta_url }}" class="dash-insight-cta">{{ insight.cta_label }}</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- ===== FILTER & SORT BAR ===== -->
+    <div class="dash-filter-bar">
+        <span class="dash-filter-label">Filter:</span>
+        <select class="dash-filter-select" id="dash-filter-status" hx-get="{% url 'dashboard_courses_partial' %}"
+            hx-target="#course-list-container" hx-trigger="change" hx-swap="innerHTML transition:true" name="filter"
+            aria-label="Filter courses by status">
+            <option value="all">All Courses</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="exam_ready">Exam Ready</option>
+        </select>
+
+        <span class="dash-filter-label">Sort:</span>
+        <select class="dash-filter-select" id="dash-filter-sort" hx-get="{% url 'dashboard_courses_partial' %}"
+            hx-target="#course-list-container" hx-trigger="change" hx-swap="innerHTML transition:true" name="sort"
+            aria-label="Sort courses">
+            <option value="recent">Most Recent</option>
+            <option value="progress_desc">Highest Progress</option>
+            <option value="progress_asc">Lowest Progress</option>
+            <option value="alphabetical">Alphabetical</option>
+        </select>
+
+        <span class="dash-filter-count">
+            {{ courses.count }} course{{ courses.count|pluralize }}
+        </span>
     </div>
 
-    {% if courses %}
-    <!-- Responsive Course Card Grid -->
-    <div class="courses-list" id="active-courses-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+    <!-- ===== COURSE CARDS GRID ===== -->
+    <div class="dash-course-grid" id="course-list-container">
+        {% if courses %}
         {% for course in courses %}
-        <div class="glass-card course-card-grid"
-            style="padding: 0; border-radius: 20px; position: relative; overflow: hidden; display: flex; flex-direction: column;"
-            id="course-card-{{ course.id }}">
-
+        <div class="dash-course-card glass-card" id="course-card-{{ course.id }}">
             <!-- Thumbnail -->
-            <div style="position: relative; overflow: hidden;">
+            <div class="dash-card-thumb-wrapper">
                 {% if course.thumbnail_url %}
-                <img src="{{ course.thumbnail_url }}" alt="{{ course.title }} thumbnail"
-                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; transition: transform 0.4s ease;">
+                <img src="{{ course.thumbnail_url }}" alt="{{ course.title }}" class="dash-card-thumb" loading="lazy">
                 {% else %}
-                <div
-                    style="width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, #1a0a0a, #2d0a0a); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
-                    📚</div>
+                <div class="dash-card-thumb-placeholder" aria-hidden="true">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    </svg>
+                </div>
                 {% endif %}
-                <!-- Badge overlay -->
-                <div
-                    style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); padding: 0.2rem 0.55rem; border-radius: 50px; font-size: 0.65rem; font-weight: 600; border: 1px solid rgba(255,255,255,0.15); color: #fff;">
-                    📚 EduTech AI
-                </div>
-                {% if course.completed_percentage == 100 %}
-                <div
-                    style="position: absolute; top: 10px; right: 10px; background: rgba(16,185,129,0.9); padding: 0.2rem 0.55rem; border-radius: 50px; font-size: 0.65rem; font-weight: 700; color: #fff;">
-                    ✓ Complete
-                </div>
+                {% if course.video_count > 0 and course.completed_video_count == course.video_count %}
+                <span class="dash-badge-complete">✓ Complete</span>
                 {% endif %}
             </div>
 
             <!-- Card Body -->
-            <div style="padding: 1.25rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="dash-card-body">
                 <div>
-                    <h3 style="font-size: 1.05rem; font-family: 'Outfit', sans-serif; font-weight: 600; margin-bottom: 0.65rem; line-height: 1.3; color: #fff; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        {{ course.title }}</h3>
+                    <h3 class="dash-card-title">{{ course.title }}</h3>
 
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;">
-                        <span class="glass-badge badge-purple" style="font-size: 0.65rem; padding: 0.15rem 0.45rem;">🎥 {{ course.videos.count }} videos</span>
-                        <span class="glass-badge badge-emerald" style="font-size: 0.65rem; padding: 0.15rem 0.45rem;">⏱️ {{ course.total_duration_display }}</span>
-                        <span class="glass-badge" style="font-size: 0.65rem; padding: 0.15rem 0.45rem; background: rgba(249,115,22,0.1); color: #f97316; border-color: rgba(249,115,22,0.2);">🎯 {{ course.target_days }}d plan</span>
+                    <div class="dash-card-meta">
+                        <span class="dash-meta-tag">🎥 {{ course.video_count }} videos</span>
+                        <span class="dash-meta-tag">⏱️ {{ course.total_duration_display }}</span>
+                        <span class="dash-meta-tag dash-meta-target">🎯 {{ course.target_days }}d plan</span>
                     </div>
-                </div>
 
-                <!-- Ultra-slim Progress Bar -->
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                        <span style="font-size: 0.7rem; font-weight: 500; color: var(--text-secondary);">Progress</span>
-                        <span style="font-size: 0.7rem; font-weight: 700; color: {% if course.completed_percentage == 100 %}#10b981{% else %}#ef233c{% endif %};">{{ course.completed_percentage }}%</span>
-                    </div>
-                    <div style="height: 3px; background: rgba(255,255,255,0.06); border-radius: 50px; overflow: hidden;">
-                        <div style="width: {{ course.completed_percentage }}%; height: 100%; background: {% if course.completed_percentage == 100 %}linear-gradient(90deg, #10b981, #34d399){% else %}linear-gradient(90deg, #ef233c, #d90429){% endif %}; border-radius: 50px; box-shadow: 0 0 8px {% if course.completed_percentage == 100 %}rgba(16,185,129,0.5){% else %}rgba(239,35,60,0.5){% endif %};">
+                    <!-- Progress -->
+                    <div class="dash-progress-section">
+                        <div class="dash-progress-header">
+                            <span class="dash-progress-label">Progress</span>
+                            <span
+                                class="dash-progress-pct{% if course.video_count > 0 and course.completed_video_count == course.video_count %} dash-progress-done{% endif %}">
+                                {% if course.video_count > 0 %}{% widthratio course.completed_video_count
+                                course.video_count 100 %}{% else %}0{% endif %}%
+                            </span>
+                        </div>
+                        <div class="dash-progress-bar" role="progressbar"
+                            aria-valuenow="{% if course.video_count > 0 %}{% widthratio course.completed_video_count course.video_count 100 %}{% else %}0{% endif %}"
+                            aria-valuemin="0" aria-valuemax="100" aria-label="Course progress">
+                            <div class="dash-progress-fill{% if course.video_count > 0 and course.completed_video_count == course.video_count %} dash-progress-fill-done{% endif %}"
+                                style="width: {% if course.video_count > 0 %}{% widthratio course.completed_video_count course.video_count 100 %}{% else %}0{% endif %}%;">
+                            </div>
+                        </div>
+                        <div class="dash-progress-detail">
+                            <span>{{ course.completed_video_count }}/{{ course.video_count }} videos completed</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Actions -->
-                <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
-                    <a href="{% url 'learn_view' course.id %}" class="btn btn-primary"
-                        style="flex: 1; padding: 0.55rem 1rem; font-size: 0.8rem; border-radius: 10px;"
-                        id="btn-learn-{{ course.id }}">Learn Mode</a>
-                    {% if course.completed_percentage == 100 %}
+                <div class="dash-card-actions">
+                    <a href="{% url 'learn_view' course.id %}" class="dash-btn-learn"
+                        aria-label="Continue learning {{ course.title }}">
+                        Continue Learning
+                    </a>
+                    {% if course.video_count > 0 and course.completed_video_count == course.video_count %}
                     {% if course.passed_exam %}
-                    <a href="{% url 'certificate' course.id %}" class="btn"
-                        style="background: linear-gradient(135deg, #d4af37, #b89018); color: #000; font-weight: 600; border: none; box-shadow: 0 0 10px rgba(212,175,55,0.3); padding: 0.55rem 1rem; border-radius: 10px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+                    <a href="{% url 'certificate' course.id %}" class="dash-btn-cert"
+                        aria-label="View certificate for {{ course.title }}">
                         🏅 Certificate
                     </a>
                     {% else %}
-                    <a href="{% url 'final_exam' course.id %}" class="btn"
-                        style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 600; border: none; box-shadow: 0 0 10px rgba(16,185,129,0.3); padding: 0.55rem 1rem; border-radius: 10px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+                    <a href="{% url 'final_exam' course.id %}" class="dash-btn-exam"
+                        aria-label="Take final exam for {{ course.title }}">
                         📝 Final Exam
                     </a>
                     {% endif %}
@@ -235,541 +214,173 @@
             </div>
         </div>
         {% endfor %}
+        {% else %}
+        <!-- Empty State -->
+        <div class="dash-empty-state">
+            <div class="dash-empty-icon" aria-hidden="true">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                </svg>
+            </div>
+            <h3>Your Study Desk is Empty</h3>
+            <p>Ready to lock into hyper-focus? Import any public YouTube playlist URL to transform it into a structured,
+                distraction-free course.</p>
+            <a href="{% url 'import_course' %}" class="dash-btn-import">Import Your First
+                Playlist</a>
+        </div>
+        {% endif %}
     </div>
-    {% else %}
-    <div class="glass-card"
-        style="text-align: center; padding: 5rem 3rem; border-radius: 28px; border: 1px dashed rgba(239, 35, 60, 0.4); background: linear-gradient(135deg, rgba(239, 35, 60, 0.05), transparent); margin-bottom: 3rem;"
-        id="no-courses-placeholder">
-        <div style="font-size: 4rem; margin-bottom: 1.5rem; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));">
-            🎒</div>
-        <h3 style="font-size: 2rem; font-family: 'Outfit', sans-serif; font-weight: 800; margin-bottom: 1rem;">
-            Your Study Desk is Empty</h3>
-        <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 500px; margin: 0 auto 2.5rem auto; line-height: 1.6;">
-            Ready to lock into hyper-focus? Import any public YouTube playlist URL to transform it into a structured distraction-free course.
-        </p>
-        <a href="{% url 'import_course' %}" class="btn btn-primary" id="btn-import-first">Import Playlist</a>
-    </div>
-    {% endif %}
+
+    <!-- ===== 28-DAY ACTIVITY HEATMAP ===== -->
+    <section class="dash-heatmap-section" aria-label="28-day activity heatmap">
+        <div class="dash-heatmap-header">
+            <h3 class="dash-heatmap-title">📅 Last 4 Weeks Activity</h3>
+            <div class="dash-heatmap-score">
+                {{ profile.streak_count }} <span>day streak</span>
+            </div>
+        </div>
+
+        <!-- Colorblind-safe heatmap grid -->
+        <div class="dash-streak-grid-v2">
+            {% for day in streak_grid %}
+            <div class="dash-streak-cell level-{{ day.level }}" tabindex="0" role="img"
+                aria-label="{{ day.label }}: {{ day.actions }} study event{{ day.actions|pluralize }}">
+                <span class="dash-streak-tooltip">{{ day.actions }} event{{ day.actions|pluralize }} on {{ day.label
+                    }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Legend -->
+        <div class="dash-heatmap-legend">
+            <span>Less</span>
+            <div class="legend-cell legend-level-0"></div>
+            <div class="legend-cell legend-level-1"></div>
+            <div class="legend-cell legend-level-2"></div>
+            <div class="legend-cell legend-level-3"></div>
+            <div class="legend-cell legend-level-4"></div>
+            <span>More</span>
+        </div>
+    </section>
 
 </div>
 
-<!-- Retractable Right-Side Drawer Toggle -->
-<button class="drawer-toggle" id="drawer-toggle-btn" onclick="toggleDrawer()">⚙️</button>
-
-<!-- Retractable Right-Side Drawer -->
-<aside class="retractable-drawer" id="dashboard-drawer">
-
-    <!-- Streak Tracker (Compact) -->
-    <div style="margin-bottom: 2rem;" id="dashboard-streak-tracker">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-            <h3 style="font-size: 1rem; font-family: 'Outfit', sans-serif; font-weight: 600; color: white; margin: 0;">
-                Focus Consistency
-            </h3>
-            <div class="flame-container" style="font-size: 1.25rem;">🔥</div>
-        </div>
-
-        <div style="font-size: 2.25rem; font-weight: 700; background: linear-gradient(135deg, #f97316, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0.25rem 0;"
-            id="user-streak-score">
-            {{ profile.streak_count }} <span style="font-size: 1rem; color: #f59e0b; font-weight: 600;">Days</span>
-        </div>
-        <p style="color: rgba(253, 186, 116, 0.85); font-size: 0.75rem; font-weight: 500; margin-bottom: 1rem;">
-            Consecutive Hyper-Focus Streak
-        </p>
-
-        <!-- Contribution Heatmap -->
-        <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.03); padding: 1rem; border-radius: 14px;">
-            <h4 style="font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.08em; margin-bottom: 0.65rem;">
-                Last 4 Weeks Activity
-            </h4>
-            <div class="streak-grid" style="gap: 6px;" id="streak-contribution-grid">
-                {% for day in streak_grid %}
-                <div class="streak-box level-{{ day.level }}" style="border-radius: 5px;"
-                    id="streak-box-{{ day.date }}">
-                    <span class="streak-tooltip" id="tooltip-{{ day.date }}">
-                        {{ day.actions }} study event{{ day.actions|pluralize }} on {{ day.label }}
-                    </span>
-                </div>
-                {% endfor %}
-            </div>
-            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 0.85rem; font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">
-                <span>Less</span>
-                <div style="width: 10px; height: 10px; border-radius: 3px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);"></div>
-                <div style="width: 10px; height: 10px; border-radius: 3px; background: rgba(239, 35, 60, 0.2); border: 1px solid rgba(239, 35, 60, 0.4);"></div>
-                <div style="width: 10px; height: 10px; border-radius: 3px; background: rgba(239, 35, 60, 0.5); border: 1px solid rgba(239, 35, 60, 0.7);"></div>
-                <div style="width: 10px; height: 10px; border-radius: 3px; background: rgba(239, 35, 60, 0.8); border: 1px solid #ef233c; box-shadow: 0 0 8px rgba(239, 35, 60, 0.6);"></div>
-                <span>More</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Ambient Workspace Customizer -->
-    <style>
-        .theme-preset-btn {
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        }
-        .theme-preset-btn:hover {
-            background: rgba(255, 255, 255, 0.08) !important;
-            border-color: rgba(255, 255, 255, 0.2) !important;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
-        }
-        .theme-preset-btn.active {
-            background: rgba(239, 35, 60, 0.1) !important;
-            border-color: #ef233c !important;
-            box-shadow: 0 0 20px rgba(239, 35, 60, 0.3) !important;
-        }
-        .theme-preset-btn.active[data-theme="solar"] {
-            background: rgba(234, 179, 8, 0.1) !important;
-            border-color: #eab308 !important;
-            box-shadow: 0 0 20px rgba(234, 179, 8, 0.3) !important;
-        }
-        .glass-badge.badge-gold {
-            background: rgba(212, 175, 55, 0.15) !important;
-            color: #eab308 !important;
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
-        }
-        .ambient-range-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            height: 4px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.08);
-            outline: none;
-            margin: 6px 0;
-        }
-        .ambient-range-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ef233c, #d90429);
-            cursor: pointer;
-            box-shadow: 0 0 6px rgba(239, 35, 60, 0.5);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .ambient-range-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-    </style>
-
-    <div id="ambient-themes-customizer">
-        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 0.85rem; margin-bottom: 1rem;">
-            <h3 style="font-size: 0.95rem; font-family: 'Outfit', sans-serif; font-weight: 600; color: white; margin: 0; display: flex; align-items: center; gap: 0.4rem;">
-                🎨 Ambient Workspace
-            </h3>
-            <span class="glass-badge badge-purple" style="font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;" id="active-theme-badge">Nebula</span>
-        </div>
-
-        <p style="color: var(--text-secondary); font-size: 0.75rem; line-height: 1.4; margin-bottom: 1rem;">
-            Customize background glows of your workspace.
-        </p>
-
-        <!-- Theme Presets -->
-        <div style="display: flex; flex-direction: column; gap: 0.65rem;" id="theme-presets-grid">
-            <button class="theme-preset-btn active" data-theme="nebula"
-                style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.65rem 0.85rem; cursor: pointer; text-align: left;">
-                <div style="display: flex; align-items: center; gap: 0.6rem;">
-                    <div style="display: flex; width: 28px; height: 14px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                        <div style="width: 50%; background: #ef233c;"></div>
-                        <div style="width: 50%; background: #d90429;"></div>
-                    </div>
-                    <span style="color: #fff; font-size: 0.8rem; font-weight: 500;">Nebula Red</span>
-                </div>
-                <span style="font-size: 0.7rem; color: #ef233c; font-weight: 600;">Free</span>
-            </button>
-
-            <button class="theme-preset-btn" data-theme="cyberpunk"
-                style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 0.65rem 0.85rem; cursor: pointer; text-align: left;">
-                <div style="display: flex; align-items: center; gap: 0.6rem;">
-                    <div style="display: flex; width: 28px; height: 14px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                        <div style="width: 50%; background: #ec4899;"></div>
-                        <div style="width: 50%; background: #8b5cf6;"></div>
-                    </div>
-                    <span style="color: #fff; font-size: 0.8rem; font-weight: 500;">Cyberpunk Pink</span>
-                </div>
-                {% if profile.plan_type == 'free' %}
-                <span style="font-size: 0.75rem;" class="theme-lock-icon">🔒</span>
-                {% else %}
-                <span style="font-size: 0.65rem; color: #10b981; font-weight: 600; background: rgba(16, 185, 129, 0.15); padding: 0.12rem 0.35rem; border-radius: 6px;">Pro</span>
-                {% endif %}
-            </button>
-
-            <button class="theme-preset-btn" data-theme="emerald"
-                style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 0.65rem 0.85rem; cursor: pointer; text-align: left;">
-                <div style="display: flex; align-items: center; gap: 0.6rem;">
-                    <div style="display: flex; width: 28px; height: 14px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                        <div style="width: 50%; background: #10b981;"></div>
-                        <div style="width: 50%; background: #14b8a6;"></div>
-                    </div>
-                    <span style="color: #fff; font-size: 0.8rem; font-weight: 500;">Emerald Aurora</span>
-                </div>
-                {% if profile.plan_type == 'free' %}
-                <span style="font-size: 0.75rem;" class="theme-lock-icon">🔒</span>
-                {% else %}
-                <span style="font-size: 0.65rem; color: #10b981; font-weight: 600; background: rgba(16, 185, 129, 0.15); padding: 0.12rem 0.35rem; border-radius: 6px;">Pro</span>
-                {% endif %}
-            </button>
-
-            <button class="theme-preset-btn" data-theme="sunset"
-                style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 0.65rem 0.85rem; cursor: pointer; text-align: left;">
-                <div style="display: flex; align-items: center; gap: 0.6rem;">
-                    <div style="display: flex; width: 28px; height: 14px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                        <div style="width: 50%; background: #f59e0b;"></div>
-                        <div style="width: 50%; background: #ef4444;"></div>
-                    </div>
-                    <span style="color: #fff; font-size: 0.8rem; font-weight: 500;">Sunset Horizon</span>
-                </div>
-                {% if profile.plan_type == 'free' %}
-                <span style="font-size: 0.75rem;" class="theme-lock-icon">🔒</span>
-                {% else %}
-                <span style="font-size: 0.65rem; color: #10b981; font-weight: 600; background: rgba(16, 185, 129, 0.15); padding: 0.12rem 0.35rem; border-radius: 6px;">Pro</span>
-                {% endif %}
-            </button>
-
-            <button class="theme-preset-btn" data-theme="solar"
-                style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 0.65rem 0.85rem; cursor: pointer; text-align: left;">
-                <div style="display: flex; align-items: center; gap: 0.6rem;">
-                    <div style="display: flex; width: 28px; height: 14px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                        <div style="width: 50%; background: #eab308;"></div>
-                        <div style="width: 50%; background: #92400e;"></div>
-                    </div>
-                    <span style="color: #fff; font-size: 0.8rem; font-weight: 500;">Solar Gold</span>
-                </div>
-                {% if profile.plan_type == 'ultra' %}
-                <span style="font-size: 0.65rem; color: #d4af37; font-weight: 600; background: rgba(212, 175, 55, 0.15); padding: 0.12rem 0.35rem; border-radius: 6px;">Ultra</span>
-                {% else %}
-                <span style="font-size: 0.75rem;" class="theme-lock-icon">🔒</span>
-                {% endif %}
-            </button>
-        </div>
-
-        <!-- Ambient Tuning Controls -->
-        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06);">
-            <h4 style="font-size: 0.75rem; font-family: 'Outfit'; font-weight: 600; color: #fff; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
-                <span>⚙️ Ambient Tuning</span>
-                {% if profile.plan_type == 'ultra' %}
-                <span style="font-size: 0.6rem; color: #d4af37; font-weight: 700; background: rgba(212,175,55,0.15); padding: 2px 5px; border-radius: 4px; border: 1px solid rgba(212,175,55,0.25);">ADVANCED</span>
-                {% elif profile.plan_type == 'pro' %}
-                <span style="font-size: 0.6rem; color: #10b981; font-weight: 700; background: rgba(16,185,129,0.15); padding: 2px 5px; border-radius: 4px; border: 1px solid rgba(16,185,129,0.25);">ACTIVE</span>
-                {% else %}
-                <span style="font-size: 0.6rem; color: var(--text-secondary); font-weight: 700; background: rgba(255,255,255,0.05); padding: 2px 5px; border-radius: 4px;">LOCKED</span>
-                {% endif %}
-            </h4>
-
-            {% if profile.plan_type == 'free' %}
-            <div style="background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.06); border-radius: 10px; padding: 1rem 0.75rem; text-align: center;">
-                <span style="font-size: 1.1rem; display: block; margin-bottom: 0.25rem;">🔒</span>
-                <span style="color: var(--text-secondary); font-size: 0.7rem; line-height: 1.4; display: block;">Upgrade to Pro or Ultra for custom ambient glow controls!</span>
-            </div>
-            {% else %}
-            <style>
-                .ambient-range-slider {
-                    -webkit-appearance: none; width: 100%; height: 4px; border-radius: 4px; margin-top: 4px;
-                    background: rgba(255, 255, 255, 0.1); outline: none; transition: background 0.3s ease;
-                }
-                .ambient-range-slider:not(:disabled) { cursor: pointer; }
-                .ambient-range-slider:not(:disabled):hover { background: rgba(255, 255, 255, 0.2); }
-                .ambient-range-slider::-webkit-slider-thumb {
-                    -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%;
-                    background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-                    transition: transform 0.2s ease, box-shadow 0.2s ease;
-                }
-                .ambient-range-slider:not(:disabled)::-webkit-slider-thumb { cursor: pointer; }
-                .ambient-range-slider:not(:disabled)::-webkit-slider-thumb:hover { 
-                    transform: scale(1.4); box-shadow: 0 0 15px rgba(255, 255, 255, 0.9); 
-                }
-            </style>
-            <div style="display: flex; flex-direction: column; gap: 0.85rem; position: relative;">
-                <div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 3px;">
-                        <span>Flow Speed</span>
-                        <span id="val-flow-speed" style="color: #fff; font-weight: 500;">25s</span>
-                    </div>
-                    <input type="range" id="input-flow-speed" min="5" max="60" value="25" class="ambient-range-slider"
-                           {% if profile.plan_type != 'ultra' %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}>
-                </div>
-                <div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 3px;">
-                        <span>Glow Size</span>
-                        <span id="val-glow-scale" style="color: #fff; font-weight: 500;">1.0x</span>
-                    </div>
-                    <input type="range" id="input-glow-scale" min="50" max="180" value="100" class="ambient-range-slider"
-                           {% if profile.plan_type != 'ultra' %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}>
-                </div>
-                <div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 3px;">
-                        <span>Brightness</span>
-                        <span id="val-glow-opacity" style="color: #fff; font-weight: 500;">100%</span>
-                    </div>
-                    <input type="range" id="input-glow-opacity" min="10" max="100" value="100" class="ambient-range-slider"
-                           {% if profile.plan_type != 'ultra' %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}>
-                </div>
-                <div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 3px;">
-                        <span>Blur Depth</span>
-                        <span id="val-glow-blur" style="color: #fff; font-weight: 500;">40px</span>
-                    </div>
-                    <input type="range" id="input-glow-blur" min="20" max="80" value="40" class="ambient-range-slider"
-                           {% if profile.plan_type != 'ultra' %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}>
-                </div>
-
-                {% if profile.plan_type == 'pro' %}
-                <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 10px; padding: 0.6rem 0.7rem; font-size: 0.65rem; color: var(--text-secondary); line-height: 1.4;">
-                    ⚡ <strong style="color: #10b981;">Pro Active:</strong> Upgrade to <strong style="color: #d4af37;">Ultra</strong> to unlock custom sliders!
-                </div>
-                {% else %}
-                <button id="btn-ambient-reset" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; color: #fff; font-size: 0.65rem; padding: 0.35rem 0.7rem; cursor: pointer; font-family: 'Outfit'; width: fit-content; margin-top: 2px;">
-                    🔄 Reset Defaults
-                </button>
-                {% endif %}
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</aside>
+<!-- Toast Notification Container -->
+<div class="dash-toast-container" id="toast-container" aria-live="polite"></div>
 {% endblock %}
 
 {% block extra_js %}
+<!-- HTMX for dynamic filtering -->
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
 <script>
-    // Drawer toggle
-    function toggleDrawer() {
-        const drawer = document.getElementById('dashboard-drawer');
-        const btn = document.getElementById('drawer-toggle-btn');
-        drawer.classList.toggle('open');
-        btn.classList.toggle('open');
-    }
+    document.addEventListener('DOMContentLoaded', function () {
+        // ===== STRIP HTMX params from sort/filter selects ====
+        const filterStatus = document.getElementById('dash-filter-status');
+        const filterSort = document.getElementById('dash-filter-sort');
 
-    document.addEventListener("DOMContentLoaded", function() {
-        // Initialize and manage mesmerizing WebGL2 LightRays background
-        let lightRaysInstance = null;
-        const userPlan = "{{ profile.plan_type }}";
-
-        function initOrUpdateLightRays(themeColor) {
-            if (lightRaysInstance) {
-                lightRaysInstance.updateOptions({ raysColor: themeColor });
-                return;
-            }
-            if (window.LightRays) {
-                let speedMultiplier = 0.6;
-                let lengthMultiplier = 1.8;
-                let spreadMultiplier = 1.2;
-
-                if (userPlan === 'ultra') {
-                    const savedSpeedStr = localStorage.getItem('ambient-glow-speed') || '25s';
-                    const savedScaleStr = localStorage.getItem('ambient-glow-scale') || '1.0';
-                    const savedBlurStr = localStorage.getItem('ambient-glow-blur') || '40px';
-                    const speedVal = parseInt(savedSpeedStr) || 25;
-                    const scaleVal = parseFloat(savedScaleStr) || 1.0;
-                    const blurVal = parseInt(savedBlurStr) || 40;
-                    speedMultiplier = 15.0 / speedVal;
-                    lengthMultiplier = scaleVal * 1.8;
-                    spreadMultiplier = (blurVal / 40.0) * 1.2;
-                } else if (userPlan === 'pro') {
-                    speedMultiplier = 0.5;
-                }
-
-                lightRaysInstance = new LightRays('dashboard-lightrays', {
-                    raysOrigin: 'top-center',
-                    raysColor: themeColor || '#ef233c',
-                    raysSpeed: speedMultiplier,
-                    lightSpread: spreadMultiplier,
-                    rayLength: lengthMultiplier,
-                    pulsating: true,
-                    followMouse: true,
-                    mouseInfluence: 0.2,
-                    noiseAmount: 0.01,
-                    distortion: 0.04
-                });
-
-                if (userPlan === 'ultra') {
-                    const savedOpacityStr = localStorage.getItem('ambient-glow-opacity') || '1.0';
-                    const opacityVal = parseFloat(savedOpacityStr) || 1.0;
-                    if (lightRaysInstance.canvas) {
-                        lightRaysInstance.canvas.style.opacity = opacityVal;
-                    }
-                }
-            }
-        }
-
-        const themeBtns = document.querySelectorAll(".theme-preset-btn");
-        const activeThemeBadge = document.getElementById("active-theme-badge");
-
-        const themesConfig = {
-            'nebula': { name: 'Nebula Red', badgeClass: 'badge-purple', color: '#ef233c',
-                styles: { '--glow-1-bg': 'radial-gradient(circle, rgba(239, 35, 60, 0.15) 0%, rgba(0, 0, 0, 0) 70%)', '--glow-2-bg': 'radial-gradient(circle, rgba(217, 4, 41, 0.12) 0%, rgba(0, 0, 0, 0) 70%)' } },
-            'cyberpunk': { name: 'Cyberpunk Pink', badgeClass: 'badge-cyan', color: '#ec4899',
-                styles: { '--glow-1-bg': 'radial-gradient(circle, rgba(236, 72, 153, 0.18) 0%, rgba(0, 0, 0, 0) 70%)', '--glow-2-bg': 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0, 0, 0, 0) 70%)' } },
-            'emerald': { name: 'Emerald Aurora', badgeClass: 'badge-emerald', color: '#10b981',
-                styles: { '--glow-1-bg': 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, rgba(0, 0, 0, 0) 70%)', '--glow-2-bg': 'radial-gradient(circle, rgba(20, 184, 166, 0.15) 0%, rgba(0, 0, 0, 0) 70%)' } },
-            'sunset': { name: 'Sunset Horizon', badgeClass: 'badge-warning', color: '#f59e0b',
-                styles: { '--glow-1-bg': 'radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, rgba(0, 0, 0, 0) 70%)', '--glow-2-bg': 'radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(0, 0, 0, 0) 70%)' } },
-            'solar': { name: 'Solar Gold', badgeClass: 'badge-gold', color: '#eab308',
-                styles: { '--glow-1-bg': 'radial-gradient(circle, rgba(234, 179, 8, 0.22) 0%, rgba(0, 0, 0, 0) 70%)', '--glow-2-bg': 'radial-gradient(circle, rgba(146, 64, 14, 0.18) 0%, rgba(0, 0, 0, 0) 70%)' } }
-        };
-
-        const savedTheme = localStorage.getItem('ambient-glow-theme') || 'nebula';
-        themeBtns.forEach(btn => {
-            btn.classList.remove("active");
-            if (btn.getAttribute("data-theme") === savedTheme) btn.classList.add("active");
-        });
-        if (themesConfig[savedTheme]) {
-            activeThemeBadge.innerText = themesConfig[savedTheme].name;
-            activeThemeBadge.className = "glass-badge " + themesConfig[savedTheme].badgeClass;
-        }
-
-        const activeThemeColor = themesConfig[savedTheme] ? themesConfig[savedTheme].color : '#ef233c';
-        initOrUpdateLightRays(activeThemeColor);
-
-        themeBtns.forEach(btn => {
-            btn.addEventListener("click", function() {
-                const targetTheme = btn.getAttribute("data-theme");
-                let isLocked = false;
-                let lockMsg = "";
-
-                if (targetTheme === 'cyberpunk' || targetTheme === 'emerald' || targetTheme === 'sunset') {
-                    if (userPlan === 'free') {
-                        isLocked = true;
-                        lockMsg = "🔒 This theme is exclusive to Pro & Ultra plans! Upgrade in Pricing to customize your workspace glows.";
-                    }
-                } else if (targetTheme === 'solar') {
-                    if (userPlan !== 'ultra') {
-                        isLocked = true;
-                        lockMsg = "🔒 Solar Gold is an exclusive Ultra plan theme! Upgrade to unlock the ultimate luxury workspace.";
-                    }
-                }
-
-                if (isLocked) {
-                    showPremiumLockToast(lockMsg);
-                    return;
-                }
-
-                localStorage.setItem('ambient-glow-theme', targetTheme);
-                themeBtns.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-
-                if (themesConfig[targetTheme]) {
-                    activeThemeBadge.innerText = themesConfig[targetTheme].name;
-                    activeThemeBadge.className = "glass-badge " + themesConfig[targetTheme].badgeClass;
-                    const styles = themesConfig[targetTheme].styles;
-                    for (const [prop, value] of Object.entries(styles)) {
-                        document.documentElement.style.setProperty(prop, value);
-                    }
-                    initOrUpdateLightRays(themesConfig[targetTheme].color);
-                }
+        if (filterStatus && filterSort) {
+            // When one changes, include the other's value in the request
+            filterStatus.addEventListener('change', function () {
+                const sortVal = filterSort.value;
+                const url = new URL(this.getAttribute('hx-get'), window.location.origin);
+                url.searchParams.set('filter', this.value);
+                url.searchParams.set('sort', sortVal);
+                this.setAttribute('hx-get', url.pathname + url.search);
             });
-        });
 
-        function showPremiumLockToast(message) {
-            const existing = document.querySelector(".premium-lock-toast");
-            if (existing) existing.remove();
+            filterSort.addEventListener('change', function () {
+                const filterVal = filterStatus.value;
+                const url = new URL(this.getAttribute('hx-get'), window.location.origin);
+                url.searchParams.set('filter', filterVal);
+                url.searchParams.set('sort', this.value);
+                this.setAttribute('hx-get', url.pathname + url.search);
+            });
+        }
 
-            const toast = document.createElement("div");
-            toast.className = "premium-lock-toast";
+        // ===== TOAST NOTIFICATION SYSTEM =====
+        window.showToast = function ({ message, type, action, actionUrl, duration }) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'dash-toast toast-' + (type || 'info');
+            const icons = { warning: '⚠️', success: '✅', danger: '❌', info: 'ℹ️' };
+
+            let actionHTML = '';
+            if (action && actionUrl) {
+                actionHTML = `<a href="${actionUrl}" class="dash-toast-action">${action}</a>`;
+            }
+
             toast.innerHTML = `
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <div style="font-size: 1.5rem; filter: drop-shadow(0 0 8px rgba(239,35,60,0.6));">👑</div>
-                    <div style="flex-grow: 1;">
-                        <div style="font-weight: 700; color: #fff; font-size: 0.95rem; margin-bottom: 0.25rem; font-family: 'Outfit', sans-serif;">Unlock Theme Customization</div>
-                        <div style="color: rgba(255,255,255,0.7); font-size: 0.85rem; line-height: 1.4;">${message}</div>
-                    </div>
+                <span class="dash-toast-icon" aria-hidden="true">${icons[type] || 'ℹ️'}</span>
+                <div class="dash-toast-body">
+                    <div class="dash-toast-message">${message}</div>
+                    ${actionHTML}
                 </div>
-                <div style="margin-top: 1rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.75rem;">
-                    <button class="toast-btn-dismiss" style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 0.8rem; font-weight: 600; padding: 0.4rem 0.85rem; border-radius: 8px; cursor: pointer;">Maybe Later</button>
-                    <a href="/pricing/" style="background: linear-gradient(135deg, #ef233c, #d90429); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 0.8rem; font-weight: 700; padding: 0.4rem 1rem; border-radius: 8px; text-decoration: none; box-shadow: 0 4px 12px rgba(239,35,60,0.3);">View Plans ✨</a>
-                </div>
+                <button class="dash-toast-close" aria-label="Dismiss notification" onclick="this.closest('.dash-toast').remove()">&times;</button>
             `;
 
-            if (!document.getElementById("premium-toast-styles")) {
-                const styleNode = document.createElement("style");
-                styleNode.id = "premium-toast-styles";
-                styleNode.innerHTML = `
-                    .premium-lock-toast {
-                        position: fixed; bottom: 2rem; right: 2rem; width: 380px;
-                        background: rgba(15, 20, 32, 0.85); backdrop-filter: blur(24px);
-                        border: 1px solid rgba(239, 35, 60, 0.3);
-                        box-shadow: 0 20px 45px rgba(0,0,0,0.5); border-radius: 20px;
-                        padding: 1.25rem; z-index: 99999;
-                        animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-                    }
-                    .toast-btn-dismiss:hover { background: rgba(255,255,255,0.08) !important; }
-                    @keyframes slideUpFade { from { transform: translateY(1.5rem); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-                `;
-                document.head.appendChild(styleNode);
-            }
+            container.appendChild(toast);
 
-            document.body.appendChild(toast);
-            toast.querySelector(".toast-btn-dismiss").addEventListener("click", () => {
-                toast.style.animation = "slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards";
-                setTimeout(() => toast.remove(), 300);
-            });
-        }
-
-        // --- AMBIENT TUNING SLIDERS ---
-        const inputFlowSpeed = document.getElementById("input-flow-speed");
-        const inputGlowScale = document.getElementById("input-glow-scale");
-        const inputGlowOpacity = document.getElementById("input-glow-opacity");
-        const inputGlowBlur = document.getElementById("input-glow-blur");
-        const btnAmbientReset = document.getElementById("btn-ambient-reset");
-        const valFlowSpeed = document.getElementById("val-flow-speed");
-        const valGlowScale = document.getElementById("val-glow-scale");
-        const valGlowOpacity = document.getElementById("val-glow-opacity");
-        const valGlowBlur = document.getElementById("val-glow-blur");
-
-        function updateSpeedLabel(val) { if (valFlowSpeed) valFlowSpeed.innerHTML = val <= 15 ? `${val}s ⚡` : val <= 35 ? `${val}s 🧘` : `${val}s 🌌`; }
-        function updateScaleLabel(val) { if (valGlowScale) valGlowScale.innerHTML = `${(val / 100).toFixed(1)}x`; }
-        function updateOpacityLabel(val) { if (valGlowOpacity) valGlowOpacity.innerHTML = `${val}%`; }
-        function updateBlurLabel(val) { if (valGlowBlur) valGlowBlur.innerHTML = `${val}px`; }
-
-        if (userPlan === 'pro') {
-            if (inputFlowSpeed) { inputFlowSpeed.value = 30; updateSpeedLabel(30); }
-            if (inputGlowScale) { inputGlowScale.value = 100; updateScaleLabel(100); }
-            if (inputGlowOpacity) { inputGlowOpacity.value = 100; updateOpacityLabel(100); }
-            if (inputGlowBlur) { inputGlowBlur.value = 40; updateBlurLabel(40); }
-        } else if (userPlan === 'ultra') {
-            const speedVal = parseInt(localStorage.getItem('ambient-glow-speed')) || 25;
-            const scaleVal = Math.round((parseFloat(localStorage.getItem('ambient-glow-scale')) || 1.0) * 100);
-            const opacityVal = Math.round((parseFloat(localStorage.getItem('ambient-glow-opacity')) || 1.0) * 100);
-            const blurVal = parseInt(localStorage.getItem('ambient-glow-blur')) || 40;
-
-            if (inputFlowSpeed) { inputFlowSpeed.value = speedVal; updateSpeedLabel(speedVal); }
-            if (inputGlowScale) { inputGlowScale.value = scaleVal; updateScaleLabel(scaleVal); }
-            if (inputGlowOpacity) { inputGlowOpacity.value = opacityVal; updateOpacityLabel(opacityVal); }
-            if (inputGlowBlur) { inputGlowBlur.value = blurVal; updateBlurLabel(blurVal); }
-
-            if (inputFlowSpeed) inputFlowSpeed.addEventListener("input", function() {
-                updateSpeedLabel(this.value);
-                localStorage.setItem('ambient-glow-speed', `${this.value}s`);
-                if (lightRaysInstance) lightRaysInstance.updateOptions({ raysSpeed: 15.0 / this.value });
-            });
-            if (inputGlowScale) inputGlowScale.addEventListener("input", function() {
-                const scale = (this.value / 100).toFixed(2);
-                updateScaleLabel(this.value);
-                localStorage.setItem('ambient-glow-scale', scale);
-                if (lightRaysInstance) lightRaysInstance.updateOptions({ rayLength: parseFloat(scale) * 1.8 });
-            });
-            if (inputGlowOpacity) inputGlowOpacity.addEventListener("input", function() {
-                const opacity = (this.value / 100).toFixed(2);
-                updateOpacityLabel(this.value);
-                localStorage.setItem('ambient-glow-opacity', opacity);
-                if (lightRaysInstance && lightRaysInstance.canvas) lightRaysInstance.canvas.style.opacity = opacity;
-            });
-            if (inputGlowBlur) inputGlowBlur.addEventListener("input", function() {
-                updateBlurLabel(this.value);
-                localStorage.setItem('ambient-glow-blur', `${this.value}px`);
-                if (lightRaysInstance) lightRaysInstance.updateOptions({ lightSpread: (this.value / 40.0) * 1.2 });
-            });
-
-            if (btnAmbientReset) btnAmbientReset.addEventListener("click", function() {
-                if (inputFlowSpeed) { inputFlowSpeed.value = 25; updateSpeedLabel(25); localStorage.setItem('ambient-glow-speed', '25s'); }
-                if (inputGlowScale) { inputGlowScale.value = 100; updateScaleLabel(100); localStorage.setItem('ambient-glow-scale', '1.0'); }
-                if (inputGlowOpacity) { inputGlowOpacity.value = 100; updateOpacityLabel(100); localStorage.setItem('ambient-glow-opacity', '1.0'); }
-                if (inputGlowBlur) { inputGlowBlur.value = 40; updateBlurLabel(40); localStorage.setItem('ambient-glow-blur', '40px'); }
-                if (lightRaysInstance) {
-                    lightRaysInstance.updateOptions({ raysSpeed: 0.6, rayLength: 1.8, lightSpread: 1.2 });
-                    if (lightRaysInstance.canvas) lightRaysInstance.canvas.style.opacity = 1.0;
+            // Auto-dismiss after duration
+            const dismissTime = duration || 6000;
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.add('removing');
+                    setTimeout(() => {
+                        if (toast.parentNode) toast.remove();
+                    }, 250);
                 }
-            });
+            }, dismissTime);
+        };
+
+        // ===== STREAK-AT-RISK DETECTION =====
+        const streakCount = {{ profile.streak_count }
+    };
+    const currentHour = new Date().getHours();
+
+    // Check if no activity today and it's past 8pm
+    if (streakCount > 0 && currentHour >= 20) {
+        // The server already computed if the user has activity today
+        // We check the last element of streak_grid (today)
+        const streakCells = document.querySelectorAll('.dash-streak-cell');
+        if (streakCells.length > 0) {
+            const todayCell = streakCells[streakCells.length - 1];
+            if (todayCell.classList.contains('level-0')) {
+                showToast({
+                    message: `🌙 Your ${streakCount}-day streak is at risk! Study for just 5 minutes to keep it alive.`,
+                    type: 'warning',
+                    action: 'Quick Focus Session',
+                    actionUrl: '/focus/',
+                    duration: 10000
+                });
+            }
+        }
+    }
+    });
+
+    // ===== AUTO-DISMISS DJANGO MESSAGES =====
+    document.addEventListener('DOMContentLoaded', function () {
+        const djangoMessages = document.querySelectorAll('.fixed.top-24 .flex.items-center.justify-between');
+        djangoMessages.forEach(function (msg) {
+            setTimeout(function () {
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateY(-20px)';
+                msg.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                setTimeout(function () { if (msg.parentNode) msg.remove(); }, 500);
+            }, 5000);
+        });
+    });
+
+    // ===== HTMX: After swap, re-init any dynamic elements =====
+    document.body.addEventListener('htmx:afterSwap', function (evt) {
+        // Update course count in filter bar
+        const courseCards = document.querySelectorAll('#course-list-container .dash-course-card');
+        const countSpan = document.querySelector('.dash-filter-bar span[style*="margin-left:auto"]');
+        if (countSpan && evt.detail.target.id === 'course-list-container') {
+            countSpan.textContent = courseCards.length + ' course' + (courseCards.length !== 1 ? 's' : '');
         }
     });
 </script>
