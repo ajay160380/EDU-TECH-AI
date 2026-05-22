@@ -42,43 +42,162 @@ def privacy_view(request):
 @login_required
 def profile_view(request):
     """
-    Renders the premium User Profile dashboard.
+    Renders the premium Apple-ID-style User Profile dashboard with
+    two-column layout, learning journey widgets, and editable fields.
     """
-    profile = request.user.profile
+    user = request.user
+    profile = user.profile
     profile.sync_streak()
-    playlist_count = request.user.courses.count()
-    
-    if profile.plan_type == 'free':
+
+    # ---- Plan / Playlist Limits ----
+    plan_type = profile.plan_type
+    if plan_type == 'free':
         playlist_limit = 3
-        limit_display = "3 Playlists"
-    elif profile.plan_type == 'pro':
+        limit_display = '3 Playlists'
+        usage_display_text = '3'
+    elif plan_type == 'pro':
         playlist_limit = 20
-        limit_display = "20 Playlists"
+        limit_display = '20 Playlists'
+        usage_display_text = '20'
     else:
         playlist_limit = 99999
-        limit_display = "Unlimited Playlists"
-        
-    courses = request.user.courses.all()
+        limit_display = 'Unlimited Playlists'
+        usage_display_text = 'Unlimited'
+
+    courses = user.courses.all()
     total_courses = courses.count()
-    completed_courses = 0
-    
-    for c in courses:
-        if c.videos.count() > 0 and c.completed_percentage == 100:
-            completed_courses += 1
-            
-    if playlist_limit == 99999:
-        playlist_percentage = 0
+    completed_courses = sum(
+        1 for c in courses if c.videos.count() > 0 and c.completed_percentage == 100
+    )
+
+    playlist_count = total_courses
+    playlist_percentage = 0 if playlist_limit == 99999 else min(
+        int((playlist_count / playlist_limit) * 100), 100
+    )
+
+    # ---- Learning Journey Widgets ----
+    # Study streak (already on profile)
+    study_streak = profile.streak_count
+
+    # Completed playlists (courses fully watched)
+    completed_playlists = completed_courses
+
+    # Certified skills = courses where user passed the final exam
+    certified_skills = sum(1 for c in courses if c.passed_exam)
+
+    # ---- Active Courses / Devices & Sessions ----
+    active_courses = []
+    for c in courses.order_by('-created_at')[:6]:
+        active_courses.append({
+            'id': c.id,
+            'title': c.title,
+            'thumbnail_url': c.thumbnail_url,
+            'progress': c.completed_percentage,
+            'videos_count': c.videos.count(),
+        })
+
+    # ---- Total study minutes across all sessions ----
+    from django.db.models import Sum
+    total_study_minutes = (
+        StudySession.objects.filter(user=user).aggregate(Sum('duration_minutes'))['duration_minutes__sum']
+        or 0
+    )
+    total_study_hours = round(total_study_minutes / 60, 1)
+
+    # ---- Subscription info ----
+    subscription_active = profile.is_subscription_active
+    subscription_end = profile.subscription_end_date
+
+    # ---- Precomputed display values (short names prevent template line-wrapping) ----
+    avatar_url = profile.avatar.url if profile.avatar else ''
+    has_avatar = bool(profile.avatar)
+    if not has_avatar:
+        a = (user.first_name[:1] or user.username[:1]).upper()
+        b = user.last_name[:1] or (user.username[1:2] if len(user.username) > 1 else '')
+        avt_init = (a + b).upper()
     else:
-        playlist_percentage = min(int((playlist_count / playlist_limit) * 100), 100)
-        
+        avt_init = ''
+
+    # Member badge
+    if plan_type == 'ultra':
+        member_badge_text = '✦ Ultra Member'
+        member_badge_class = 'text-[#d4af37]'
+        plan_badge_class = 'bg-[#d4af37]/[0.06] border border-[#d4af37]/20'
+        plan_icon_class = 'bg-[#d4af37]/20'
+        plan_icon_color = 'text-[#d4af37]'
+        plan_name = 'Ultra Plan'
+    elif plan_type == 'pro':
+        member_badge_text = 'Pro Member'
+        member_badge_class = 'text-[#ef233c]'
+        plan_badge_class = 'bg-[#ef233c]/[0.06] border border-[#ef233c]/20'
+        plan_icon_class = 'bg-[#ef233c]/20'
+        plan_icon_color = 'text-[#ef233c]'
+        plan_name = 'Pro Plan'
+    else:
+        member_badge_text = 'Free Plan'
+        member_badge_class = 'text-zinc-500'
+        plan_badge_class = 'bg-white/[0.03] border border-white/[0.06]'
+        plan_icon_class = 'bg-white/[0.06]'
+        plan_icon_color = 'text-zinc-400'
+        plan_name = 'Free Plan'
+
+    # Subscription subtitle
+    if plan_type == 'free':
+        plan_subtitle = f'Basic platform usage — {limit_display} import limit'
+    elif subscription_end:
+        plan_subtitle = f'Active until {subscription_end.strftime("%b %d, %Y")}'
+    else:
+        plan_subtitle = 'Active until Ongoing'
+
     context = {
+        'user': user,
         'profile': profile,
+        'plan_type': plan_type,
+        # Precomputed display values (short names)
+        'avatar_url': avatar_url,
+        'has_avatar': has_avatar,
+        'avt_init': avt_init,
+        'disp_fname': user.first_name or '—',
+        'disp_lname': user.last_name or '—',
+        'disp_email': user.email or '—',
+        'disp_uname': user.username,
+        'phead': user.first_name or user.username,
+        'phead_ln': user.last_name,
+        'fname_raw': user.first_name or '',
+        'lname_raw': user.last_name or '',
+        'email_raw': user.email or '',
+        'uname_raw': user.username,
+        # Member badge
+        'member_badge_text': member_badge_text,
+        'member_badge_class': member_badge_class,
+        'plan_badge_class': plan_badge_class,
+        'plan_icon_class': plan_icon_class,
+        'plan_icon_color': plan_icon_color,
+        'plan_name': plan_name,
+        'plan_subtitle': plan_subtitle,
+        # Playlist limits
         'playlist_count': playlist_count,
         'playlist_limit': playlist_limit,
         'limit_display': limit_display,
+        'usage_display_text': usage_display_text,
         'playlist_percentage': playlist_percentage,
+        'usage_bar_full': plan_type == 'ultra',
+        # Learning Journey widgets
         'total_courses': total_courses,
         'completed_courses': completed_courses,
+        'study_streak': study_streak,
+        'completed_playlists': completed_playlists,
+        'certified_skills': certified_skills,
+        'total_study_hours': total_study_hours,
+        # Active courses
+        'active_courses': active_courses,
+        # Subscription
+        'subscription_active': subscription_active,
+        'subscription_end': subscription_end,
+        'show_upgrade_btn': plan_type != 'ultra',
+        'upgrade_btn_text': (
+            'Upgrade to Pro' if plan_type == 'free' else 'Upgrade to Ultra'
+        ),
     }
     return render(request, 'courses/profile.html', context)
 
@@ -160,68 +279,153 @@ def logout_view(request):
 @login_required
 def dashboard(request):
     """
-    Renders the student home panel showing active courses, target metrics,
-    and a visual 28-day GitHub contribution streak calendar.
+    Renders the modern high-performance learner dashboard with optimized queries,
+    contextual insights, and progressive data loading.
     """
+    from django.db.models import Count, Q, Sum, Case, When, IntegerField
+    from django.utils import timezone
+    import datetime
+    from django.core.cache import cache
+
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     profile.sync_streak()
-    courses = Course.objects.filter(user=request.user).order_by('-created_at')
-    
-    # Calculate overall progress metrics
+    user = request.user
+
+    # ---- Optimized Single-Query Course Aggregation ----
+    courses = Course.objects.filter(user=user).annotate(
+        video_count=Count('videos'),
+        completed_video_count=Count(
+            'videos',
+            filter=Q(videos__progress__user=user) & Q(videos__progress__is_completed=True)
+        ),
+    ).order_by('-created_at')
+
     total_courses = courses.count()
-    completed_courses = 0
-    total_videos_count = 0
-    total_completed_videos = 0
-    
+    completed_courses = sum(1 for c in courses if c.video_count > 0 and (
+        c.video_count > 0 and c.completed_video_count == c.video_count
+    ))
+    total_videos_count = sum(c.video_count for c in courses)
+    total_completed_videos = sum(c.completed_video_count for c in courses)
+
+    # ---- Sync video durations (optimized: only for placeholder durations) ----
     for c in courses:
-        first_videos = list(c.videos.all()[:5])
-        if first_videos and any(v.duration_seconds in [600, 720, 840, 960, 1080] for v in first_videos):
-            sync_course_video_durations(c)
-            
-        total_videos_count += c.videos.count()
-        total_completed_videos += Progress.objects.filter(user=request.user, video__course=c, is_completed=True).count()
-        if c.videos.count() > 0 and c.completed_percentage == 100:
-            completed_courses += 1
-            
-    # GitHub-style streak chart compilation (last 28 days)
+        if c.video_count > 0:
+            first_video = c.videos.first()
+            if first_video and first_video.duration_seconds in [600, 720, 840, 960, 1080]:
+                sync_course_video_durations(c)
+
+    # ---- Weekly Study Hours (last 7 days) ----
+    week_ago = timezone.now().date() - datetime.timedelta(days=7)
+    weekly_sessions = StudySession.objects.filter(
+        user=user, completed_date__gte=week_ago
+    ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+    weekly_hours = round(weekly_sessions / 60, 1)
+    weekly_goal_hours = 7  # Default weekly goal
+    weekly_goal_pct = min(round((weekly_hours / weekly_goal_hours) * 100), 100) if weekly_goal_hours > 0 else 0
+
+    # ---- 7-Day Sparkline Data (daily study minutes, last 7 days) ----
+    sparkline_data = []
+    for i in range(6, -1, -1):
+        day = timezone.now().date() - datetime.timedelta(days=i)
+        mins = StudySession.objects.filter(
+            user=user, completed_date=day
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+        sparkline_data.append({
+            'date': day.strftime('%a'),
+            'minutes': mins,
+        })
+
+    # ---- 28-Day Streak Heatmap (colorblind-safe scale) ----
     today = datetime.date.today()
     streak_grid = []
-    
+
+    # Pre-fetch all progress and session dates in one range query
+    heatmap_start = today - datetime.timedelta(days=27)
+    progress_dates = (
+        Progress.objects.filter(user=user, completed_at__date__gte=heatmap_start)
+        .values('completed_at__date')
+        .annotate(count=Count('id'))
+    )
+    session_dates = (
+        StudySession.objects.filter(user=user, completed_date__gte=heatmap_start)
+        .values('completed_date')
+        .annotate(count=Count('id'))
+    )
+    # Build lookup dicts
+    progress_lookup = {p['completed_at__date']: p['count'] for p in progress_dates}
+    session_lookup = {s['completed_date']: s['count'] for s in session_dates}
+
     for i in range(27, -1, -1):
         day = today - datetime.timedelta(days=i)
-        day_str = day.strftime('%Y-%m-%d')
-        
-        # Calculate events (video completions or study sessions) on this date
-        videos_done = Progress.objects.filter(
-            user=request.user,
-            completed_at__date=day
-        ).count()
-        
-        sessions_done = StudySession.objects.filter(
-            user=request.user,
-            completed_date=day
-        ).count()
-        
-        total_actions = videos_done + sessions_done
-        
-        # Classify contribution level (0 to 3)
+        total_actions = progress_lookup.get(day, 0) + session_lookup.get(day, 0)
+
         if total_actions == 0:
             level = 0
-        elif total_actions == 1:
+        elif total_actions <= 2:
             level = 1
-        elif total_actions <= 3:
+        elif total_actions <= 5:
             level = 2
-        else:
+        elif total_actions <= 8:
             level = 3
-            
+        else:
+            level = 4
+
         streak_grid.append({
-            'date': day_str,
+            'date': day.strftime('%Y-%m-%d'),
             'day_name': day.strftime('%a'),
             'label': day.strftime('%b %d'),
             'level': level,
-            'actions': total_actions
+            'actions': total_actions,
         })
-        
+
+    # ---- Contextual Insight Engine ----
+    insight = None
+    today_date = datetime.date.today()
+    if total_courses == 0:
+        insight = {
+            'type': 'action',
+            'icon': '🚀',
+            'title': 'Get Started',
+            'message': 'Import your first YouTube playlist to begin your learning journey.',
+            'cta_url': '/import/',
+            'cta_label': 'Import Playlist',
+        }
+    elif profile.streak_count == 0 and profile.last_active_date and (today_date - profile.last_active_date).days >= 2:
+        days_since = (today_date - profile.last_active_date).days
+        insight = {
+            'type': 'warning',
+            'icon': '⏰',
+            'title': 'Streak Lost',
+            'message': f'It\'s been {days_since} days since your last session. Just 5 minutes restarts your streak!',
+            'cta_url': '/focus/',
+            'cta_label': 'Quick Focus Session',
+        }
+    elif profile.streak_count > 0 and not (progress_lookup.get(today_date, 0) or session_lookup.get(today_date, 0)):
+        insight = {
+            'type': 'warning',
+            'icon': '🌙',
+            'title': 'Streak at Risk',
+            'message': f'Your {profile.streak_count}-day streak is at risk! Study today to keep it alive.',
+            'cta_url': '/focus/',
+            'cta_label': '5-Min Session',
+        }
+    elif completed_courses > 0:
+        # Check for courses ready for exam
+        exam_ready = [c for c in courses if c.video_count > 0 and c.completed_video_count == c.video_count and not c.passed_exam]
+        if exam_ready:
+            c = exam_ready[0]
+            insight = {
+                'type': 'success',
+                'icon': '🏅',
+                'title': 'Exam Available',
+                'message': f'You\'ve completed "{c.title}"! Take the final exam to earn your certificate.',
+                'cta_url': f'/course/{c.id}/final-exam/',
+                'cta_label': 'Take Exam',
+            }
+
+    # ---- Last updated timestamp ----
+    last_updated = timezone.now()
+
     context = {
         'profile': profile,
         'courses': courses,
@@ -229,9 +433,55 @@ def dashboard(request):
         'completed_courses': completed_courses,
         'total_videos_count': total_videos_count,
         'total_completed_videos': total_completed_videos,
-        'streak_grid': streak_grid
+        'streak_grid': streak_grid,
+        'weekly_hours': weekly_hours,
+        'weekly_goal_hours': weekly_goal_hours,
+        'weekly_goal_pct': weekly_goal_pct,
+        'sparkline_data': sparkline_data,
+        'insight': insight,
+        'last_updated': last_updated,
     }
     return render(request, 'courses/dashboard.html', context)
+
+
+@login_required
+def dashboard_courses_partial(request):
+    """
+    HTMX partial endpoint: returns sorted/filtered course cards HTML fragment.
+    """
+    from django.db.models import Count, Q
+
+    sort = request.GET.get('sort', 'recent')
+    filter_status = request.GET.get('filter', 'all')
+    user = request.user
+
+    courses = Course.objects.filter(user=user).annotate(
+        video_count=Count('videos'),
+        completed_video_count=Count(
+            'videos',
+            filter=Q(videos__progress__user=user) & Q(videos__progress__is_completed=True)
+        ),
+    )
+
+    # Filter
+    if filter_status == 'in_progress':
+        courses = [c for c in courses if c.video_count > 0 and c.completed_video_count < c.video_count]
+    elif filter_status == 'completed':
+        courses = [c for c in courses if c.video_count > 0 and c.completed_video_count == c.video_count]
+    elif filter_status == 'exam_ready':
+        courses = [c for c in courses if c.video_count > 0 and c.completed_video_count == c.video_count and not c.passed_exam]
+
+    # Sort
+    if sort == 'progress_asc':
+        courses = sorted(courses, key=lambda c: (c.completed_video_count / max(c.video_count, 1)))
+    elif sort == 'progress_desc':
+        courses = sorted(courses, key=lambda c: (c.completed_video_count / max(c.video_count, 1)), reverse=True)
+    elif sort == 'alphabetical':
+        courses = sorted(courses, key=lambda c: c.title.lower())
+    # default: 'recent' — already sorted by -created_at
+
+    context = {'courses': courses, 'user': user}
+    return render(request, 'courses/dashboard_courses_partial.html', context)
 
 @login_required
 def import_course(request):
@@ -993,6 +1243,108 @@ def video_summary(request, video_id):
 
 
 @login_required
+@require_POST
+def profile_avatar_upload(request):
+    """
+    Ajax endpoint to upload/change the user's profile avatar.
+    Accepts multipart form-data with 'avatar' file field.
+    Returns JSON with the new avatar URL.
+    """
+    profile = request.user.profile
+    avatar_file = request.FILES.get('avatar')
+
+    if not avatar_file:
+        return JsonResponse({'status': 'error', 'message': 'No image file provided.'}, status=400)
+
+    # Basic validation: allow only image types
+    allowed_types = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+    if avatar_file.content_type not in allowed_types:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid file type. Please upload JPEG, PNG, WebP, or GIF.'
+        }, status=400)
+
+    # Size limit: 5 MB
+    if avatar_file.size > 5 * 1024 * 1024:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'File too large. Maximum size is 5 MB.'
+        }, status=400)
+
+    # Delete old avatar if exists (to avoid orphan files)
+    if profile.avatar:
+        profile.avatar.delete(save=False)
+
+    profile.avatar = avatar_file
+    profile.save()
+
+    return JsonResponse({
+        'status': 'success',
+        'message': 'Avatar updated successfully!',
+        'avatar_url': profile.avatar.url,
+    })
+
+
+@login_required
+@require_POST
+def profile_update_info(request):
+    """
+    Ajax endpoint to update user personal information:
+    first_name, last_name, email, username.
+    Validates uniqueness, email format, and required fields.
+    Returns JSON with updated field values.
+    """
+    user = request.user
+    field = request.POST.get('field', '').strip()
+    value = request.POST.get('value', '').strip()
+
+    allowed_fields = ['first_name', 'last_name', 'email', 'username']
+
+    if field not in allowed_fields:
+        return JsonResponse({'status': 'error', 'message': 'Invalid field.'}, status=400)
+
+    if not value:
+        return JsonResponse({'status': 'error', 'message': f'{field.replace("_", " ").title()} cannot be empty.'}, status=400)
+
+    # Validate email format
+    if field == 'email':
+        from django.core.validators import validate_email
+        from django.core.exceptions import ValidationError
+        try:
+            validate_email(value)
+        except ValidationError:
+            return JsonResponse({'status': 'error', 'message': 'Please enter a valid email address.'}, status=400)
+        if User.objects.filter(email=value).exclude(pk=user.pk).exists():
+            return JsonResponse({'status': 'error', 'message': 'This email is already in use by another account.'}, status=400)
+
+    # Validate username uniqueness
+    if field == 'username':
+        if User.objects.filter(username=value).exclude(pk=user.pk).exists():
+            return JsonResponse({'status': 'error', 'message': 'This username is already taken.'}, status=400)
+        if len(value) < 3:
+            return JsonResponse({'status': 'error', 'message': 'Username must be at least 3 characters.'}, status=400)
+
+    # Apply the update
+    setattr(user, field, value)
+    user.save()
+
+    # Return the display-friendly label and value
+    display_labels = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'username': 'Username',
+    }
+
+    return JsonResponse({
+        'status': 'success',
+        'message': f'{display_labels.get(field, field)} updated successfully.',
+        'field': field,
+        'value': value,
+    })
+
+
+@login_required
 def focus_room(request):
     """
     Dedicated Zen Focus Room with standalone Pomodoro Timer and Lo-Fi audio stream.
@@ -1002,3 +1354,45 @@ def focus_room(request):
 
 
 
+
+
+def features_view(request):
+    """
+    Renders the platform features overview page.
+    """
+    return render(request, 'courses/features.html')
+
+
+def study_planner_view(request):
+    """
+    Renders the AI study planner feature page.
+    """
+    return render(request, 'courses/study_planner.html')
+
+
+def docs_view(request):
+    """
+    Renders the documentation and guides page.
+    """
+    return render(request, 'courses/docs.html')
+
+
+def blog_view(request):
+    """
+    Renders the blog listing page.
+    """
+    return render(request, 'courses/blog.html')
+
+
+def careers_view(request):
+    """
+    Renders the careers and job openings page.
+    """
+    return render(request, 'courses/careers.html')
+
+
+def shipping_view(request):
+    """
+    Renders the shipping/delivery policy page.
+    """
+    return render(request, 'courses/shipping.html')
