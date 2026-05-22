@@ -1,0 +1,88 @@
+{% for course in courses %}
+<div class="dash-course-card glass-card" id="course-card-{{ course.id }}">
+    <!-- Thumbnail -->
+    <div class="dash-card-thumb-wrapper">
+        {% if course.thumbnail_url %}
+        <img src="{{ course.thumbnail_url }}" alt="{{ course.title }}" class="dash-card-thumb" loading="lazy">
+        {% else %}
+        <div class="dash-card-thumb-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                aria-hidden="true">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+        </div>
+        {% endif %}
+        {% if course.video_count > 0 and course.completed_video_count == course.video_count %}
+        <span class="dash-badge-complete">✓ Complete</span>
+        {% endif %}
+    </div>
+
+    <!-- Card Body -->
+    <div class="dash-card-body">
+        <h3 class="dash-card-title">{{ course.title }}</h3>
+
+        <div class="dash-card-meta">
+            <span class="dash-meta-tag">🎥 {{ course.video_count }} videos</span>
+            <span class="dash-meta-tag">⏱️ {{ course.total_duration_display }}</span>
+            <span class="dash-meta-tag dash-meta-target">🎯 {{ course.target_days }}d plan</span>
+        </div>
+
+        <!-- Progress Bar with Goal Marker -->
+        <div class="dash-progress-section">
+            <div class="dash-progress-header">
+                <span class="dash-progress-label">Progress</span>
+                <span
+                    class="dash-progress-pct{% if course.video_count > 0 and course.completed_video_count == course.video_count %} dash-progress-done{% endif %}">
+                    {% if course.video_count > 0 %}{% widthratio course.completed_video_count course.video_count 100
+                    %}{% else %}0{% endif %}%
+                </span>
+            </div>
+            <div class="dash-progress-bar">
+                <div class="dash-progress-fill{% if course.video_count > 0 and course.completed_video_count == course.video_count %} dash-progress-fill-done{% endif %}"
+                    style="width: {% if course.video_count > 0 %}{% widthratio course.completed_video_count course.video_count 100 %}{% else %}0{% endif %}%;"
+                    role="progressbar"
+                    aria-valuenow="{% if course.video_count > 0 %}{% widthratio course.completed_video_count course.video_count 100 %}{% else %}0{% endif %}"
+                    aria-valuemin="0" aria-valuemax="100">
+                </div>
+                <!-- Goal marker at 70% -->
+                <div class="dash-progress-goal" style="left: 70%;" title="Target: 70%"></div>
+            </div>
+            <div class="dash-progress-detail">
+                <span>{{ course.completed_video_count }}/{{ course.video_count }} videos</span>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="dash-card-actions">
+            <a href="{% url 'learn_view' course.id %}" class="btn btn-primary dash-btn-learn">
+                Continue Learning
+            </a>
+            {% if course.video_count > 0 and course.completed_video_count == course.video_count %}
+            {% if course.passed_exam %}
+            <a href="{% url 'certificate' course.id %}" class="btn dash-btn-cert">
+                🏅 Certificate
+            </a>
+            {% else %}
+            <a href="{% url 'final_exam' course.id %}" class="btn dash-btn-exam">
+                📝 Final Exam
+            </a>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="glass-card dash-empty-state">
+    <div class="dash-empty-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+            aria-hidden="true">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+        </svg>
+    </div>
+    <h3>No courses found</h3>
+    <p>Try adjusting your filters or import a new playlist to get started.</p>
+    <a href="{% url 'import_course' %}" class="btn btn-primary">Import Playlist</a>
+</div>
+{% endfor %}
