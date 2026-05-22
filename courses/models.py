@@ -3,6 +3,13 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import datetime
+import os
+
+def avatar_upload_path(instance, filename):
+    """Upload avatar to profile_pics/USERNAME/ directory with timestamp to bust cache."""
+    ext = os.path.splitext(filename)[1].lower()
+    ts = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    return f'profile_pics/{instance.user.username}/avatar_{ts}{ext}'
 
 class UserProfile(models.Model):
     PLAN_CHOICES = (
@@ -11,9 +18,11 @@ class UserProfile(models.Model):
         ('ultra', 'Ultra'),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    avatar = models.ImageField(upload_to=avatar_upload_path, null=True, blank=True)
     daily_target_videos = models.IntegerField(default=2)
     streak_count = models.IntegerField(default=0)
     last_active_date = models.DateField(null=True, blank=True)
+    theme_color = models.CharField(max_length=20, default='red')
     
     # Subscription fields
     plan_type = models.CharField(max_length=10, choices=PLAN_CHOICES, default='free')
