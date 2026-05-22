@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-theme="{% if user.is_authenticated %}light{% else %}dark{% endif %}">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -189,26 +189,18 @@
                 class="max-w-5xl mx-auto flex items-center justify-between bg-black/60 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 shadow-2xl">
                 <!-- Glowing Neon 'E' Logo -->
                 <a href="{% url 'home' %}"
-                    class="nav-brand flex items-center gap-2 hover:scale-105 transition-transform duration-300"
+                    class="nav-brand flex items-center gap-3 hover:scale-105 transition-transform duration-300"
                     style="text-decoration: none;">
-                    <div
-                        class="relative w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#111] to-black border border-[#ef233c]/30 shadow-[0_0_15px_rgba(239,35,60,0.4)] overflow-hidden group">
-                        <div
-                            class="absolute inset-0 bg-[#ef233c]/10 group-hover:bg-[#ef233c]/20 transition-colors duration-300">
-                        </div>
-                        <span
-                            class="relative text-[#ef233c] font-bold text-xl leading-none drop-shadow-[0_0_8px_rgba(239,35,60,0.8)]"
-                            style="font-family: 'Outfit', sans-serif;">E</span>
-                    </div>
-                    <span class="text-xl font-bold font-manrope tracking-tight text-white drop-shadow-md">EduTech
-                        AI</span>
+                    <img src="{% static 'images/logo_e3.png' %}" alt="EduTech AI Logo" class="w-12 h-12 rounded-full shadow-[0_0_15px_rgba(239,35,60,0.4)]">
                 </a>
 
-                <div class="hidden md:flex items-center gap-8 relative">
+                <div class="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+                    {% if not user.is_authenticated %}
                     <a href="{% url 'home' %}"
                         class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'home' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Home</a>
                     <a href="{% url 'about' %}"
                         class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'about' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">About</a>
+                    {% endif %}
                     <a href="{% url 'pricing' %}"
                         class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'pricing' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Pricing</a>
 
@@ -276,15 +268,7 @@
                     <div class="md:col-span-5 flex flex-col gap-6">
                         <!-- Logo -->
                         <a href="{% url 'home' %}" class="flex items-center gap-3 group" style="text-decoration: none;">
-                            <div
-                                class="relative w-9 h-9 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#111] to-black border border-[#ef233c]/30 shadow-[0_0_15px_rgba(239,35,60,0.4)] overflow-hidden group-hover:shadow-[0_0_25px_rgba(239,35,60,0.6)] transition-shadow duration-300">
-                                <div
-                                    class="absolute inset-0 bg-[#ef233c]/10 group-hover:bg-[#ef233c]/20 transition-colors duration-300">
-                                </div>
-                                <span
-                                    class="relative text-[#ef233c] font-bold text-xl leading-none drop-shadow-[0_0_8px_rgba(239,35,60,0.8)]"
-                                    style="font-family: 'Outfit', sans-serif;">E</span>
-                            </div>
+                            <img src="{% static 'images/logo_e3.png' %}" alt="EduTech AI Logo" class="w-10 h-10 rounded-full shadow-[0_0_15px_rgba(239,35,60,0.4)] group-hover:shadow-[0_0_25px_rgba(239,35,60,0.6)] transition-shadow duration-300">
                             <span class="text-2xl font-bold font-manrope tracking-tight text-white">EduTech AI</span>
                         </a>
 
@@ -417,6 +401,10 @@
         {% endif %}
     </div>
 
+    <!-- GSAP for CardSwap Component -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="{% static 'js/card-swap.js' %}?v={% now 'U' %}"></script>
+
     <!-- JavaScript Interactive Scripts -->
     <script src="{% static 'js/main.js' %}?v={% now 'U' %}"></script>
 
@@ -424,11 +412,9 @@
     <script>
         (function () {
             const html = document.documentElement;
-            const isAuth = {{ user.is_authenticated| yesno: "true,false"
-        }};
-        html.setAttribute('data-theme', isAuth ? 'light' : 'dark');
-        window.__THEME_STATE__ = isAuth ? 'light' : 'dark';
-    }) ();
+            html.setAttribute('data-theme', 'dark');
+            window.__THEME_STATE__ = 'dark';
+        }) ();
     </script>
     {% block extra_js %}{% endblock %}
 </body>
