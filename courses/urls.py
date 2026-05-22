@@ -14,9 +14,12 @@ urlpatterns = [
     path('login/google/', views.login_google, name='login_google'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile_view, name='profile'),
+    path('profile/avatar/upload/', views.profile_avatar_upload, name='profile_avatar_upload'),
+    path('profile/update/', views.profile_update_info, name='profile_update_info'),
     
     # Dashboard & course actions
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('dashboard/courses/', views.dashboard_courses_partial, name='dashboard_courses_partial'),
     path('focus/', views.focus_room, name='focus_room'),
     path('import/', views.import_course, name='import_course'),
     path('course/<int:course_id>/learn/', views.learn_view, name='learn_view'),
@@ -33,4 +36,12 @@ urlpatterns = [
     path('pricing/', views.pricing_view, name='pricing'),
     path('payment/create/', views.create_razorpay_order, name='create_razorpay_order'),
     path('payment/callback/', views.razorpay_callback, name='razorpay_callback'),
+
+    # Informational pages
+    path('features/', views.features_view, name='features'),
+    path('study-planner/', views.study_planner_view, name='study_planner'),
+    path('docs/', views.docs_view, name='docs'),
+    path('blog/', views.blog_view, name='blog'),
+    path('careers/', views.careers_view, name='careers'),
+    path('shipping/', views.shipping_view, name='shipping'),
 ]
