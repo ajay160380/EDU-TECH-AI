@@ -12,12 +12,12 @@
             <!-- A lightweight geometric node web pattern -->
             <defs>
                 <pattern id="nodes" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                    <circle cx="20" cy="20" r="2" fill="#ef233c"/>
-                    <circle cx="80" cy="40" r="1.5" fill="#ef233c"/>
-                    <circle cx="40" cy="80" r="2.5" fill="#ef233c"/>
-                    <path d="M20 20 L80 40 L40 80 Z" fill="none" stroke="#ef233c" stroke-width="0.5" stroke-dasharray="2 4"/>
-                    <path d="M-20 80 L20 20 L40 -20" fill="none" stroke="#ef233c" stroke-width="0.5" opacity="0.5"/>
-                    <path d="M120 20 L80 40 L60 120" fill="none" stroke="#ef233c" stroke-width="0.5" opacity="0.5"/>
+                    <circle cx="20" cy="20" r="2" fill="var(--primary-hex)"/>
+                    <circle cx="80" cy="40" r="1.5" fill="var(--primary-hex)"/>
+                    <circle cx="40" cy="80" r="2.5" fill="var(--primary-hex)"/>
+                    <path d="M20 20 L80 40 L40 80 Z" fill="none" stroke="var(--primary-hex)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                    <path d="M-20 80 L20 20 L40 -20" fill="none" stroke="var(--primary-hex)" stroke-width="0.5" opacity="0.5"/>
+                    <path d="M120 20 L80 40 L60 120" fill="none" stroke="var(--primary-hex)" stroke-width="0.5" opacity="0.5"/>
                 </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#nodes)" />
@@ -25,13 +25,13 @@
     </div>
 
     <!-- Cinematic Lighting Glow -->
-    <div style="position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(239, 35, 60, 0.1) 0%, transparent 70%); filter: blur(60px); z-index: 0; pointer-events: none;"></div>
+    <div style="position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(var(--primary-rgb), 0.1) 0%, transparent 70%); filter: blur(60px); z-index: 0; pointer-events: none;"></div>
 
     <div class="glass-card auth-card" style="position: relative; z-index: 1; padding: 3rem 2.5rem; max-width: 440px; width: 100%; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(20px);">
         
         <header style="text-align: center; margin-bottom: 2.5rem;">
-            <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #ef233c, #d90429); margin-bottom: 1.25rem; box-shadow: 0 8px 20px rgba(239, 35, 60, 0.4);">
-                <span style="color: white; font-size: 1.5rem; font-family: 'Outfit'; font-weight: 800; line-height: 1;">E</span>
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.25rem; box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.4); overflow: hidden;">
+                <img src="{% static 'images/logo_e3.png' %}" alt="EduTech AI Logo" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <h2 style="font-size: 1.8rem; font-family: 'Outfit'; font-weight: 700; color: white; margin-bottom: 0.5rem; letter-spacing: -0.02em;">Welcome Back</h2>
             <p style="color: var(--text-secondary); font-size: 0.9rem;">Sign in to access your distraction-free workspace.</p>
@@ -79,7 +79,7 @@
         </button>
 
         <footer style="text-align: center; margin-top: 2rem; font-size: 0.85rem; color: var(--text-secondary);">
-            New to EduTech AI? <a href="{% url 'register' %}" style="color: #ef233c; font-weight: 600; transition: color 0.3s;">Create account</a>
+            New to EduTech AI? <a href="{% url 'register' %}" style="color: var(--primary-hex); font-weight: 600; transition: color 0.3s;">Create account</a>
         </footer>
     </div>
 </div>
@@ -110,7 +110,7 @@
                 </div>
             </button>
             <button type="button" class="sso-account-row" data-email="student@gmail.com" data-name="Focus Student" style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s;">
-                <div style="width: 36px; height: 36px; border-radius: 50%; background: #ef233c; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem;">FS</div>
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-hex); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem;">FS</div>
                 <div style="text-align: left; flex: 1;">
                     <div style="color: white; font-weight: 600; font-size: 0.9rem;">Focus Student</div>
                     <div style="color: var(--text-secondary); font-size: 0.75rem;">student@gmail.com</div>
@@ -134,7 +134,7 @@
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
             eyeIcon.setAttribute('icon', 'lucide:eye-off');
-            eyeBtn.style.color = '#ef233c';
+            eyeBtn.style.color = 'var(--primary-hex)';
         } else {
             passwordInput.type = 'password';
             eyeIcon.setAttribute('icon', 'lucide:eye');
