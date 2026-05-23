@@ -114,6 +114,47 @@
     .track-tile .tile-icon { font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
     .track-tile .tile-label { font-size: 0.8rem; font-weight: 600; font-family: 'Outfit'; letter-spacing: 0.5px; }
 
+    /* Premium Audio Controls */
+    .premium-volume-slider {
+        -webkit-appearance: none;
+        width: 120px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 99px;
+        outline: none;
+    }
+    .premium-volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #ef233c;
+        cursor: pointer;
+        box-shadow: 0 0 10px #ef233c;
+        transition: transform 0.2s;
+    }
+    .premium-volume-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+    }
+    .premium-next-btn {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 50px;
+        padding: 0.6rem 1.2rem;
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .premium-next-btn:hover {
+        background: rgba(239, 35, 60, 0.1);
+        border-color: rgba(239, 35, 60, 0.3);
+        transform: translateY(-1px);
+    }
 </style>
 
 <div class="focus-bg">
@@ -199,7 +240,7 @@
 
             <!-- SoundCloud Relaxing Track Embed -->
             <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,0.5); margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05);">
-                <iframe id="soundcloud-iframe" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" style="display: block;" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%23ef233c&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
+                <iframe id="soundcloud-iframe" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" loading="lazy" style="display: block;" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%23ef233c&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
             </div>
 
             <div class="premium-controls-bar">

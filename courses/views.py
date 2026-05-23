@@ -309,12 +309,12 @@ def dashboard(request):
     total_videos_count = sum(c.video_count for c in courses)
     total_completed_videos = sum(c.completed_video_count for c in courses)
 
-    # ---- Sync video durations (optimized: only for placeholder durations) ----
-    for c in courses:
-        if c.video_count > 0:
-            first_video = c.videos.first()
-            if first_video and first_video.duration_seconds in [600, 720, 840, 960, 1080]:
-                sync_course_video_durations(c)
+    # ---- Sync video durations (commented out to make dashboard render instantly) ----
+    # for c in courses:
+    #     if c.video_count > 0:
+    #         first_video = c.videos.first()
+    #         if first_video and first_video.duration_seconds in [600, 720, 840, 960, 1080]:
+    #             sync_course_video_durations(c)
 
     # ---- Weekly Study Hours (last 7 days) ----
     week_ago = timezone.now().date() - datetime.timedelta(days=7)
@@ -841,9 +841,9 @@ def learn_view(request, course_id):
         
     videos = sorted(raw_videos, key=extract_lecture_num)
     
-    # If videos have placeholder durations (e.g. exactly 600 or 720 seconds), run dynamic sync
-    if videos and any(v.duration_seconds in [600, 720, 840, 960, 1080] for v in videos[:5]):
-        sync_course_video_durations(course)
+    # If videos have placeholder durations (e.g. exactly 600 or 720 seconds), run dynamic sync (commented out for speed)
+    # if videos and any(v.duration_seconds in [600, 720, 840, 960, 1080] for v in videos[:5]):
+    #     sync_course_video_durations(course)
         
     # Get active video based on URL query parameter or default to the first incomplete video
     active_video_id = request.GET.get('video')

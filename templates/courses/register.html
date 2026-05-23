@@ -4,6 +4,17 @@
 {% block title %}EduTech AI - Start Distraction-Free EdTech SaaS{% endblock %}
 
 {% block content %}
+<style>
+    .form-input {
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .form-input:focus {
+        border-color: #ef233c !important;
+        box-shadow: 0 0 15px rgba(239, 35, 60, 0.25) !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        outline: none !important;
+    }
+</style>
 <div class="auth-wrapper" id="register-view-wrapper">
     <div class="glass-card auth-card" id="register-form-card">
 

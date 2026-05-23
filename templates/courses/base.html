@@ -22,8 +22,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Ensure CSS is never aggressively cached during development -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v={% now 'U' %}">
+    <!-- CSS stylesheet (with static version for fast browser caching) -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=1.2.0">
 
     <!-- Red Noir Custom Styling -->
     <style>
@@ -146,6 +146,45 @@
         .text-stroke {
             -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
             color: transparent;
+        }
+
+        /* Custom Nav link underlines */
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #ef233c;
+            box-shadow: 0 0 10px #ef233c, 0 0 20px #ef233c;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-50%);
+            border-radius: 999px;
+        }
+        .nav-link:hover::after {
+            width: 70%;
+        }
+        .nav-link.active::after {
+            width: 85%;
+        }
+
+        /* Premium custom thin scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 999px;
+            border: 1px solid #111;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ef233c;
+            box-shadow: 0 0 10px #ef233c;
         }
     </style>
 
@@ -403,10 +442,10 @@
 
     <!-- GSAP for CardSwap Component -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="{% static 'js/card-swap.js' %}?v={% now 'U' %}"></script>
+    <script src="{% static 'js/card-swap.js' %}?v=1.2.0"></script>
 
     <!-- JavaScript Interactive Scripts -->
-    <script src="{% static 'js/main.js' %}?v={% now 'U' %}"></script>
+    <script src="{% static 'js/main.js' %}?v=1.2.0"></script>
 
     <!-- Theme Initialization (must run before main.js to set correct state) -->
     <script>

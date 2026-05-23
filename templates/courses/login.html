@@ -4,6 +4,17 @@
 {% block title %}EduTech AI - Sign In to Your Study Room{% endblock %}
 
 {% block content %}
+<style>
+    .form-input {
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .form-input:focus {
+        border-color: #ef233c !important;
+        box-shadow: 0 0 15px rgba(239, 35, 60, 0.25) !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        outline: none !important;
+    }
+</style>
 <div class="auth-wrapper" style="position: relative; min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center; overflow: hidden; background: #050505;">
     
     <!-- Neural Network Background -->

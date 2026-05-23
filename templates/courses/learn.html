@@ -30,6 +30,95 @@
             transform: translateY(0px);
         }
     }
+
+    /* Premium customized active states in sidebar playlist */
+    .zen-playlist-item {
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border-radius: 12px;
+        margin: 0.25rem 0.5rem;
+    }
+    
+    .zen-playlist-item.active {
+        background: linear-gradient(90deg, rgba(239, 35, 60, 0.15) 0%, rgba(239, 35, 60, 0.02) 100%) !important;
+        border-left: 3px solid #ef233c !important;
+        border-radius: 0 12px 12px 0 !important;
+        box-shadow: inset 1px 0 0 rgba(255,255,255,0.05);
+    }
+
+    .zen-playlist-item:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Interactive Quiz button styling */
+    .quiz-option-btn {
+        background: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid rgba(255, 255, 255, 0.06) !important;
+        border-radius: 12px !important;
+        padding: 0.85rem 1.25rem !important;
+        color: #cbd5e1 !important;
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        text-align: left !important;
+        width: 100% !important;
+        cursor: pointer !important;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .quiz-option-btn:hover {
+        background: rgba(239, 35, 60, 0.08) !important;
+        border-color: rgba(239, 35, 60, 0.35) !important;
+        color: #fff !important;
+        transform: translateX(4px);
+    }
+
+    /* Premium chat messages */
+    .chat-bubble {
+        border-radius: 16px !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .chat-bubble.tutor {
+        background: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    }
+
+    .chat-bubble.user {
+        background: rgba(239, 35, 60, 0.08) !important;
+        border: 1px solid rgba(239, 35, 60, 0.2) !important;
+        color: #fff !important;
+    }
+
+    /* Collapsible workspace items custom scrollbar */
+    .zen-playlist-nav::-webkit-scrollbar,
+    #chat-messages::-webkit-scrollbar,
+    #notes-textarea::-webkit-scrollbar,
+    #notes-preview-area::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+
+    .zen-playlist-nav::-webkit-scrollbar-track,
+    #chat-messages::-webkit-scrollbar-track,
+    #notes-textarea::-webkit-scrollbar-track,
+    #notes-preview-area::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .zen-playlist-nav::-webkit-scrollbar-thumb,
+    #chat-messages::-webkit-scrollbar-thumb,
+    #notes-textarea::-webkit-scrollbar-thumb,
+    #notes-preview-area::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 99px;
+    }
+
+    .zen-playlist-nav::-webkit-scrollbar-thumb:hover,
+    #chat-messages::-webkit-scrollbar-thumb:hover,
+    #notes-textarea::-webkit-scrollbar-thumb:hover,
+    #notes-preview-area::-webkit-scrollbar-thumb:hover {
+        background: #ef233c;
+    }
 </style>
 {% endblock %}
 

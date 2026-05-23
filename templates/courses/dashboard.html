@@ -15,13 +15,13 @@
         }
 
         :root {
-            --bg: #0a0f1d;
-            --bg2: #111827;
-            --bg3: #1f2937;
-            --surface: #1e293b;
-            --surface2: #334155;
-            --border: rgba(255, 255, 255, 0.1);
-            --border2: rgba(255, 255, 255, 0.2);
+            --bg: #000000;
+            --bg2: #050505;
+            --bg3: #080808;
+            --surface: #0e0e0e;
+            --surface2: #161616;
+            --border: rgba(255, 255, 255, 0.06);
+            --border2: rgba(255, 255, 255, 0.12);
             --text: #f8fafc;
             --text2: #cbd5e1;
             --text3: #94a3b8;
@@ -52,55 +52,17 @@
 
         /* NOISE TEXTURE */
         body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 0;
-            opacity: .5
+            display: none !important;
         }
 
         /* AMBIENT ORBS */
         .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(120px);
-            pointer-events: none;
-            z-index: 0
-        }
-
-        .orb-1 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(var(--primary-rgb), 0.12), transparent 70%);
-            top: -200px;
-            right: -150px
-        }
-
-        .orb-2 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(13, 211, 162, 0.08), transparent 70%);
-            bottom: -100px;
-            left: -100px
-        }
-
-        .orb-3 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(245, 197, 66, 0.06), transparent 70%);
-            top: 40%;
-            left: 30%
+            display: none !important;
         }
 
         /* CANVAS */
         #pcanvas {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            opacity: .6
+            display: none !important;
         }
 
         /* LAYOUT */
@@ -220,30 +182,30 @@
 
         .kpi-card {
             position: relative;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.015);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 16px;
             padding: 20px;
             overflow: hidden;
             cursor: default;
-            transition: .3s
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .kpi-card::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent);
             border-radius: 16px;
             pointer-events: none
         }
 
         .kpi-card:hover {
-            border-color: var(--border2);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4)
+            border-color: rgba(var(--primary-rgb), 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(var(--primary-rgb), 0.05);
         }
 
         .kpi-glow {
