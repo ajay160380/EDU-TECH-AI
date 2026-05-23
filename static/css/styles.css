@@ -12,10 +12,10 @@
     --surface-glass-hover: rgba(30, 30, 30, 0.8);
     --surface-glass-solid: #111111;
 
-    --accent-primary: #ef233c;
-    --accent-secondary: #d90429;
-    --accent-gradient: linear-gradient(135deg, #ef233c, #d90429);
-    --accent-glow: #ef233c;
+    --accent-primary: var(--primary-hex);
+    --accent-secondary: var(--primary-dark);
+    --accent-gradient: linear-gradient(135deg, var(--primary-hex), var(--primary-dark));
+    --accent-glow: var(--primary-hex);
 
     --text-primary: #FFFFFF;
     --text-secondary: #999999;
@@ -238,15 +238,15 @@ a {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #ef233c 0%, #d90429 100%);
+    background: linear-gradient(135deg, var(--primary-hex) 0%, var(--primary-dark) 100%);
     color: #ffffff;
-    box-shadow: 0 8px 25px rgba(239, 35, 60, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .btn-primary:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 35px 0 rgba(239, 35, 60, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    box-shadow: 0 15px 35px 0 rgba(var(--primary-rgb), 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .btn-secondary {

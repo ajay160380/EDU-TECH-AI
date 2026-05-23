@@ -55,7 +55,7 @@
 
         <!-- Actions -->
         <div class="dash-card-actions">
-            <a href="{% url 'learn_view' course.id %}" class="btn btn-primary dash-btn-learn" style="background-color: #ef233c; color: white; border-radius: 9999px; padding: 10px 20px; font-weight: bold; border: none; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; width: 100%; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <a href="{% url 'learn_view' course.id %}" class="btn btn-primary dash-btn-learn" style="background: linear-gradient(135deg, var(--primary-hex) 0%, var(--primary-dark) 100%); color: white; border-radius: 9999px; padding: 10px 20px; font-weight: bold; border: none; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; width: 100%; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                 ▶ Continue Learning
             </a>
             {% if course.video_count > 0 and course.completed_video_count == course.video_count %}

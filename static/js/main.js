@@ -50,6 +50,7 @@
         setTimeout(() => {
             html.classList.add('theme-transitioning');
             html.setAttribute('data-theme', targetTheme);
+            localStorage.setItem('eduThemeMode', targetTheme);
 
             // Animate transition icon out
             if (transitionIcon) {
@@ -128,6 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Timeline node pulse animation on scroll
     initTimelinePulse();
+
+    // Count-up animations for statistics
+    initCountUpAnimation();
 });
 
 /**
@@ -1309,8 +1313,61 @@ function showToast(message, type = 'success') {
         observer.observe(section);
     }
 
+    /**
+     * Viewport-Triggered Count-Up Animation Utility
+     * Smoothly animates integers and decimals over exactly 1000ms when scrolled into view.
+     */
+    function initCountUpAnimation() {
+        const elements = document.querySelectorAll('.count-up-number');
+        if (!elements.length) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseFloat(el.getAttribute('data-target'));
+                    const duration = 1000; // Duration exactly 1000ms as requested
+                    const start = 0;
+                    const startTime = performance.now();
+                    const isDecimal = el.getAttribute('data-decimal') === 'true';
+                    const prefix = el.getAttribute('data-prefix') || '';
+                    const suffix = el.getAttribute('data-suffix') || '';
+
+                    function update(now) {
+                        const elapsed = now - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        
+                        // Ease out quad
+                        const ease = progress * (2 - progress);
+                        const current = start + (target - start) * ease;
+
+                        if (isDecimal) {
+                            el.textContent = prefix + current.toFixed(1) + suffix;
+                        } else {
+                            el.textContent = prefix + Math.floor(current) + suffix;
+                        }
+
+                        if (progress < 1) {
+                            requestAnimationFrame(update);
+                        } else {
+                            el.textContent = prefix + target + suffix;
+                        }
+                    }
+
+                    requestAnimationFrame(update);
+                    observer.unobserve(el);
+                }
+            });
+        }, {
+            threshold: 0.05,
+            rootMargin: '0px 0px -20px 0px'
+        });
+
+        elements.forEach(el => observer.observe(el));
+    }
+
     // Export for external use
     window.initScrollReveal = initScrollReveal;
     window.initTimelinePulse = initTimelinePulse;
+    window.initCountUpAnimation = initCountUpAnimation;
 })();
-

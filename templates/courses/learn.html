@@ -39,23 +39,23 @@
     }
     
     .zen-playlist-item.active {
-        background: linear-gradient(90deg, rgba(239, 35, 60, 0.15) 0%, rgba(239, 35, 60, 0.02) 100%) !important;
-        border-left: 3px solid #ef233c !important;
+        background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.08) 0%, rgba(var(--primary-rgb), 0.01) 100%) !important;
+        border-left: 3px solid var(--primary-hex) !important;
         border-radius: 0 12px 12px 0 !important;
-        box-shadow: inset 1px 0 0 rgba(255,255,255,0.05);
+        box-shadow: inset 1px 0 0 rgba(0,0,0,0.02);
     }
 
     .zen-playlist-item:hover:not(.active) {
-        background: rgba(255, 255, 255, 0.03);
+        background: rgba(0, 0, 0, 0.03);
     }
 
     /* Interactive Quiz button styling */
     .quiz-option-btn {
-        background: rgba(255, 255, 255, 0.02) !important;
-        border: 1px solid rgba(255, 255, 255, 0.06) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
         border-radius: 12px !important;
         padding: 0.85rem 1.25rem !important;
-        color: #cbd5e1 !important;
+        color: #334155 !important;
         font-size: 0.9rem !important;
         font-weight: 500 !important;
         text-align: left !important;
@@ -65,9 +65,9 @@
     }
 
     .quiz-option-btn:hover {
-        background: rgba(239, 35, 60, 0.08) !important;
-        border-color: rgba(239, 35, 60, 0.35) !important;
-        color: #fff !important;
+        background: rgba(37, 99, 235, 0.06) !important;
+        border-color: rgba(37, 99, 235, 0.35) !important;
+        color: #0f172a !important;
         transform: translateX(4px);
     }
 
@@ -79,14 +79,15 @@
     }
 
     .chat-bubble.tutor {
-        background: rgba(255, 255, 255, 0.02) !important;
-        border: 1px solid rgba(255, 255, 255, 0.06) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        border: 1px solid rgba(0, 0, 0, 0.06) !important;
+        color: #334155 !important;
     }
 
     .chat-bubble.user {
-        background: rgba(239, 35, 60, 0.08) !important;
-        border: 1px solid rgba(239, 35, 60, 0.2) !important;
-        color: #fff !important;
+        background: rgba(37, 99, 235, 0.06) !important;
+        border: 1px solid rgba(37, 99, 235, 0.15) !important;
+        color: #0f172a !important;
     }
 
     /* Collapsible workspace items custom scrollbar */
@@ -109,7 +110,7 @@
     #chat-messages::-webkit-scrollbar-thumb,
     #notes-textarea::-webkit-scrollbar-thumb,
     #notes-preview-area::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(0, 0, 0, 0.08);
         border-radius: 99px;
     }
 
@@ -117,7 +118,32 @@
     #chat-messages::-webkit-scrollbar-thumb:hover,
     #notes-textarea::-webkit-scrollbar-thumb:hover,
     #notes-preview-area::-webkit-scrollbar-thumb:hover {
-        background: #ef233c;
+        background: var(--primary-hex);
+    }
+
+    /* Dark Mode Overrides */
+    [data-theme="dark"] .quiz-option-btn {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        color: #cbd5e1 !important;
+    }
+    [data-theme="dark"] .quiz-option-btn:hover {
+        background: rgba(var(--primary-rgb), 0.15) !important;
+        border-color: rgba(var(--primary-rgb), 0.35) !important;
+        color: #f8fafc !important;
+    }
+    [data-theme="dark"] .chat-bubble.tutor {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid rgba(255, 255, 255, 0.06) !important;
+        color: #cbd5e1 !important;
+    }
+    [data-theme="dark"] .chat-bubble.user {
+        background: rgba(var(--primary-rgb), 0.15) !important;
+        border: 1px solid rgba(var(--primary-rgb), 0.25) !important;
+        color: #f8fafc !important;
+    }
+    [data-theme="dark"] .zen-playlist-item:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.05) !important;
     }
 </style>
 {% endblock %}

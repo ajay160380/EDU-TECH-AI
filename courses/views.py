@@ -129,17 +129,17 @@ def profile_view(request):
         plan_name = 'Ultra Plan'
     elif plan_type == 'pro':
         member_badge_text = 'Pro Member'
-        member_badge_class = 'text-[#ef233c]'
-        plan_badge_class = 'bg-[#ef233c]/[0.06] border border-[#ef233c]/20'
-        plan_icon_class = 'bg-[#ef233c]/20'
-        plan_icon_color = 'text-[#ef233c]'
+        member_badge_class = 'text-[#2563eb]'
+        plan_badge_class = 'bg-[#2563eb]/[0.06] border border-[#2563eb]/20'
+        plan_icon_class = 'bg-[#2563eb]/20'
+        plan_icon_color = 'text-[#2563eb]'
         plan_name = 'Pro Plan'
     else:
         member_badge_text = 'Free Plan'
-        member_badge_class = 'text-zinc-500'
-        plan_badge_class = 'bg-white/[0.03] border border-white/[0.06]'
-        plan_icon_class = 'bg-white/[0.06]'
-        plan_icon_color = 'text-zinc-400'
+        member_badge_class = 'text-slate-500'
+        plan_badge_class = 'bg-black/[0.03] border border-black/[0.06]'
+        plan_icon_class = 'bg-black/[0.06]'
+        plan_icon_color = 'text-slate-400'
         plan_name = 'Free Plan'
 
     # Subscription subtitle
@@ -1557,7 +1557,7 @@ def profile_update_theme(request):
     Ajax endpoint to update user theme preference.
     """
     theme = request.POST.get('theme_color', '').strip()
-    allowed_themes = ['red', 'blue', 'green', 'purple', 'yellow']
+    allowed_themes = ['red', 'blue', 'green', 'purple']
     
     if theme not in allowed_themes:
         return JsonResponse({'status': 'error', 'message': 'Invalid theme.'}, status=400)

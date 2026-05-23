@@ -15,6 +15,18 @@
 
     <!-- Tailwind CSS (via CDN for Red Noir Style) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'var(--primary-hex)',
+                        'primary-dark': 'var(--primary-dark)',
+                    }
+                }
+            }
+        }
+    </script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
     <!-- Fonts and External Icons -->
@@ -23,13 +35,56 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS stylesheet (with static version for fast browser caching) -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=1.2.0">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v={% now 'U' %}">
 
-    <!-- Red Noir Custom Styling -->
+    <!-- Premium White & Blue Custom Styling -->
     <style>
         :root {
+            --accent-red: #2563eb; /* Royal Blue */
+            --accent-red-glow: rgba(37, 99, 235, 0.2);
+            --primary-hex: #2563eb;
+            --primary-rgb: 37, 99, 235;
+            --primary-dark: #1d4ed8;
+        }
+
+        html[data-theme-color="red"] {
+            --primary-hex: #ef233c;
+            --primary-rgb: 239, 35, 60;
+            --primary-dark: #d90429;
             --accent-red: #ef233c;
-            --accent-red-glow: rgba(239, 35, 60, 0.5);
+            --accent-red-glow: rgba(239, 35, 60, 0.2);
+        }
+        html[data-theme-color="blue"] {
+            --primary-hex: #3b82f6;
+            --primary-rgb: 59, 130, 246;
+            --primary-dark: #2563eb;
+            --accent-red: #3b82f6;
+            --accent-red-glow: rgba(59, 130, 246, 0.2);
+        }
+        html[data-theme-color="green"] {
+            --primary-hex: #10b981;
+            --primary-rgb: 16, 185, 129;
+            --primary-dark: #059669;
+            --accent-red: #10b981;
+            --accent-red-glow: rgba(16, 185, 129, 0.2);
+        }
+        html[data-theme-color="purple"] {
+            --primary-hex: #8b5cf6;
+            --primary-rgb: 139, 92, 246;
+            --primary-dark: #7c3aed;
+            --accent-red: #8b5cf6;
+            --accent-red-glow: rgba(139, 92, 246, 0.2);
+        }
+        html[data-theme-color="yellow"] {
+            --primary-hex: #eab308;
+            --primary-rgb: 234, 179, 8;
+            --primary-dark: #ca8a04;
+            --accent-red: #eab308;
+            --accent-red-glow: rgba(234, 179, 8, 0.2);
+        }
+
+        [data-theme="dark"] .gradient-blur {
+            background: linear-gradient(to bottom, rgba(9, 9, 11, 0.8), transparent) !important;
         }
 
         /* Custom Animations */
@@ -65,13 +120,12 @@
             }
         }
 
-        @keyframes animStar {
-            from {
-                transform: translateY(0px);
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
             }
-
-            to {
-                transform: translateY(-2000px);
+            50% {
+                transform: translateY(-20px) scale(1.05);
             }
         }
 
@@ -100,8 +154,8 @@
             overflow: hidden;
             border-radius: 9999px;
             padding: 1rem 2.5rem;
-            background: linear-gradient(#000000, #000000) padding-box,
-                conic-gradient(from var(--gradient-angle), transparent 0%, #ef233c 5%, #ef233c 15%, #ef233c 30%, transparent 40%, transparent 100%) border-box;
+            background: linear-gradient(#09090b, #09090b) padding-box,
+                conic-gradient(from var(--gradient-angle), transparent 0%, var(--primary-hex) 5%, var(--primary-hex) 15%, var(--primary-hex) 30%, transparent 40%, transparent 100%) border-box;
             border: 2px solid transparent;
             cursor: pointer;
             isolation: isolate;
@@ -112,19 +166,10 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 50% 50%, white 0.5px, transparent 0);
+            background: radial-gradient(circle at 50% 50%, rgba(var(--primary-rgb), 0.1) 0.5px, transparent 0);
             background-size: 4px 4px;
             opacity: 0.1;
             z-index: 0;
-        }
-
-        /* Parallax Stars */
-        .stars-1 {
-            box-shadow: 234px 124px #fff, 654px 345px #fff, 876px 12px #fff, 1200px 800px #fff, 400px 1500px #fff, 1800px 200px #fff, 100px 1000px #fff, 900px 1900px #fff, 500px 600px #fff, 1400px 100px #fff, 300px 400px #fff, 1600px 1200px #fff;
-        }
-
-        .stars-2 {
-            box-shadow: 123px 456px #fff, 789px 234px #fff, 456px 890px #fff, 1100px 300px #fff, 200px 1200px #fff, 1500px 500px #fff, 600px 1700px #fff, 1300px 900px #fff;
         }
 
         .gradient-blur {
@@ -133,18 +178,18 @@
             inset: 0 0 auto 0;
             height: 120px;
             pointer-events: none;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+            background: linear-gradient(to bottom, rgba(9, 9, 11, 0.95), transparent) !important;
             backdrop-filter: blur(8px);
             mask-image: linear-gradient(to bottom, black, transparent);
         }
 
         .selection-red::selection {
-            background: #ef233c;
+            background: var(--primary-hex);
             color: white;
         }
 
         .text-stroke {
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+            -webkit-text-stroke: 1px rgba(0, 0, 0, 0.1);
             color: transparent;
         }
 
@@ -156,8 +201,8 @@
             left: 50%;
             width: 0;
             height: 2px;
-            background: #ef233c;
-            box-shadow: 0 0 10px #ef233c, 0 0 20px #ef233c;
+            background: var(--primary-hex);
+            box-shadow: 0 0 10px var(--primary-hex), 0 0 20px var(--primary-hex);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             transform: translateX(-50%);
             border-radius: 999px;
@@ -175,23 +220,183 @@
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #000;
+            background: #09090b;
         }
         ::-webkit-scrollbar-thumb {
-            background: #222;
+            background: #27272a;
             border-radius: 999px;
-            border: 1px solid #111;
+            border: 1px solid #3f3f46;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #ef233c;
-            box-shadow: 0 0 10px #ef233c;
+            background: var(--primary-hex);
+            box-shadow: 0 0 10px var(--primary-hex);
+        }
+
+        /* Header Link Color Overrides for Light Theme */
+        header a, header button {
+            color: #cbd5e1 !important;
+        }
+        header a:hover, header button:hover {
+            color: var(--primary-hex) !important;
+        }
+        header a.active {
+            color: var(--primary-hex) !important;
+        }
+        header .btn-primary {
+            color: #ffffff !important;
+            background: linear-gradient(135deg, var(--primary-hex) 0%, var(--primary-dark) 100%) !important;
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        header .btn-primary span {
+            color: #ffffff !important;
+        }
+
+        body {
+            background-color: #09090b !important;
+            color: #f4f4f5 !important;
+        }
+        [data-theme="dark"] body {
+            background-color: #09090b !important;
+            color: #f4f4f5 !important;
+        }
+        
+        /* Dark Theme Navbar & Footer overrides */
+        [data-theme="dark"] nav {
+            background-color: rgba(20, 20, 30, 0.75) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35) !important;
+        }
+        [data-theme="dark"] header a, [data-theme="dark"] header button {
+            color: #cbd5e1 !important;
+        }
+        [data-theme="dark"] header a:hover, [data-theme="dark"] header button:hover {
+            color: var(--primary-hex) !important;
+        }
+        [data-theme="dark"] footer {
+            background-color: rgba(20, 20, 30, 0.65) !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+        }
+        [data-theme="dark"] footer h4 {
+            color: #f8fafc !important;
+        }
+        [data-theme="dark"] footer p, [data-theme="dark"] footer a {
+            color: #94a3b8 !important;
+        }
+        [data-theme="dark"] footer a:hover {
+            color: var(--primary-hex) !important;
+        }
+        [data-theme="dark"] footer .border-t {
+            border-color: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        /* Dynamic Dark Global Background */
+        [data-theme="dark"] .global-bg-base {
+            background: linear-gradient(to bottom, #09090b 0%, #020205 100%) !important;
+        }
+        [data-theme="dark"] .global-bg-orb-1 {
+            background-color: rgba(var(--primary-rgb), 0.12) !important;
+        }
+        [data-theme="dark"] .global-bg-orb-2 {
+            background-color: rgba(56, 189, 248, 0.08) !important;
+        }
+        [data-theme="dark"] .global-bg-grid {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px) !important;
+        }
+
+        /* Dynamic Theme Swatch Accents Overrides for standard Tailwind blue classes */
+        .text-blue-600, .text-blue-650, .text-blue-500 {
+            color: var(--primary-hex) !important;
+        }
+        .bg-blue-600, .bg-blue-500, .bg-[#2563eb] {
+            background-color: var(--primary-hex) !important;
+        }
+        .hover\:bg-blue-700:hover, .hover\:bg-blue-600:hover {
+            background-color: var(--primary-dark) !important;
+        }
+        .bg-blue-50 {
+            background-color: rgba(var(--primary-rgb), 0.1) !important;
+            color: var(--primary-hex) !important;
+            border-color: rgba(var(--primary-rgb), 0.2) !important;
+        }
+        .border-blue-600, .border-blue-500 {
+            border-color: var(--primary-hex) !important;
+        }
+        .hover\:border-blue-600:hover, .hover\:border-blue-500:hover {
+            border-color: var(--primary-hex) !important;
+        }
+        .border-blue-200, .border-blue-200\/50 {
+            border-color: rgba(var(--primary-rgb), 0.2) !important;
+        }
+        .hover\:border-blue-300:hover {
+            border-color: rgba(var(--primary-rgb), 0.3) !important;
+        }
+
+        /* Scoped overrides to map legacy hardcoded red accent colors to the active theme color */
+        :root {
+            --border-glass-glow: 1px solid rgba(var(--primary-rgb), 0.3) !important;
+        }
+        .glass-card:hover {
+            border-color: rgba(var(--primary-rgb), 0.3) !important;
+            box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(var(--primary-rgb), 0.15), var(--highlight-top) !important;
+        }
+        .bento-card:hover {
+            border-color: rgba(var(--primary-rgb), 0.35) !important;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 25px rgba(var(--primary-rgb), 0.15), var(--highlight-top) !important;
+        }
+        .logo-ring {
+            box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.4) !important;
+        }
+        .streak-box {
+            box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.35), inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        }
+        .timeline-node::before {
+            box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.5) !important;
+        }
+        .pricing-card-premium {
+            border-color: rgba(var(--primary-rgb), 0.3) !important;
+            box-shadow: 0 20px 40px rgba(var(--primary-rgb), 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        }
+        .pricing-feature-tick {
+            background: rgba(var(--primary-rgb), 0.1) !important;
+            border-color: rgba(var(--primary-rgb), 0.2) !important;
+        }
+        .learn-item-active {
+            border-color: rgba(var(--primary-rgb), 0.25) !important;
+            background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.02) 100%) !important;
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.1) !important;
+        }
+        .learn-item:hover {
+            background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.3) 0%, rgba(var(--primary-rgb), 0.15) 100%) !important;
+            border-color: rgba(var(--primary-rgb), 0.3) !important;
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.15) !important;
+        }
+        .learn-item-progress {
+            border-color: rgba(var(--primary-rgb), 0.4) !important;
+        }
+        .learn-item-progress-fill {
+            background: rgba(var(--primary-rgb), 0.15) !important;
+            box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.3) !important;
+        }
+
+        /* Scoped overrides to map legacy primary buttons to dynamic accent variables (fully bypasses browser cache) */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-hex) 0%, var(--primary-dark) 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02) !important;
+            box-shadow: 0 15px 35px 0 rgba(var(--primary-rgb), 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
         }
     </style>
 
     {% block extra_head %}{% endblock %}
 </head>
 
-<body class="selection-red bg-black text-white font-inter">
+<body class="selection-red font-inter transition-colors duration-500">
     <!-- Theme Transition Curtains -->
     <div class="light-theme-curtain" id="light-curtain"></div>
     <div class="dark-theme-curtain" id="dark-curtain"></div>
@@ -204,18 +409,15 @@
 
         <!-- Global Background -->
         <div class="fixed inset-0 z-0 pointer-events-none">
-            <div class="absolute inset-0 bg-gradient-to-b from-[#1a0505] to-black"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-[#f0f7ff] to-[#f8fafc] global-bg-base"></div>
             <div
-                class="absolute top-0 left-0 w-[1px] h-[1px] bg-transparent stars-1 animate-[animStar_50s_linear_infinite]">
+                class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-400/[0.08] rounded-full blur-[100px] animate-[float_15s_infinite_alternate_ease-in-out] global-bg-orb-1">
             </div>
             <div
-                class="absolute top-0 left-0 w-[2px] h-[2px] bg-transparent stars-2 animate-[animStar_80s_linear_infinite]">
+                class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-sky-300/[0.06] rounded-full blur-[90px] animate-[float_12s_infinite_alternate_ease-in-out] global-bg-orb-2">
             </div>
             <div
-                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-600/5 rounded-full blur-[120px]">
-            </div>
-            <div
-                class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(circle_at_center,black_40%,transparent_80%)]">
+                class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.015)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(circle_at_center,black_60%,transparent_100%)] global-bg-grid">
             </div>
         </div>
 
@@ -225,31 +427,31 @@
         <!-- Navbar -->
         <header class="fixed top-0 left-0 w-full z-50 pt-6 px-4">
             <nav
-                class="max-w-5xl mx-auto flex items-center justify-between bg-black/60 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 shadow-2xl">
-                <!-- Glowing Neon 'E' Logo -->
+                class="max-w-5xl mx-auto flex items-center justify-between bg-white/70 backdrop-blur-xl border border-black/5 rounded-full px-6 py-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                <!-- Glowing Neon Logo -->
                 <a href="{% url 'home' %}"
                     class="nav-brand flex items-center gap-3 hover:scale-105 transition-transform duration-300"
                     style="text-decoration: none;">
-                    <img src="{% static 'images/logo_e3.png' %}" alt="EduTech AI Logo" class="w-12 h-12 rounded-full shadow-[0_0_15px_rgba(239,35,60,0.4)]">
+                    <img src="{% static 'images/logo_e3.png' %}" alt="EduTech AI Logo" class="w-12 h-12 rounded-full shadow-[0_0_15px_rgba(var(--primary-rgb),0.25)]">
                 </a>
 
                 <div class="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
                     {% if not user.is_authenticated %}
                     <a href="{% url 'home' %}"
-                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'home' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Home</a>
+                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'home' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">Home</a>
                     <a href="{% url 'about' %}"
-                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'about' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">About</a>
+                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'about' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">About</a>
                     {% endif %}
                     <a href="{% url 'pricing' %}"
-                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'pricing' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Pricing</a>
+                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'pricing' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">Pricing</a>
 
                     {% if user.is_authenticated %}
                     <a href="{% url 'dashboard' %}"
-                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'dashboard' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Dashboard</a>
+                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'dashboard' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">Dashboard</a>
                     <a href="{% url 'import_course' %}"
-                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'import_course' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Import</a>
+                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'import_course' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">Import</a>
                     <a href="{% url 'focus_room' %}"
-                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'focus_room' %}active text-white{% else %}text-zinc-400{% endif %} hover:text-white transition-colors py-1 relative">Focus
+                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'focus_room' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">Focus
                         Room 🎧</a>
                     {% endif %}
                 </div>
@@ -298,7 +500,7 @@
 
         {% if not user.is_authenticated %}
         <!-- ========== MEGA FOOTER (Logged-Out Users Only) ========== -->
-        <footer class="relative z-10 bg-[#0a0a0a] border-t border-white/5">
+        <footer class="relative z-10 bg-white/60 border-t border-black/[0.06] backdrop-blur-md">
             <!-- Top Grid -->
             <div class="max-w-7xl mx-auto px-6 pt-20 pb-16">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
@@ -307,12 +509,12 @@
                     <div class="md:col-span-5 flex flex-col gap-6">
                         <!-- Logo -->
                         <a href="{% url 'home' %}" class="flex items-center gap-3 group" style="text-decoration: none;">
-                            <img src="{% static 'images/logo_e3.png' %}" alt="EduTech AI Logo" class="w-10 h-10 rounded-full shadow-[0_0_15px_rgba(239,35,60,0.4)] group-hover:shadow-[0_0_25px_rgba(239,35,60,0.6)] transition-shadow duration-300">
-                            <span class="text-2xl font-bold font-manrope tracking-tight text-white">EduTech AI</span>
+                            <img src="{% static 'images/logo_e3.png' %}" alt="EduTech AI Logo" class="w-10 h-10 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.25)] group-hover:shadow-[0_0_25px_rgba(37,99,235,0.4)] transition-shadow duration-300">
+                            <span class="text-2xl font-bold font-manrope tracking-tight text-slate-800">EduTech AI</span>
                         </a>
 
                         <!-- Tagline -->
-                        <p class="text-zinc-400 text-sm leading-relaxed max-w-md">
+                        <p class="text-slate-500 text-sm leading-relaxed max-w-md">
                             Turn any YouTube playlist into a structured course. Track progress, take AI-powered notes,
                             and study distraction-free — for free.
                         </p>
@@ -320,87 +522,71 @@
                         <!-- CTA Buttons -->
                         <div class="flex flex-wrap items-center gap-3">
                             <a href="{% url 'pricing' %}"
-                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200">
+                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 border border-slate-200 text-sm font-medium text-slate-650 hover:text-blue-600 hover:bg-blue-50/50 hover:border-blue-200 transition-all duration-200" style="text-decoration: none;">
                                 View Pricing
                                 <iconify-icon icon="lucide:arrow-right" class="w-3.5 h-3.5"></iconify-icon>
                             </a>
                             <a href="#"
-                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200">
+                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 border border-slate-200 text-sm font-medium text-slate-650 hover:text-blue-600 hover:bg-blue-50/50 hover:border-blue-200 transition-all duration-200" style="text-decoration: none;">
                                 Read the Docs
                                 <iconify-icon icon="lucide:book-open" class="w-3.5 h-3.5"></iconify-icon>
-                            </a>
-                        </div>
-
-                        <!-- Social Icons -->
-                        <div class="flex items-center gap-3 mt-2">
-                            <a href="#" aria-label="Twitter / X"
-                                class="w-9 h-9 flex items-center justify-center rounded-full border border-white/10 text-zinc-500 hover:text-white hover:border-white/30 hover:bg-white/5 transition-all duration-200">
-                                <iconify-icon icon="lucide:twitter" class="w-4 h-4"></iconify-icon>
-                            </a>
-                            <a href="#" aria-label="YouTube"
-                                class="w-9 h-9 flex items-center justify-center rounded-full border border-white/10 text-zinc-500 hover:text-white hover:border-white/30 hover:bg-white/5 transition-all duration-200">
-                                <iconify-icon icon="lucide:youtube" class="w-4 h-4"></iconify-icon>
-                            </a>
-                            <a href="mailto:edutechai.contact@gmail.com" aria-label="Email"
-                                class="w-9 h-9 flex items-center justify-center rounded-full border border-white/10 text-zinc-500 hover:text-white hover:border-white/30 hover:bg-white/5 transition-all duration-200">
-                                <iconify-icon icon="lucide:mail" class="w-4 h-4"></iconify-icon>
                             </a>
                         </div>
                     </div>
 
                     <!-- Column 2: Product -->
                     <div class="md:col-span-2">
-                        <h4 class="text-white font-semibold text-sm mb-5 font-manrope tracking-wide">Product</h4>
+                        <h4 class="text-slate-800 font-semibold text-sm mb-5 font-manrope tracking-wide">Product</h4>
                         <ul class="space-y-3.5">
                             <li><a href="{% url 'features' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Features</a>
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">Features</a>
                             </li>
                             <li><a href="{% url 'pricing' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Pricing</a>
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">Pricing</a>
                             </li>
                             <li><a href="{% url 'study_planner' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Study
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">Study
                                     Planner</a></li>
                             <li><a href="{% url 'docs' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Docs &
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">Docs &
                                     Guide</a></li>
                             <li><a href="{% url 'blog' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Blog</a>
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">Blog</a>
                             </li>
                         </ul>
                     </div>
 
                     <!-- Column 3: Company -->
                     <div class="md:col-span-2">
-                        <h4 class="text-white font-semibold text-sm mb-5 font-manrope tracking-wide">Company</h4>
+                        <h4 class="text-slate-800 font-semibold text-sm mb-5 font-manrope tracking-wide">Company</h4>
                         <ul class="space-y-3.5">
                             <li><a href="{% url 'about' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">About
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">About
                                     Us</a></li>
                             <li><a href="{% url 'careers' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Careers</a>
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">Careers</a>
                             </li>
                             <li><a href="{% url 'blog' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Blog</a>
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">Blog</a>
                             </li>
                             <li><a href="mailto:edutechai.contact@gmail.com"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">edutechai.contact@gmail.com</a>
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">edutechai.contact@gmail.com</a>
                             </li>
                         </ul>
                     </div>
 
                     <!-- Column 4: Legal -->
                     <div class="md:col-span-3">
-                        <h4 class="text-white font-semibold text-sm mb-5 font-manrope tracking-wide">Legal</h4>
+                        <h4 class="text-slate-800 font-semibold text-sm mb-5 font-manrope tracking-wide">Legal</h4>
                         <ul class="space-y-3.5">
                             <li><a href="{% url 'privacy' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Privacy
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">Privacy
                                     Policy</a></li>
                             <li><a href="{% url 'terms' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Terms
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">Terms
                                     of Service</a></li>
                             <li><a href="{% url 'shipping' %}"
-                                    class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Shipping
+                                    class="text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200" style="text-decoration: none;">Shipping
                                     Policy</a></li>
                         </ul>
                     </div>
@@ -409,16 +595,16 @@
             </div>
 
             <!-- Bottom Bar -->
-            <div class="border-t border-white/5">
+            <div class="border-t border-black/[0.06]">
                 <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
                     <!-- Copyright -->
-                    <p class="text-xs text-zinc-600 tracking-wide font-medium">
+                    <p class="text-xs text-slate-450 tracking-wide font-medium">
                         &copy; 2026 EduTech AI. All rights reserved.
                     </p>
 
                     <!-- Status + Report -->
                     <div class="flex items-center gap-6">
-                        <span class="flex items-center gap-2 text-xs text-zinc-600 tracking-wide">
+                        <span class="flex items-center gap-2 text-xs text-slate-500 tracking-wide">
                             <span class="relative flex h-2 w-2">
                                 <span
                                     class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -427,7 +613,7 @@
                             All systems operational
                         </span>
                         <a href="#"
-                            class="text-xs text-zinc-600 hover:text-zinc-400 transition-colors duration-200 tracking-wide">
+                            class="text-xs text-slate-500 hover:text-blue-600 transition-colors duration-200 tracking-wide" style="text-decoration: none;">
                             Report an Issue
                         </a>
                     </div>
@@ -444,6 +630,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="{% static 'js/card-swap.js' %}?v=1.2.0"></script>
 
+    <!-- OGL & LightRays WebGL background library and script -->
+    <script src="https://cdn.jsdelivr.net/npm/ogl@1.0.11/dist/ogl.umd.js"></script>
+    <script src="{% static 'js/light-rays.js' %}?v=1.2.0"></script>
+    <script src="{% static 'js/tubes-background.js' %}?v=1.2.0"></script>
+
+
+
     <!-- JavaScript Interactive Scripts -->
     <script src="{% static 'js/main.js' %}?v=1.2.0"></script>
 
@@ -453,6 +646,12 @@
             const html = document.documentElement;
             html.setAttribute('data-theme', 'dark');
             window.__THEME_STATE__ = 'dark';
+            let savedColor = {% if request.user.is_authenticated %}'{{ request.user.profile.theme_color|default:"blue" }}'{% else %}localStorage.getItem('eduThemeColor') || 'blue'{% endif %};
+            if (savedColor === 'yellow') {
+                savedColor = 'blue';
+                localStorage.setItem('eduThemeColor', 'blue');
+            }
+            html.setAttribute('data-theme-color', savedColor);
         }) ();
     </script>
     {% block extra_js %}{% endblock %}

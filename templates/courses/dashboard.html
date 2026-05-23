@@ -15,23 +15,42 @@
         }
 
         :root {
-            --bg: #000000;
-            --bg2: #050505;
-            --bg3: #080808;
-            --surface: #0e0e0e;
-            --surface2: #161616;
-            --border: rgba(255, 255, 255, 0.06);
-            --border2: rgba(255, 255, 255, 0.12);
-            --text: #f8fafc;
-            --text2: #cbd5e1;
-            --text3: #94a3b8;
+            --bg: #ffffff;
+            --bg2: #f8fafc;
+            --bg3: #f1f5f9;
+            --surface: #ffffff;
+            --surface2: #f8fafc;
+            --border: rgba(0, 0, 0, 0.06);
+            --border2: rgba(0, 0, 0, 0.1);
+            --text: #0f172a;
+            --text2: #334155;
+            --text3: #64748b;
             --accent: var(--primary-hex);
             --accent2: var(--primary-dark);
-            --glow-purple: rgba(var(--primary-rgb), 0.25);
-            --glow-teal: rgba(20, 184, 166, 0.2);
-            --glow-gold: rgba(245, 158, 11, 0.2);
-            --ff-display: 'Syne', sans-serif;
+            --ember: var(--primary-hex); /* Map to Dynamic Primary Hex */
+            --teal: #0ea5e9;  /* Map to Sky/Ocean Blue */
+            --gold: #f59e0b;
+            --glow-purple: rgba(var(--primary-rgb), 0.05);
+            --glow-teal: rgba(14, 165, 233, 0.05);
+            --glow-gold: rgba(245, 158, 11, 0.05);
+            --ff-display: 'Inter', sans-serif;
             --ff-mono: 'DM Mono', monospace;
+        }
+
+        [data-theme="dark"] {
+            --bg: #09090b !important;
+            --bg2: #14141f !important;
+            --bg3: #1c1c28 !important;
+            --surface: rgba(20, 20, 30, 0.75) !important;
+            --surface2: rgba(255, 255, 255, 0.03) !important;
+            --border: rgba(255, 255, 255, 0.08) !important;
+            --border2: rgba(255, 255, 255, 0.12) !important;
+            --text: #ffffff !important;
+            --text2: #cbd5e1 !important;
+            --text3: #94a3b8 !important;
+            --glow-purple: rgba(var(--primary-rgb), 0.15) !important;
+            --glow-teal: rgba(14, 165, 233, 0.15) !important;
+            --glow-gold: rgba(245, 158, 11, 0.15) !important;
         }
 
         html {
@@ -69,9 +88,35 @@
         .shell {
             position: relative;
             z-index: 1;
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 24px 24px 60px
+            padding: 24px 40px 60px
+        }
+
+        .shell::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(var(--primary-rgb), 0.07), transparent 70%);
+            top: -150px;
+            right: 5%;
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(100px);
+        }
+
+        .shell::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.04), transparent 70%);
+            bottom: 20%;
+            left: -5%;
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(120px);
         }
 
         /* HEADER */
@@ -187,10 +232,10 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 16px;
-            padding: 20px;
+            padding: 24px 20px;
             overflow: hidden;
             cursor: default;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .kpi-card::before {
@@ -202,10 +247,54 @@
             pointer-events: none
         }
 
-        .kpi-card:hover {
-            border-color: rgba(var(--primary-rgb), 0.3);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(var(--primary-rgb), 0.05);
+        /* Glowing Brand Top Stripes */
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            opacity: 0.85;
+            transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .kpi-card:hover::after {
+            height: 5px;
+        }
+
+        .kpi-card.streak::after {
+            background: linear-gradient(90deg, var(--ember), var(--gold));
+        }
+        .kpi-card.courses::after {
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+        }
+        .kpi-card.hours::after {
+            background: linear-gradient(90deg, var(--teal), #34d399);
+        }
+        .kpi-card.mastered::after {
+            background: linear-gradient(90deg, var(--gold), #fbbf24);
+        }
+
+        /* Custom Dynamic Card Hovers */
+        .kpi-card.streak:hover {
+            border-color: rgba(239, 35, 60, 0.35) !important;
+            transform: translateY(-4px) !important;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 25px rgba(239, 35, 60, 0.12) !important;
+        }
+        .kpi-card.courses:hover {
+            border-color: rgba(var(--primary-rgb), 0.35) !important;
+            transform: translateY(-4px) !important;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 25px rgba(var(--primary-rgb), 0.12) !important;
+        }
+        .kpi-card.hours:hover {
+            border-color: rgba(14, 165, 233, 0.35) !important;
+            transform: translateY(-4px) !important;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 25px rgba(14, 165, 233, 0.12) !important;
+        }
+        .kpi-card.mastered:hover {
+            border-color: rgba(245, 158, 11, 0.35) !important;
+            transform: translateY(-4px) !important;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 25px rgba(245, 158, 11, 0.12) !important;
         }
 
         .kpi-glow {
@@ -809,22 +898,25 @@
         }
 
         .course-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.45) !important;
+            backdrop-filter: blur(24px) !important;
+            -webkit-backdrop-filter: blur(24px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 20px !important;
             overflow: hidden;
-            transition: .3s;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
             position: relative;
             display: flex;
-            flex-direction: column
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
         }
 
         .course-card:hover {
-            border-color: var(--border2);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4)
+            border-color: rgba(var(--primary-rgb), 0.35) !important;
+            transform: translateY(-5px) !important;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 
+                        0 0 30px rgba(var(--primary-rgb), 0.15), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
         }
 
         .course-thumb {
@@ -977,22 +1069,22 @@
 
         .btn-learn {
             flex: 1;
-            background: linear-gradient(135deg, #ef233c 0%, #d90429 100%);
+            background: linear-gradient(135deg, var(--primary-hex) 0%, var(--primary-dark) 100%);
             border: none;
-            border-radius: 8px;
-            padding: 7px;
+            border-radius: 10px !important;
+            padding: 9px !important;
             color: #fff;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
             text-align: center;
-            transition: .3s;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
             text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 4px;
-            box-shadow: 0 4px 12px rgba(239, 35, 60, 0.4);
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.25), inset 0 1px 0 rgba(255,255,255,0.15) !important;
             position: relative;
             overflow: hidden;
         }
@@ -1007,9 +1099,9 @@
         }
 
         .btn-learn:hover {
-            box-shadow: 0 6px 16px rgba(239, 35, 60, 0.6);
-            transform: translateY(-2px);
-            color: #fff;
+            box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.45), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+            transform: translateY(-2px) !important;
+            color: #fff !important;
         }
 
         .btn-learn:hover::after {
@@ -1218,14 +1310,14 @@
             width: 52px;
             height: 52px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ef233c, #d90429);
+            background: linear-gradient(135deg, var(--primary-hex), var(--primary-dark));
             border: none;
             cursor: pointer;
             font-size: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 24px rgba(239, 35, 60, 0.5);
+            box-shadow: 0 4px 24px rgba(var(--primary-rgb), 0.3);
             transition: .25s;
             animation: fabPulse 3s ease-in-out infinite
         }
@@ -1634,7 +1726,9 @@
         }
 
         .anim-in {
-            animation: fadeInUp .5s ease both
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
         }
 
         .d1 {
@@ -1685,16 +1779,41 @@
                 opacity: 0
             }
         }
+
+        /* DASHBOARD TABS STYLING */
+        .db-tab-btn {
+            background: transparent !important;
+            color: var(--text3) !important;
+            border: none !important;
+            padding: 10px 24px !important;
+            border-radius: 9999px !important;
+            font-family: var(--ff-display) !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            cursor: pointer !important;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .db-tab-btn:hover {
+            color: var(--text) !important;
+            background: rgba(255, 255, 255, 0.02) !important;
+        }
+
+        .db-tab-btn.active {
+            background: linear-gradient(135deg, var(--primary-hex), var(--primary-dark)) !important;
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3) !important;
+        }
     
 </style>
 {% endblock %}
 
 {% block content %}
 
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <canvas id="pcanvas"></canvas>
+
 
     <div class="shell">
         <!-- HEADER -->
@@ -1707,170 +1826,182 @@
                 <h1>Welcome back, {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</h1>
                 <p class="tagline">Keep up the momentum · {{ total_courses }} courses in progress</p>
             </div>
-            <div class="header-right">
-                <button class="import-btn" onclick="toggleStatsDrawer()" style="background-color: #ef233c; color: white; border-radius: 9999px; padding: 10px 20px; font-weight: bold; border: none; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    <span>📊</span> Stats & Insights
+            <div class="header-right" style="display: flex; gap: 12px; align-items: center;">
+                <button class="btn btn-secondary" onclick="openPalette()" style="border-radius: 9999px !important; padding: 10px 24px !important; font-size: 12px !important; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.08) !important; background: rgba(255,255,255,0.03) !important; color: white !important;">
+                    <span style="color: inherit !important;">⌨️</span> Command Palette
                 </button>
-                <button class="import-btn" style="background-color: #ef233c; color: white; border-radius: 9999px; padding: 10px 20px; font-weight: bold; border: none; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    <span>+</span> Import Playlist
-                </button>
+                <a href="{% url 'import_course' %}" class="btn btn-primary" style="border-radius: 9999px !important; padding: 10px 24px !important; font-size: 12px !important; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; text-decoration: none !important;">
+                    <span style="color: inherit !important;">+</span> Import Course
+                </a>
             </div>
         </header>
 
-        <!-- STATS DRAWER (Initially Hidden) -->
-        <div class="stats-drawer-overlay" id="statsOverlay" onclick="toggleStatsDrawer()"></div>
-        <aside class="stats-drawer" id="statsDrawer">
-            <div class="stats-drawer-header">
-                <h2>Your Progress</h2>
-                <button class="stats-close-btn" onclick="toggleStatsDrawer()">✕</button>
+        <!-- AI INSIGHT WIDGET (Always Visible on Top) -->
+        <div class="insight-card anim-in d2" style="margin-bottom: 28px; background: rgba(var(--primary-rgb), 0.03) !important; border: 1px solid rgba(var(--primary-rgb), 0.15) !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;">
+            <div class="insight-header">
+                <div class="insight-dot" style="background: var(--primary-hex) !important; box-shadow: 0 0 12px var(--primary-hex) !important;"></div>
+                <div class="insight-label" style="color: var(--primary-hex) !important; font-weight: 800;">AI Learning Advisor</div>
+            </div>
+            {% if insight %}
+            <div class="insight-title" style="font-size: 16px; margin-bottom: 4px;">{{ insight.title }}</div>
+            <div class="insight-body" style="font-size: 13px; line-height: 1.6;">{{ insight.message }}</div>
+            {% if insight.cta_url %}
+            <a class="insight-cta" href="{{ insight.cta_url }}" style="background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.15), rgba(var(--primary-rgb), 0.05)); border-color: rgba(var(--primary-rgb), 0.3); color: var(--primary-hex); margin-top: 8px; text-decoration: none; align-self: flex-start; padding: 6px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; transition: all 0.2s;">{{ insight.cta_label }} →</a>
+            {% endif %}
+            {% else %}
+            <div class="insight-title" style="font-size: 16px; margin-bottom: 4px;">Ready to Elevate Your Learning</div>
+            <div class="insight-body" style="font-size: 13px; line-height: 1.6;">Start a new course or complete study sessions to receive real-time, personalized AI recommendations here.</div>
+            {% endif %}
+        </div>
+
+        <!-- DASHBOARD TABS switcher -->
+        <div class="db-tabs anim-in d2" style="display: flex; gap: 8px; margin-bottom: 32px; background: rgba(255,255,255,0.02); padding: 5px; border-radius: 9999px; width: fit-content; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+            <button class="db-tab-btn active" onclick="switchDashboardTab('courses')" style="border-radius: 9999px !important; outline: none; border: none; padding: 10px 24px;">
+                <span>📖</span> My Courses
+            </button>
+            <button class="db-tab-btn" onclick="switchDashboardTab('analytics')" style="border-radius: 9999px !important; outline: none; border: none; padding: 10px 24px;">
+                <span>📊</span> Analytics & Insights
+            </button>
+        </div>
+
+        <!-- TAB SECTION 1: MY COURSES -->
+        <div id="db-section-courses">
+            <!-- SECTION: COURSES -->
+            <div class="section-header anim-in d4" style="margin-top: 10px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border: none; padding: 0;">
+                <div class="section-title" style="font-size: 22px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.5px;">
+                    <span>📖</span> Your Courses
+                </div>
             </div>
 
+            <!-- FILTER BAR -->
+            <div class="filter-bar anim-in d5">
+                <div class="filter-chips">
+                    <button class="filter-chip active" data-filter="all">All</button>
+                    <button class="filter-chip" data-filter="in_progress">In Progress</button>
+                    <button class="filter-chip" data-filter="completed">Completed</button>
+                    <button class="filter-chip" data-filter="exam_ready">Exam Ready</button>
+                </div>
+                <span class="filter-count" id="course-count">5 courses</span>
+            </div>
+
+            <!-- COURSE GRID -->
+            <div class="course-grid" id="course-grid">
+                <!-- Cards injected by JS -->
+            </div>
+        </div>
+
+        <!-- TAB SECTION 2: ANALYTICS & INSIGHTS (Spacious and distraction-free) -->
+        <div id="db-section-analytics" style="display: none;">
             <!-- KPI ROW -->
-            <div class="kpi-grid anim-in d2">
-            <div class="kpi-card streak">
-                <div class="kpi-glow"></div>
-                <span class="kpi-icon">🔥</span>
-                <div class="kpi-val" id="kpi-streak">0</div>
-                <div class="kpi-label">Day Streak</div>
-                <div class="kpi-trend up">↑ Keep going</div>
-                <div class="kpi-mini-bar">
-                    <div class="kpi-mini-fill"
-                        style="width:0%;background:linear-gradient(90deg,var(--ember),var(--gold))" data-target="76">
+            <div class="kpi-grid anim-in d2" style="margin-bottom: 32px;">
+                <div class="kpi-card streak">
+                    <div class="kpi-glow"></div>
+                    <span class="kpi-icon">🔥</span>
+                    <div class="kpi-val" id="kpi-streak">0</div>
+                    <div class="kpi-label">Day Streak</div>
+                    <div class="kpi-trend up">↑ Keep going</div>
+                    <div class="kpi-mini-bar">
+                        <div class="kpi-mini-fill"
+                            style="width:0%;background:linear-gradient(90deg,var(--ember),var(--gold))" data-target="76">
+                        </div>
+                    </div>
+                </div>
+                <div class="kpi-card courses">
+                    <div class="kpi-glow"></div>
+                    <span class="kpi-icon">📚</span>
+                    <div class="kpi-val" id="kpi-courses">0</div>
+                    <div class="kpi-label">Active Courses</div>
+                    <div class="kpi-trend up">↑ 2 new this week</div>
+                    <div class="kpi-mini-bar">
+                        <div class="kpi-mini-fill"
+                            style="width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2))"
+                            data-target="60"></div>
+                    </div>
+                </div>
+                <div class="kpi-card hours">
+                    <div class="kpi-glow"></div>
+                    <span class="kpi-icon">⏱</span>
+                    <div class="kpi-val" id="kpi-hours">0<span class="unit">h</span></div>
+                    <div class="kpi-label">This Week</div>
+                    <div class="kpi-trend warn">⚡ 73% of 20h goal</div>
+                    <div class="kpi-mini-bar">
+                        <div class="kpi-mini-fill" style="width:0%;background:linear-gradient(90deg,var(--teal),#34d399)"
+                            data-target="73"></div>
+                    </div>
+                </div>
+                <div class="kpi-card mastered">
+                    <div class="kpi-glow"></div>
+                    <span class="kpi-icon">🏆</span>
+                    <div class="kpi-val" id="kpi-mastered">0</div>
+                    <div class="kpi-label">Mastered</div>
+                    <div class="kpi-trend up">↑ 47 videos done</div>
+                    <div class="kpi-mini-bar">
+                        <div class="kpi-mini-fill" style="width:0%;background:linear-gradient(90deg,var(--gold),#fbbf24)"
+                            data-target="40"></div>
                     </div>
                 </div>
             </div>
-            <div class="kpi-card courses">
-                <div class="kpi-glow"></div>
-                <span class="kpi-icon">📚</span>
-                <div class="kpi-val" id="kpi-courses">0</div>
-                <div class="kpi-label">Active Courses</div>
-                <div class="kpi-trend up">↑ 2 new this week</div>
-                <div class="kpi-mini-bar">
-                    <div class="kpi-mini-fill"
-                        style="width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2))"
-                        data-target="60"></div>
-                </div>
-            </div>
-            <div class="kpi-card hours">
-                <div class="kpi-glow"></div>
-                <span class="kpi-icon">⏱</span>
-                <div class="kpi-val" id="kpi-hours">0<span class="unit">h</span></div>
-                <div class="kpi-label">This Week</div>
-                <div class="kpi-trend warn">⚡ 73% of 20h goal</div>
-                <div class="kpi-mini-bar">
-                    <div class="kpi-mini-fill" style="width:0%;background:linear-gradient(90deg,var(--teal),#34d399)"
-                        data-target="73"></div>
-                </div>
-            </div>
-            <div class="kpi-card mastered">
-                <div class="kpi-glow"></div>
-                <span class="kpi-icon">🏆</span>
-                <div class="kpi-val" id="kpi-mastered">0</div>
-                <div class="kpi-label">Mastered</div>
-                <div class="kpi-trend up">↑ 47 videos done</div>
-                <div class="kpi-mini-bar">
-                    <div class="kpi-mini-fill" style="width:0%;background:linear-gradient(90deg,var(--gold),#fbbf24)"
-                        data-target="40"></div>
-                </div>
-            </div>
-        </div>
 
-        <!-- MID ROW: INSIGHT + HEATMAP -->
-        <div class="mid-row anim-in d3">
-            <!-- Insight -->
-            <div class="insight-card">
-                <div class="insight-header">
-                    <div class="insight-dot"></div>
-                    <div class="insight-label">AI Insight</div>
-                </div>
-                {% if insight %}
-                <div class="insight-title">{{ insight.title }}</div>
-                <div class="insight-body">{{ insight.message }}</div>
-                {% if insight.cta_url %}
-                <a class="insight-cta" href="{{ insight.cta_url }}">{{ insight.cta_label }} →</a>
-                {% endif %}
-                {% else %}
-                <div class="insight-title">Ready to Learn</div>
-                <div class="insight-body">Start a new course or continue your progress to unlock personalized AI insights.</div>
-                {% endif %}
-            </div>
-            <!-- Heatmap -->
-            <div class="heatmap-card">
-                <div class="section-header">
-                    <div class="section-title"><span class="icon">📅</span> Activity Heatmap</div>
-                    <div class="chip-row">
-                        <button class="chip active" data-days="7">7D</button>
-                        <button class="chip" data-days="14">14D</button>
-                        <button class="chip" data-days="28">28D</button>
+            <!-- ACTIVITY HEATMAP ROW -->
+            <div class="heatmap-row anim-in d3" style="margin-bottom: 32px; max-width: 750px; margin-left: auto; margin-right: auto;">
+                <!-- Heatmap -->
+                <div class="heatmap-card">
+                    <div class="section-header">
+                        <div class="section-title"><span class="icon">📅</span> Activity Heatmap</div>
+                        <div class="chip-row">
+                            <button class="chip active" data-days="7">7D</button>
+                            <button class="chip" data-days="14">14D</button>
+                            <button class="chip" data-days="28">28D</button>
+                        </div>
+                    </div>
+                    <div class="heatmap-grid" id="heatmap-grid"></div>
+                    <div class="hm-legend">
+                        <span>Less</span>
+                        <div class="hm-legend-cells">
+                            <div class="hm-lc" style="background:var(--surface2)"></div>
+                            <div class="hm-lc" style="background:rgba(108,99,255,0.25)"></div>
+                            <div class="hm-lc" style="background:rgba(108,99,255,0.45)"></div>
+                            <div class="hm-lc" style="background:rgba(108,99,255,0.65)"></div>
+                            <div class="hm-lc" style="background:rgba(108,99,255,0.9)"></div>
+                        </div>
+                        <span>More</span>
+                        <span style="margin-left:auto;color:var(--accent2);font-family:var(--ff-mono);font-size:10px">{{ profile.streak_count|default:"0" }} day
+                            streak 🔥</span>
                     </div>
                 </div>
-                <div class="heatmap-grid" id="heatmap-grid"></div>
-                <div class="hm-legend">
-                    <span>Less</span>
-                    <div class="hm-legend-cells">
-                        <div class="hm-lc" style="background:var(--surface2)"></div>
-                        <div class="hm-lc" style="background:rgba(108,99,255,0.25)"></div>
-                        <div class="hm-lc" style="background:rgba(108,99,255,0.45)"></div>
-                        <div class="hm-lc" style="background:rgba(108,99,255,0.65)"></div>
-                        <div class="hm-lc" style="background:rgba(108,99,255,0.9)"></div>
-                    </div>
-                    <span>More</span>
-                    <span style="margin-left:auto;color:var(--accent2);font-family:var(--ff-mono);font-size:10px">{{ profile.streak_count|default:"0" }} day
-                        streak 🔥</span>
+            </div>
+
+            <!-- AI SUMMARY DASHBOARD WIDGET -->
+            {% if user.profile.plan_type == 'ultra' %}
+            <div class="ai-summary-widget anim-in d3" style="margin-bottom: 32px;">
+                <div class="ai-summary-header" style="background-color: var(--primary-hex); color: white; border-radius: 9999px; padding: 8px 16px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; font-size: 12px; margin-bottom: 16px; width: fit-content;">
+                    <span class="ai-bot-icon">🤖</span> AI SUMMARY
+                </div>
+                <div class="ai-summary-content">
+                    <h3 id="random-ai-title" style="margin-bottom: 8px;">Analyzing your progress...</h3>
+                    <p id="random-ai-message" style="color: var(--text2);">Loading insights...</p>
                 </div>
             </div>
-        </div>
-        </aside>
-
-        <!-- AI SUMMARY DASHBOARD WIDGET -->
-        {% if user.profile.plan_type == 'ultra' %}
-        <div class="ai-summary-widget anim-in d3">
-            <div class="ai-summary-header" style="background-color: #ef233c; color: white; border-radius: 9999px; padding: 8px 16px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; font-size: 12px; margin-bottom: 16px; width: fit-content;">
-                <span class="ai-bot-icon">🤖</span> AI SUMMARY
-            </div>
-            <div class="ai-summary-content">
-                <h3 id="random-ai-title" style="margin-bottom: 8px;">Analyzing your progress...</h3>
-                <p id="random-ai-message" style="color: var(--text2);">Loading insights...</p>
-            </div>
-        </div>
-        
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const summaries = [
-                    { title: "Stay Consistent", msg: "Every learning session builds lasting knowledge. Pick a course and make progress today!" },
-                    { title: "Great Momentum", msg: "You've been studying well lately. Consider reviewing your older notes to solidify your memory." },
-                    { title: "Focus Time", msg: "Your best work happens when you are undistracted. Try using the Focus Room for your next session." },
-                    { title: "Time to Review", msg: "Spaced repetition is key. Take a moment to test yourself on previous concepts before starting new ones." },
-                    { title: "Keep Pushing", msg: "Small steps every day lead to massive results over a year. What's your goal for today?" }
-                ];
-                const randomSummary = summaries[Math.floor(Math.random() * summaries.length)];
-                const titleEl = document.getElementById('random-ai-title');
-                const msgEl = document.getElementById('random-ai-message');
-                if(titleEl && msgEl) {
-                    titleEl.innerText = randomSummary.title;
-                    msgEl.innerText = randomSummary.msg;
-                }
-            });
-        </script>
-        {% endif %}
-
-
-        <!-- FILTER BAR -->
-        <div class="filter-bar anim-in d5">
-            <div class="filter-chips">
-                <button class="filter-chip active" data-filter="all">All</button>
-                <button class="filter-chip" data-filter="in_progress">In Progress</button>
-                <button class="filter-chip" data-filter="completed">Completed</button>
-                <button class="filter-chip" data-filter="exam_ready">Exam Ready</button>
-            </div>
-
-
-            <span class="filter-count" id="course-count">5 courses</span>
-        </div>
-
-        <!-- COURSE GRID -->
-        <div class="course-grid" id="course-grid">
-            <!-- Cards injected by JS -->
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const summaries = [
+                        { title: "Stay Consistent", msg: "Every learning session builds lasting knowledge. Pick a course and make progress today!" },
+                        { title: "Great Momentum", msg: "You've been studying well lately. Consider reviewing your older notes to solidify your memory." },
+                        { title: "Focus Time", msg: "Your best work happens when you are undistracted. Try using the Focus Room for your next session." },
+                        { title: "Time to Review", msg: "Spaced repetition is key. Take a moment to test yourself on previous concepts before starting new ones." },
+                        { title: "Keep Pushing", msg: "Small steps every day lead to massive results over a year. What's your goal for today?" }
+                    ];
+                    const randomSummary = summaries[Math.floor(Math.random() * summaries.length)];
+                    const titleEl = document.getElementById('random-ai-title');
+                    const msgEl = document.getElementById('random-ai-message');
+                    if(titleEl && msgEl) {
+                        titleEl.innerText = randomSummary.title;
+                        msgEl.innerText = randomSummary.msg;
+                    }
+                });
+            </script>
+            {% endif %}
         </div>
     </div>
 
@@ -1883,22 +2014,18 @@
                     autofocus>
                 <span class="palette-esc">ESC</span>
             </div>
-            <div class="palette-results">
+            <div class="palette-results" id="palette-results-container">
                 <div class="palette-section-label">Navigation</div>
-                <button class="palette-item"><span class="palette-item-icon">📊</span>Go to Dashboard</button>
-                <button class="palette-item"><span class="palette-item-icon">📥</span>Import Playlist</button>
-                <button class="palette-item"><span class="palette-item-icon">🎯</span>Focus Room</button>
-                <button class="palette-item"><span class="palette-item-icon">👤</span>Profile</button>
+                <button class="palette-item" id="pal-btn-dash"><span class="palette-item-icon">📊</span>Go to Dashboard</button>
+                <button class="palette-item" id="pal-btn-import"><span class="palette-item-icon">📥</span>Import Playlist</button>
+                <button class="palette-item" id="pal-btn-focus"><span class="palette-item-icon">🎯</span>Focus Room</button>
+                <button class="palette-item" id="pal-btn-profile"><span class="palette-item-icon">👤</span>Profile</button>
                 <div class="palette-section-label">Commands</div>
-                <button class="palette-item" id="palette-theme-btn"><span class="palette-item-icon">🌓</span>Toggle
-                    Theme</button>
+                <button class="palette-item" id="palette-theme-btn"><span class="palette-item-icon">🌓</span>Toggle Theme</button>
                 <div class="palette-section-label">Courses</div>
-                <button class="palette-item"><span class="palette-item-icon">📖</span>System Design for
-                    Engineers</button>
-                <button class="palette-item"><span class="palette-item-icon">📖</span>DSA Mastery: Patterns &
-                    Problems</button>
-                <button class="palette-item"><span class="palette-item-icon">📖</span>Machine Learning from
-                    Scratch</button>
+                <div id="palette-courses-list" style="display: flex; flex-direction: column;">
+                    <!-- Dynamic courses injected by JS -->
+                </div>
             </div>
         </div>
     </div>
@@ -1942,28 +2069,7 @@
         // ── DATA ────────────────────────────────────────────────────────────
         const COURSES = JSON.parse('{{ courses_json|escapejs }}');
 
-        // ── PARTICLES ────────────────────────────────────────────────────────
-        (function () {
-            const canvas = document.getElementById('pcanvas');
-            const ctx = canvas.getContext('2d');
-            let W, H, pts = [];
-            function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight }
-            resize(); addEventListener('resize', resize);
-            class P {
-                constructor() { this.reset(); this.y = Math.random() * H }
-                reset() { this.x = Math.random() * W; this.y = -10; this.vx = (Math.random() - .5) * .25; this.vy = Math.random() * .25 + .1; this.r = Math.random() * 1.5 + .3; this.op = Math.random() * .3 + .1; const c = ['108,99,255', '167,139,250', '13,211,162', '245,197,66']; this.c = c[Math.floor(Math.random() * c.length)] }
-                step() { this.x += this.vx; this.y += this.vy; if (this.y > H + 10) this.reset(); if (this.x < -10) this.x = W + 10; if (this.x > W + 10) this.x = -10 }
-                draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(${this.c},${this.op})`; ctx.fill() }
-            }
-            for (let i = 0; i < 120; i++)pts.push(new P());
-            function loop() {
-                ctx.clearRect(0, 0, W, H);
-                for (const p of pts) { p.step(); p.draw() }
-                for (let i = 0; i < pts.length; i++)for (let j = i + 1; j < pts.length; j++) { const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y, d = Math.sqrt(dx * dx + dy * dy); if (d < 90) { ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.strokeStyle = `rgba(108,99,255,${.06 * (1 - d / 90)})`; ctx.lineWidth = .5; ctx.stroke() } }
-                requestAnimationFrame(loop);
-            }
-            loop();
-        })();
+
 
         // ── COUNTERS ──────────────────────────────────────────────────────────
         function countTo(el, target, decimals, suffix, dur = 1200) {
@@ -2115,6 +2221,45 @@
             });
         });
 
+        // Navigation Link Handlers
+        document.getElementById('pal-btn-dash')?.addEventListener('click', () => {
+            window.location.href = "{% url 'dashboard' %}";
+        });
+        document.getElementById('pal-btn-import')?.addEventListener('click', () => {
+            window.location.href = "{% url 'import_course' %}";
+        });
+        document.getElementById('pal-btn-focus')?.addEventListener('click', () => {
+            window.location.href = "{% url 'focus_room' %}";
+        });
+        document.getElementById('pal-btn-profile')?.addEventListener('click', () => {
+            window.location.href = "{% url 'profile' %}";
+        });
+        document.getElementById('palette-theme-btn')?.addEventListener('click', () => {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            closePalette();
+        });
+
+        // Dynamic courses inside Command Palette results
+        function renderPaletteCourses() {
+            const listContainer = document.getElementById('palette-courses-list');
+            if (!listContainer) return;
+            listContainer.innerHTML = '';
+
+            COURSES.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = 'palette-item';
+                btn.innerHTML = `<span class="palette-item-icon">📖</span>${c.title}`;
+                btn.addEventListener('click', () => {
+                    window.location.href = `/course/${c.id}/learn/`;
+                });
+                listContainer.appendChild(btn);
+            });
+        }
+        renderPaletteCourses();
+
         // ── AI CHAT ──────────────────────────────────────────────────────────
         const aiPanel = document.getElementById('ai-panel');
         const aiMessages = document.getElementById('ai-messages');
@@ -2174,22 +2319,7 @@
                 showToast(`🌙 Your {{ profile.streak_count|default:"0" }}-day streak is alive! Log a session before midnight to keep it.`, 'warn', 8000);
             }
         }, 2500);
-        // ── DRAWER & TIME ────────────────────────────────────────────────────
-        function toggleStatsDrawer() {
-            const drawer = document.getElementById('statsDrawer');
-            const overlay = document.getElementById('statsOverlay');
-            if (!drawer || !overlay) return;
-            if (drawer.classList.contains('open')) {
-                drawer.classList.remove('open');
-                overlay.classList.remove('open');
-                document.body.style.overflow = '';
-            } else {
-                drawer.classList.add('open');
-                overlay.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
+        // ── TIME & TABS ────────────────────────────────────────────────────
         function setLocalTime() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -2201,6 +2331,33 @@
         }
         setLocalTime();
         setInterval(setLocalTime, 60000);
+
+        function switchDashboardTab(tab) {
+            const coursesSection = document.getElementById('db-section-courses');
+            const analyticsSection = document.getElementById('db-section-analytics');
+            const buttons = document.querySelectorAll('.db-tab-btn');
+
+            if (!coursesSection || !analyticsSection) return;
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            if (tab === 'courses') {
+                coursesSection.style.display = 'block';
+                analyticsSection.style.display = 'none';
+                buttons[0].classList.add('active');
+            } else {
+                coursesSection.style.display = 'none';
+                analyticsSection.style.display = 'block';
+                buttons[1].classList.add('active');
+                // Rebuild heatmap to handle canvas/grid recalculations
+                const activeDaysBtn = document.querySelector('.chip.active');
+                if (activeDaysBtn) {
+                    buildHeatmap(+activeDaysBtn.dataset.days);
+                } else {
+                    buildHeatmap(28);
+                }
+            }
+        }
     
 </script>
 {% endblock %}

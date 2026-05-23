@@ -11,40 +11,40 @@
 <style>
     /* PREMIUM FOCUS ROOM CSS */
     .focus-bg {
-        position: fixed; inset: 0; z-index: 0; background: #050505; overflow: hidden;
+        position: fixed; inset: 0; z-index: 0; background: #f8fafc; overflow: hidden;
     }
     .focus-bg::before {
-        content: ''; position: absolute; inset: 0; opacity: 0.4;
+        content: ''; position: absolute; inset: 0; opacity: 0.15;
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
     }
     .focus-orb {
-        position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; animation: drift 20s infinite alternate ease-in-out;
+        position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.4; animation: drift 20s infinite alternate ease-in-out;
     }
     .focus-orb-1 {
         width: 800px; height: 800px; background: radial-gradient(circle, rgba(var(--primary-rgb), 0.15), transparent 60%); top: -20%; left: -10%;
     }
     .focus-orb-2 {
-        width: 600px; height: 600px; background: radial-gradient(circle, rgba(217, 4, 41, 0.12), transparent 60%); bottom: -20%; right: -10%; animation-delay: -10s;
+        width: 600px; height: 600px; background: radial-gradient(circle, rgba(14, 165, 233, 0.08), transparent 60%); bottom: -20%; right: -10%; animation-delay: -10s;
     }
     @keyframes drift {
         100% { transform: translate(50px, 50px) scale(1.1); }
     }
     @keyframes pulse-ring {
-        0% { filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.6)); }
-        50% { filter: drop-shadow(0 0 35px rgba(var(--primary-rgb), 0.9)); }
-        100% { filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.6)); }
+        0% { filter: drop-shadow(0 0 10px rgba(var(--primary-rgb), 0.2)); }
+        50% { filter: drop-shadow(0 0 25px rgba(var(--primary-rgb), 0.4)); }
+        100% { filter: drop-shadow(0 0 10px rgba(var(--primary-rgb), 0.2)); }
     }
     .focus-glass-card {
-        background: rgba(20, 20, 25, 0.6);
+        background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.06);
         border-radius: 32px; padding: 3rem; text-align: center;
-        box-shadow: 0 24px 64px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.8);
         position: relative; overflow: hidden; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .focus-glass-card:hover {
         transform: translateY(-4px);
-        border-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(0, 0, 0, 0.1);
     }
     .focus-glass-card::before {
         content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
@@ -59,59 +59,59 @@
         background: linear-gradient(135deg, var(--primary-hex), var(--primary-dark));
         color: white; border: none; padding: 1rem 3rem; border-radius: 50px;
         font-size: 1.2rem; font-weight: 700; font-family: 'Outfit', sans-serif;
-        cursor: pointer; transition: 0.3s; box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.4);
+        cursor: pointer; transition: 0.3s; box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.25);
     }
     .focus-btn-primary:hover {
-        transform: translateY(-2px); box-shadow: 0 12px 32px rgba(var(--primary-rgb), 0.6);
+        transform: translateY(-2px); box-shadow: 0 12px 32px rgba(var(--primary-rgb), 0.4);
     }
     .focus-btn-secondary {
-        background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.02); color: #334155; border: 1px solid rgba(0, 0, 0, 0.06);
         padding: 1rem; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: 0.3s;
         display: flex; align-items: center; justify-content: center; width: 60px; height: 60px;
     }
     .focus-btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); transform: rotate(15deg);
+        background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1); transform: rotate(15deg);
     }
 
     .focus-preset-btn {
         padding: 0.6rem 1.2rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
-        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #888;
+        background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.05); color: #64748b;
         cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
     }
     .focus-preset-btn.active {
-        background: rgba(var(--primary-rgb), 0.15); border-color: rgba(var(--primary-rgb), 0.4); color: var(--primary-hex);
-        box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.2);
+        background: rgba(var(--primary-rgb), 0.08); border-color: rgba(var(--primary-rgb), 0.3); color: var(--primary-hex);
+        box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.1);
     }
 
     .focus-task-input {
-        width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);
-        color: white; padding: 1rem 1.5rem; border-radius: 16px; font-size: 1rem; font-family: 'Outfit';
+        width: 100%; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.06);
+        color: #0f172a; padding: 1rem 1.5rem; border-radius: 16px; font-size: 1rem; font-family: 'Outfit';
         text-align: center; transition: 0.3s; outline: none; margin-bottom: 2rem;
     }
     .focus-task-input:focus {
-        border-color: var(--primary-hex); box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2); background: rgba(0, 0, 0, 0.5);
+        border-color: var(--primary-hex); box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1); background: #ffffff;
     }
 
     .premium-controls-bar {
         display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
-        background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0, 0, 0, 0.06);
         padding: 1rem 1.5rem; border-radius: 20px; transition: 0.3s;
     }
-    .premium-controls-bar:hover { border-color: rgba(255, 255, 255, 0.15); }
+    .premium-controls-bar:hover { border-color: rgba(0, 0, 0, 0.1); }
 
     .track-tile {
-        background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(0, 0, 0, 0.02); border: 1px solid rgba(0, 0, 0, 0.04);
         border-radius: 16px; padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-        cursor: pointer; transition: 0.3s; color: #888;
+        cursor: pointer; transition: 0.3s; color: #64748b;
     }
     .track-tile:hover {
-        background: rgba(255, 255, 255, 0.08); transform: translateY(-2px); color: white;
+        background: rgba(var(--primary-rgb), 0.04); transform: translateY(-2px); color: var(--primary-hex);
     }
     .track-tile.active {
-        background: rgba(var(--primary-rgb), 0.1); border-color: rgba(var(--primary-rgb), 0.3); color: var(--primary-hex);
-        box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.15);
+        background: rgba(var(--primary-rgb), 0.08); border-color: rgba(var(--primary-rgb), 0.3); color: var(--primary-hex);
+        box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.1);
     }
-    .track-tile .tile-icon { font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+    .track-tile .tile-icon { font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
     .track-tile .tile-label { font-size: 0.8rem; font-weight: 600; font-family: 'Outfit'; letter-spacing: 0.5px; }
 
     /* Premium Audio Controls */
@@ -119,7 +119,7 @@
         -webkit-appearance: none;
         width: 120px;
         height: 6px;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.08);
         border-radius: 99px;
         outline: none;
     }
@@ -128,20 +128,20 @@
         width: 14px;
         height: 14px;
         border-radius: 50%;
-        background: #ef233c;
+        background: var(--primary-hex);
         cursor: pointer;
-        box-shadow: 0 0 10px #ef233c;
+        box-shadow: 0 0 10px var(--primary-hex);
         transition: transform 0.2s;
     }
     .premium-volume-slider::-webkit-slider-thumb:hover {
         transform: scale(1.2);
     }
     .premium-next-btn {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(0, 0, 0, 0.05);
         border-radius: 50px;
         padding: 0.6rem 1.2rem;
-        color: white;
+        color: #334155;
         font-size: 0.85rem;
         font-weight: 700;
         cursor: pointer;
@@ -151,9 +151,116 @@
         gap: 6px;
     }
     .premium-next-btn:hover {
-        background: rgba(239, 35, 60, 0.1);
-        border-color: rgba(239, 35, 60, 0.3);
+        background: rgba(var(--primary-rgb), 0.05);
+        border-color: rgba(var(--primary-rgb), 0.2);
+        color: var(--primary-hex);
         transform: translateY(-1px);
+    }
+
+    /* Dark Mode Overrides */
+    [data-theme="dark"] .focus-bg {
+        background: #09090b !important;
+    }
+    [data-theme="dark"] .focus-bg::before {
+        opacity: 0.05 !important;
+    }
+    [data-theme="dark"] .focus-orb-1 {
+        background: radial-gradient(circle, rgba(var(--primary-rgb), 0.25), transparent 60%) !important;
+    }
+    [data-theme="dark"] .focus-orb-2 {
+        background: radial-gradient(circle, rgba(14, 165, 233, 0.15), transparent 60%) !important;
+    }
+    [data-theme="dark"] .focus-glass-card {
+        background: rgba(20, 20, 30, 0.6) !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+        color: #f8fafc !important;
+    }
+    [data-theme="dark"] .focus-glass-card h1,
+    [data-theme="dark"] .focus-glass-card h2,
+    [data-theme="dark"] .focus-glass-card h3,
+    [data-theme="dark"] .focus-glass-card p,
+    [data-theme="dark"] .focus-glass-card span {
+        color: #f8fafc !important;
+    }
+    [data-theme="dark"] .focus-glass-card:hover {
+        border-color: rgba(255, 255, 255, 0.15) !important;
+    }
+    [data-theme="dark"] .focus-btn-secondary {
+        background: rgba(255, 255, 255, 0.05) !important;
+        color: #cbd5e1 !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+    [data-theme="dark"] .focus-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+    }
+    [data-theme="dark"] .focus-preset-btn {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border-color: rgba(255, 255, 255, 0.05) !important;
+        color: #94a3b8 !important;
+    }
+    [data-theme="dark"] .focus-preset-btn.active {
+        background: rgba(var(--primary-rgb), 0.15) !important;
+        border-color: rgba(var(--primary-rgb), 0.3) !important;
+        color: var(--primary-hex) !important;
+    }
+    [data-theme="dark"] .focus-task-input {
+        background: rgba(20, 20, 30, 0.7) !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+        color: #f8fafc !important;
+    }
+    [data-theme="dark"] .focus-task-input:focus {
+        border-color: var(--primary-hex) !important;
+        background: rgba(20, 20, 30, 0.95) !important;
+    }
+    [data-theme="dark"] .premium-controls-bar {
+        background: rgba(20, 20, 30, 0.6) !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+        color: #f8fafc !important;
+    }
+    [data-theme="dark"] .track-tile {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border-color: rgba(255, 255, 255, 0.05) !important;
+        color: #cbd5e1 !important;
+    }
+    [data-theme="dark"] .track-tile:hover {
+        background: rgba(var(--primary-rgb), 0.15) !important;
+        color: var(--primary-hex) !important;
+    }
+    [data-theme="dark"] .track-tile.active {
+        background: rgba(var(--primary-rgb), 0.15) !important;
+        border-color: rgba(var(--primary-rgb), 0.35) !important;
+        color: var(--primary-hex) !important;
+    }
+    [data-theme="dark"] .premium-volume-slider {
+        background: rgba(255, 255, 255, 0.15) !important;
+    }
+    [data-theme="dark"] .premium-next-btn {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border-color: rgba(255, 255, 255, 0.05) !important;
+        color: #cbd5e1 !important;
+    }
+    [data-theme="dark"] .container header h1 {
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .container header p {
+        color: #cbd5e1 !important;
+    }
+    [data-theme="dark"] .container header div[style*="background"] {
+        background: rgba(20, 20, 30, 0.6) !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3) !important;
+    }
+    [data-theme="dark"] #pomodoro-time {
+        color: #ffffff !important;
+        text-shadow: 0 0 40px rgba(var(--primary-rgb), 0.4) !important;
+    }
+    [data-theme="dark"] #pomodoro-status {
+        color: #cbd5e1 !important;
+    }
+    [data-theme="dark"] circle[style*="stroke: rgba(0, 0, 0, 0.02)"] {
+        stroke: rgba(255, 255, 255, 0.06) !important;
     }
 </style>
 
@@ -165,11 +272,11 @@
 <div class="container" style="min-height: calc(100vh - 100px); display: flex; flex-direction: column; align-items: center; padding: 4rem 1.5rem; position: relative; z-index: 1;">
 
     <header style="text-align: center; margin-bottom: 3.5rem;">
-        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); font-size: 2rem; margin-bottom: 1.5rem; box-shadow: 0 8px 32px rgba(0,0,0,0.3); animation: float-gentle 4s ease-in-out infinite;">🎧</div>
-        <h1 style="font-size: 4rem; font-family: 'Outfit'; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1rem; color: #fff; line-height: 1;">
-            Deep <span style="background: linear-gradient(135deg, #ef233c, #ff9b9b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(239, 35, 60, 0.3));">Focus Room</span>
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 20px; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.06); font-size: 2rem; margin-bottom: 1.5rem; box-shadow: 0 8px 32px rgba(0,0,0,0.05); animation: float-gentle 4s ease-in-out infinite;">🎧</div>
+        <h1 style="font-size: 4rem; font-family: 'Outfit'; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1rem; color: #0f172a; line-height: 1;">
+            Deep <span style="background: linear-gradient(135deg, var(--primary-hex), var(--primary-hex)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(var(--primary-rgb), 0.25));">Focus Room</span>
         </h1>
-        <p style="color: #888; max-width: 600px; margin: 0 auto; font-size: 1.1rem; letter-spacing: 0.5px;">
+        <p style="color: #475569; max-width: 600px; margin: 0 auto; font-size: 1.1rem; letter-spacing: 0.5px;">
             Lock into deep work with synchronized Pomodoro intervals and premium binaural concentration soundscapes.
         </p>
     </header>
@@ -179,29 +286,29 @@
         <!-- Section 1: Pomodoro Timer -->
         <section class="focus-glass-card">
             
-            <div style="display: inline-block; padding: 0.4rem 1rem; background: rgba(var(--primary-rgb), 0.1); border: 1px solid rgba(var(--primary-rgb), 0.2); border-radius: 50px; color: var(--primary-hex); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem;">
+            <div style="display: inline-block; padding: 0.4rem 1rem; background: rgba(var(--primary-rgb), 0.08); border: 1px solid rgba(var(--primary-rgb), 0.15); border-radius: 50px; color: var(--primary-hex); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem;">
                 Focus Interval
             </div>
-            <div id="pomodoro-status" style="font-size: 1rem; color: #888; margin-bottom: 3rem; font-weight: 500;">Ready to focus</div>
+            <div id="pomodoro-status" style="font-size: 1rem; color: #475569; margin-bottom: 3rem; font-weight: 500;">Ready to focus</div>
 
             <!-- Pulsing Concentric Rings -->
             <div style="position: relative; width: 320px; height: 320px; margin: 0 auto 3rem;">
                 
                 <svg viewBox="0 0 160 160" style="position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg);">
                     <!-- Background Track -->
-                    <circle cx="80" cy="80" r="72" style="fill: none; stroke: rgba(255, 255, 255, 0.03); stroke-width: 4;"></circle>
+                    <circle cx="80" cy="80" r="72" style="fill: none; stroke: rgba(0, 0, 0, 0.02); stroke-width: 4;"></circle>
                     <!-- Progress Track -->
-                    <circle id="pomodoro-progress" class="timer-ring" cx="80" cy="80" r="72" style="fill: none; stroke: url(#redGradient); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 452.4; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear;"></circle>
+                    <circle id="pomodoro-progress" class="timer-ring" cx="80" cy="80" r="72" style="fill: none; stroke: url(#blueGradient); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 452.4; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear;"></circle>
                     
                     <defs>
-                        <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stop-color="var(--primary-hex)" />
-                            <stop offset="100%" stop-color="#ff6b6b" />
+                            <stop offset="100%" stop-color="#60a5fa" />
                         </linearGradient>
                     </defs>
                 </svg>
 
-                <div id="pomodoro-time" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 5rem; font-family: 'Outfit'; font-weight: 900; color: #fff; text-shadow: 0 4px 24px rgba(var(--primary-rgb), 0.5); letter-spacing: -2px;">
+                <div id="pomodoro-time" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 5rem; font-family: 'Outfit'; font-weight: 900; color: #0f172a; text-shadow: 0 4px 24px rgba(var(--primary-rgb), 0.15); letter-spacing: -2px;">
                     25:00
                 </div>
             </div>
@@ -231,20 +338,20 @@
         <section class="focus-glass-card">
             
             <div style="text-align: center; margin-bottom: 2.5rem;">
-                <div style="display: inline-block; padding: 0.4rem 1rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50px; color: #ccc; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem;">
+                <div style="display: inline-block; padding: 0.4rem 1rem; background: rgba(0, 0, 0, 0.02); border: 1px solid rgba(0, 0, 0, 0.05); border-radius: 50px; color: #475569; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem;">
                     Focus Audio
                 </div>
-                <h3 style="font-family: 'Outfit'; font-size: 1.8rem; font-weight: 800; color: white; margin-bottom: 0.5rem; letter-spacing: -0.5px;">Immersive Soundscapes</h3>
-                <p style="color: #888; font-size: 0.95rem;">Select an acoustic environment to boost your concentration.</p>
+                <h3 style="font-family: 'Outfit'; font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; letter-spacing: -0.5px;">Immersive Soundscapes</h3>
+                <p style="color: #475569; font-size: 0.95rem;">Select an acoustic environment to boost your concentration.</p>
             </div>
 
             <!-- SoundCloud Relaxing Track Embed -->
-            <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,0.5); margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05);">
-                <iframe id="soundcloud-iframe" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" loading="lazy" style="display: block;" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%23ef233c&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
+            <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,0.05); margin-bottom: 1.5rem; border: 1px solid rgba(0,0,0,0.05);">
+                <iframe id="soundcloud-iframe" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" loading="lazy" style="display: block;" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%232563eb&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
             </div>
 
             <div class="premium-controls-bar">
-                <div style="display: flex; align-items: center; gap: 1rem; color: white;">
+                <div style="display: flex; align-items: center; gap: 1rem; color: #334155;">
                     <span style="font-size: 1.2rem;">🔊</span>
                     <input type="range" min="0" max="100" value="100" oninput="setSoundcloudVolume(this.value)" class="premium-volume-slider">
                 </div>
@@ -256,35 +363,35 @@
 
             <!-- Neo-morphic Track Tiles Grid -->
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
-                <button type="button" class="track-tile active" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile active" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🎧</span>
                     <span class="tile-label">Lofi</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/tymur_khakimov/1-hour-deep-sleep-ambient-meditation-deeply-relaxing-sleep-music-binaural-beats&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/tymur_khakimov/1-hour-deep-sleep-ambient-meditation-deeply-relaxing-sleep-music-binaural-beats&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🌙</span>
                     <span class="tile-label">Relax</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/helpmybabysleepsounds/relaxing-sound-of-an-english-rain-thunder-storm-for-1-hour&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/helpmybabysleepsounds/relaxing-sound-of-an-english-rain-thunder-storm-for-1-hour&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">⚡</span>
                     <span class="tile-label">Thunder</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-425188905/one-hour-of-rainy-minecraft&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-425188905/one-hour-of-rainy-minecraft&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🌧️</span>
                     <span class="tile-label">Rain</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/mila-vispi/sets/1-hour-sleep&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/mila-vispi/sets/1-hour-sleep&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">😴</span>
                     <span class="tile-label">Sleep</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/ibrahim-maazin-945735772/river-flows-in-you-yiruma-1&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/ibrahim-maazin-945735772/river-flows-in-you-yiruma-1&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🎹</span>
                     <span class="tile-label">Piano</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/relaxingwhitenoisesounds/endless-river-1-hour-of&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/relaxingwhitenoisesounds/endless-river-1-hour-of&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🌊</span>
                     <span class="tile-label">River</span>
                 </button>
-                <button type="button" class="track-tile" data-is-playlist="true" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/jaskaran-singh-847899430/sets/karan-aujla-all-songs&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-is-playlist="true" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/jaskaran-singh-847899430/sets/karan-aujla-all-songs&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🔥</span>
                     <span class="tile-label">Aujla</span>
                 </button>

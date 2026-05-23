@@ -4,34 +4,184 @@
 {% block title %}EduTech AI - Distraction-Free EdTech SaaS{% endblock %}
 
 {% block extra_head %}
-<!-- Optional extra head for home if needed -->
+<style>
+    .shiny-cta span {
+        color: #ffffff !important; /* Premium white text inside dynamic cta */
+    }
+    .shiny-cta {
+        background: linear-gradient(var(--primary-hex), var(--primary-dark)) padding-box,
+            conic-gradient(from var(--gradient-angle), transparent 0%, #ffffff 5%, #ffffff 15%, #ffffff 30%, transparent 40%, transparent 100%) border-box !important;
+        box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.3) !important;
+    }
+    
+    /* Dynamic 3D Card swapping styling (Space Noir natively dark) */
+    .card-swap-item {
+        background: rgba(15, 23, 42, 0.72) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.5), 
+                    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                    0 1px 3px rgba(255, 255, 255, 0.02) !important;
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border-radius: 24px !important;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                    opacity 0.6s ease,
+                    filter 0.6s ease !important;
+    }
+    .card-swap-item h3 {
+        color: #ffffff !important;
+    }
+    .card-swap-item p {
+        color: #94a3b8 !important;
+    }
+    .card-swap-item .absolute.inset-0.bg-gradient-to-t {
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.4) 60%, transparent 100%) !important;
+    }
+    .card-swap-item .text-white {
+        color: #ffffff !important;
+    }
+    .card-swap-item .text-zinc-300 {
+        color: #cbd5e1 !important;
+    }
+    
+    /* Cinematic Slow Zoom on active card images */
+    .card-swap-item .overflow-hidden img {
+        transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    
+    .card-swap-item.is-front:hover .overflow-hidden img {
+        transform: scale(1.08);
+    }
+    
+    /* When card has active slot (front), highlight it beautifully with soft glowing backlight */
+    .card-swap-item.is-front {
+        border-color: rgba(var(--primary-rgb), 0.28) !important;
+        box-shadow: 0 45px 85px -10px rgba(var(--primary-rgb), 0.18), 
+                    0 0 0 2px rgba(var(--primary-rgb), 0.1) inset,
+                    0 0 50px rgba(var(--primary-rgb), 0.08) !important;
+    }
+
+    /* Glass Reflection Beam Sweep */
+    .card-swap-item::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(125deg, transparent 30%, rgba(255, 255, 255, 0.1) 40%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 60%, transparent 70%);
+        transform: translateX(-100%);
+        pointer-events: none;
+        z-index: 20;
+    }
+    
+    .card-swap-item.is-front:hover::after {
+        transform: translateX(100%);
+        transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    /* Active Micro-Badge */
+    .card-swap-item .active-badge {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        z-index: 30;
+        background: linear-gradient(135deg, var(--primary-hex) 0%, var(--primary-dark) 100%);
+        color: #ffffff !important;
+        font-size: 8px;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 999px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        opacity: 0;
+        transform: translateY(-5px) translateZ(10px);
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.25);
+    }
+    
+    .card-swap-item.is-front .active-badge {
+        opacity: 1;
+        transform: translateY(0) translateZ(10px);
+    }
+    
+    /* Sidebar Details styles (Space Noir natively dark) */
+    .card-detail-item {
+        position: relative;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(255, 255, 255, 0.06) !important;
+        background: rgba(15, 23, 42, 0.3) !important;
+        backdrop-filter: blur(10px);
+        color: #cbd5e1 !important;
+    }
+    .card-detail-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 15%;
+        height: 70%;
+        width: 3px;
+        background: var(--primary-hex);
+        border-radius: 0 4px 4px 0;
+        transform: scaleY(0);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card-detail-item:hover {
+        background: rgba(15, 23, 42, 0.6) !important;
+        border-color: rgba(var(--primary-rgb), 0.2) !important;
+        transform: translateX(4px);
+    }
+    .card-detail-item.active-detail {
+        background: rgba(15, 23, 42, 0.8) !important;
+        border-color: rgba(var(--primary-rgb), 0.3) !important;
+        box-shadow: 0 15px 35px -5px rgba(var(--primary-rgb), 0.2), 0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
+        transform: translateX(10px) scale(1.02);
+    }
+    .card-detail-item.active-detail::before {
+        transform: scaleY(1);
+    }
+    .card-detail-item.active-detail span {
+        color: var(--primary-hex) !important;
+    }
+    .card-detail-item.active-detail h4 {
+        color: var(--primary-hex) !important;
+    }
+    .card-detail-item.active-detail iconify-icon {
+        color: var(--primary-hex) !important;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="min-h-screen flex flex-col items-center justify-center pt-32 pb-20 px-6">
-    <div class="text-center max-w-5xl mx-auto">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up"
+<section class="min-h-screen flex flex-col items-center justify-center pt-32 pb-20 px-6 relative overflow-hidden" id="hero-lightrays-container">
+    <!-- WebGL Atmospheric LightRays -->
+    <div id="hero-lightrays" class="absolute inset-0 z-0 pointer-events-none" style="opacity: 0.45;"></div>
+    <!-- WebGL Neon Tubes 3D Cursor -->
+    <canvas id="hero-tubes" class="absolute inset-0 w-full h-full block z-[1] pointer-events-none" style="opacity: 0.8; touch-action: none;"></canvas>
+    <div class="text-center max-w-5xl mx-auto relative z-10">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] backdrop-blur-md mb-8 animate-fade-up"
             style="animation-delay: 0.1s;">
             <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ef233c]"></span>
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--primary-hex)] opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--primary-hex)]"></span>
             </span>
-            <span class="text-xs font-medium text-red-100/90 tracking-wide font-manrope">
+            <span class="text-xs font-semibold text-zinc-300 tracking-wide font-manrope">
                 EduTech AI is now live
             </span>
-            <iconify-icon icon="lucide:arrow-right" class="w-3 h-3 text-red-400"></iconify-icon>
+            <iconify-icon icon="lucide:arrow-right" class="w-3 h-3 text-[var(--primary-hex)]"></iconify-icon>
         </div>
 
         <h1 class="text-6xl md:text-8xl font-semibold tracking-tighter font-manrope leading-[1.1] mb-8 animate-fade-up"
             style="animation-delay: 0.2s;">
             <span
-                class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40">Distraction-Free
+                class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-200 to-zinc-400">Distraction-Free
                 Learning</span>
-            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40">
-                for the <span class="text-[#ef233c] inline-block relative">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-200 to-zinc-400">
+                for the <span class="text-[var(--primary-hex)] inline-block relative">
                     Future
-                    <svg class="absolute w-full h-3 -bottom-2 left-0 text-[#ef233c] opacity-60" viewBox="0 0 100 10"
+                    <svg class="absolute w-full h-3 -bottom-2 left-0 text-[var(--primary-hex)] opacity-60" viewBox="0 0 100 10"
                         preserveAspectRatio="none">
                         <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="2" fill="none" />
                     </svg>
@@ -64,8 +214,8 @@
             {% endif %}
 
             <a href="{% url 'import_course' %}"
-                class="group px-8 py-4 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 font-medium hover:text-white hover:bg-zinc-800 transition-all flex items-center gap-2">
-                <iconify-icon icon="lucide:download" class="w-5 h-5"></iconify-icon>
+                class="group px-8 py-4 rounded-full bg-white/[0.02] border border-white/[0.08] text-zinc-300 font-medium hover:text-[var(--primary-hex)] hover:border-[var(--primary-hex)]/40 hover:bg-white/[0.04] shadow-sm transition-all flex items-center gap-2">
+                <iconify-icon icon="lucide:download" class="w-5 h-5 text-[var(--primary-hex)]"></iconify-icon>
                 Import Course
             </a>
         </div>
@@ -73,20 +223,20 @@
 
     <!-- Logo Strip -->
     <div
-        class="w-full mt-32 border-y border-white/5 bg-white/[0.02] backdrop-blur-sm py-10 opacity-60 hover:opacity-100 transition-opacity">
+        class="w-full mt-32 border-y border-white/[0.06] bg-white/[0.01] backdrop-blur-sm py-10 opacity-70 hover:opacity-100 transition-opacity">
         <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-16">
             <p class="text-sm font-bold tracking-widest text-zinc-500 uppercase shrink-0">Integrated with:</p>
-            <div class="flex flex-wrap justify-center gap-8 md:gap-16 items-center w-full">
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 items-center w-full text-zinc-300">
                 <div class="flex items-center gap-2 font-manrope font-semibold">
-                    <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-xs">YT</div>
+                    <div class="w-6 h-6 bg-[var(--primary-hex)]/10 text-[var(--primary-hex)] rounded-full flex items-center justify-center text-xs font-bold">YT</div>
                     YouTube
                 </div>
                 <div class="flex items-center gap-2 font-manrope font-semibold"><iconify-icon icon="lucide:bot"
-                        class="w-6 h-6 opacity-70"></iconify-icon>Groq LLM</div>
+                        class="w-6 h-6 text-[var(--primary-hex)] opacity-70"></iconify-icon>Groq LLM</div>
                 <div class="flex items-center gap-2 font-manrope font-semibold"><iconify-icon icon="lucide:github"
-                        class="w-6 h-6 opacity-70"></iconify-icon>GitHub</div>
+                        class="w-6 h-6 text-zinc-400 opacity-70"></iconify-icon>GitHub</div>
                 <div class="flex items-center gap-2 font-manrope font-semibold"><iconify-icon icon="lucide:music"
-                        class="w-6 h-6 opacity-70"></iconify-icon>Lo-Fi</div>
+                        class="w-6 h-6 text-[var(--primary-hex)] opacity-70"></iconify-icon>Lo-Fi</div>
             </div>
         </div>
     </div>
@@ -98,120 +248,183 @@
         <div class="mb-20 text-center max-w-3xl mx-auto animate-fade-up">
             <h2 class="text-4xl md:text-5xl font-semibold text-white tracking-tight font-manrope mb-6">
                 The Operating System for <br />
-                <span class="text-[#ef233c]">Deep Work & Focus</span>
+                <span class="text-[var(--primary-hex)]">Deep Work & Focus</span>
             </h2>
             <p class="text-lg text-zinc-400 font-light">
                 Replace endless scrolling with a cohesive, AI-driven learning platform.
             </p>
         </div>
 
-        <!-- CardSwap Component -->
-        <div class="flex justify-center items-center py-12 h-[500px]">
-            <div id="card-swap-container" class="relative mx-auto w-full max-w-[500px]" style="height: 400px; perspective: 1200px;">
-                <div class="absolute inset-0" style="transform-style: preserve-3d;">
-                    
-                    <!-- Card 1 -->
-                    <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/10 bg-black shadow-2xl overflow-hidden group p-0 w-[400px] h-[300px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
-                        <div class="relative h-full w-full flex flex-col">
-                            <div class="flex-1 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop" alt="1-Click AI Importer" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 right-0 p-8 text-white z-10">
-                                <div class="mb-3 inline-flex p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-[#ef233c]">
-                                    <iconify-icon icon="lucide:download" class="w-5 h-5"></iconify-icon>
+        <!-- CardSwap & Sidebar Details Component -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 max-w-5xl mx-auto items-center mt-20 pt-10 px-4">
+            <!-- Sidebar Details (left side: 5 cols) -->
+            <div class="lg:col-span-5 flex flex-col gap-3 justify-center">
+                <div class="space-y-3">
+                    <button onclick="window.jumpToCard(0)" class="card-detail-item w-full flex items-center gap-4 p-4 rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.06] transition-all text-left group active-detail" data-index="0">
+                        <span class="text-xs font-bold text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors">01</span>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-zinc-200 text-sm group-hover:text-[var(--primary-hex)] transition-colors">1-Click Importer</h4>
+                            <p class="text-xs text-zinc-400 line-clamp-1 mt-0.5">Syllabus structure & YouTube importing</p>
+                        </div>
+                        <iconify-icon icon="lucide:download" class="w-4 h-4 text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors"></iconify-icon>
+                    </button>
+                    <button onclick="window.jumpToCard(1)" class="card-detail-item w-full flex items-center gap-4 p-4 rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.06] transition-all text-left group" data-index="1">
+                        <span class="text-xs font-bold text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors">02</span>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-zinc-200 text-sm group-hover:text-[var(--primary-hex)] transition-colors">Personal AI Tutor</h4>
+                            <p class="text-xs text-zinc-400 line-clamp-1 mt-0.5">Concept summaries & quizzes</p>
+                        </div>
+                        <iconify-icon icon="lucide:bot" class="w-4 h-4 text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors"></iconify-icon>
+                    </button>
+                    <button onclick="window.jumpToCard(2)" class="card-detail-item w-full flex items-center gap-4 p-4 rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.06] transition-all text-left group" data-index="2">
+                        <span class="text-xs font-bold text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors">03</span>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-zinc-200 text-sm group-hover:text-[var(--primary-hex)] transition-colors">Absolute Zen Mode</h4>
+                            <p class="text-xs text-zinc-400 line-clamp-1 mt-0.5">Algorithm-free deep work space</p>
+                        </div>
+                        <iconify-icon icon="lucide:eye-off" class="w-4 h-4 text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors"></iconify-icon>
+                    </button>
+                    <button onclick="window.jumpToCard(3)" class="card-detail-item w-full flex items-center gap-4 p-4 rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.06] transition-all text-left group" data-index="3">
+                        <span class="text-xs font-bold text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors">04</span>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-zinc-200 text-sm group-hover:text-[var(--primary-hex)] transition-colors">Smart Streaks</h4>
+                            <p class="text-xs text-zinc-400 line-clamp-1 mt-0.5">Gamified daily consistency tracking</p>
+                        </div>
+                        <iconify-icon icon="lucide:flame" class="w-4 h-4 text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors"></iconify-icon>
+                    </button>
+                    <button onclick="window.jumpToCard(4)" class="card-detail-item w-full flex items-center gap-4 p-4 rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.06] transition-all text-left group" data-index="4">
+                        <span class="text-xs font-bold text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors">05</span>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-zinc-200 text-sm group-hover:text-[var(--primary-hex)] transition-colors">Deep Work Ecosystem</h4>
+                            <p class="text-xs text-zinc-400 line-clamp-1 mt-0.5">Timer widgets & frequencies</p>
+                        </div>
+                        <iconify-icon icon="lucide:timer" class="w-4 h-4 text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors"></iconify-icon>
+                    </button>
+                    <button onclick="window.jumpToCard(5)" class="card-detail-item w-full flex items-center gap-4 p-4 rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.06] transition-all text-left group" data-index="5">
+                        <span class="text-xs font-bold text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors">06</span>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-zinc-200 text-sm group-hover:text-[var(--primary-hex)] transition-colors">Spaced Repetition</h4>
+                            <p class="text-xs text-zinc-400 line-clamp-1 mt-0.5">Algorithmically scheduled reviews</p>
+                        </div>
+                        <iconify-icon icon="lucide:brain" class="w-4 h-4 text-zinc-550 group-hover:text-[var(--primary-hex)] transition-colors"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+
+            <!-- CardSwap Stack (right side: 7 cols) -->
+            <div class="lg:col-span-7 flex justify-center items-center h-[420px] relative">
+                <div id="card-swap-container" class="relative mx-auto w-full max-w-[420px]" style="height: 320px; perspective: 1200px;">
+                    <div class="absolute inset-0" style="transform-style: preserve-3d;">
+                        
+                        <!-- Card 1 -->
+                        <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/[0.06] bg-zinc-900/80 shadow-2xl overflow-hidden group p-0 w-[360px] h-[270px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
+                            <div class="relative h-full w-full flex flex-col">
+                                <span class="active-badge">Active Module</span>
+                                <div class="flex-1 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop" alt="1-Click AI Importer" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
                                 </div>
-                                <h3 class="text-2xl font-bold mb-2 font-manrope">1-Click AI Importer</h3>
-                                <p class="text-sm text-zinc-300 leading-relaxed max-w-[95%]">Paste any public YouTube playlist. Our engine instantly extracts metadata, maps lecture timings, and structures a syllabus.</p>
+                                <div class="absolute bottom-0 left-0 right-0 p-6 text-white z-10">
+                                    <div class="mb-2.5 inline-flex p-1.5 rounded-lg bg-[var(--primary-hex)]/10 border border-[var(--primary-hex)]/20 text-[var(--primary-hex)]">
+                                        <iconify-icon icon="lucide:download" class="w-4.5 h-4.5"></iconify-icon>
+                                    </div>
+                                    <h3 class="text-xl font-bold mb-1.5 font-manrope text-white">1-Click AI Importer</h3>
+                                    <p class="text-xs text-zinc-400 leading-relaxed max-w-[95%]">Paste any public YouTube playlist. Our engine instantly extracts metadata, maps lecture timings, and structures a syllabus.</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Card 2 -->
-                    <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/10 bg-black shadow-2xl overflow-hidden group p-0 w-[400px] h-[300px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
-                        <div class="relative h-full w-full flex flex-col">
-                            <div class="flex-1 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=800&auto=format&fit=crop" alt="Personal AI Tutor" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 right-0 p-8 text-white z-10">
-                                <div class="mb-3 inline-flex p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-blue-400">
-                                    <iconify-icon icon="lucide:bot" class="w-5 h-5"></iconify-icon>
+                        <!-- Card 2 -->
+                        <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/[0.06] bg-zinc-900/80 shadow-2xl overflow-hidden group p-0 w-[360px] h-[270px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
+                            <div class="relative h-full w-full flex flex-col">
+                                <span class="active-badge">Active Module</span>
+                                <div class="flex-1 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=800&auto=format&fit=crop" alt="Personal AI Tutor" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
                                 </div>
-                                <h3 class="text-2xl font-bold mb-2 font-manrope">Personal AI Tutor</h3>
-                                <p class="text-sm text-zinc-300 leading-relaxed max-w-[95%]">Powered by Groq LLM. Generate instant textbook summaries, break down complex concepts, and test your knowledge.</p>
+                                <div class="absolute bottom-0 left-0 right-0 p-6 text-white z-10">
+                                    <div class="mb-2.5 inline-flex p-1.5 rounded-lg bg-[var(--primary-hex)]/10 border border-[var(--primary-hex)]/20 text-[var(--primary-hex)]">
+                                        <iconify-icon icon="lucide:bot" class="w-4.5 h-4.5"></iconify-icon>
+                                    </div>
+                                    <h3 class="text-xl font-bold mb-1.5 font-manrope text-white">Personal AI Tutor</h3>
+                                    <p class="text-xs text-zinc-400 leading-relaxed max-w-[95%]">Powered by Groq LLM. Generate summaries, break down complex concepts, and test your knowledge.</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Card 3 -->
-                    <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/10 bg-black shadow-2xl overflow-hidden group p-0 w-[400px] h-[300px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
-                        <div class="relative h-full w-full flex flex-col">
-                            <div class="flex-1 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop" alt="Absolute Zen Mode" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 right-0 p-8 text-white z-10">
-                                <div class="mb-3 inline-flex p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-emerald-400">
-                                    <iconify-icon icon="lucide:eye-off" class="w-5 h-5"></iconify-icon>
+                        <!-- Card 3 -->
+                        <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/[0.06] bg-zinc-900/80 shadow-2xl overflow-hidden group p-0 w-[360px] h-[270px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
+                            <div class="relative h-full w-full flex flex-col">
+                                <span class="active-badge">Active Module</span>
+                                <div class="flex-1 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop" alt="Absolute Zen Mode" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
                                 </div>
-                                <h3 class="text-2xl font-bold mb-2 font-manrope">Absolute Zen Mode</h3>
-                                <p class="text-sm text-zinc-300 leading-relaxed max-w-[95%]">A focused environment stripped of algorithms. No sidebars, no autoplaying rabbit holes—just you and the material.</p>
+                                <div class="absolute bottom-0 left-0 right-0 p-6 text-white z-10">
+                                    <div class="mb-2.5 inline-flex p-1.5 rounded-lg bg-[var(--primary-hex)]/10 border border-[var(--primary-hex)]/20 text-[var(--primary-hex)]">
+                                        <iconify-icon icon="lucide:eye-off" class="w-4.5 h-4.5"></iconify-icon>
+                                    </div>
+                                    <h3 class="text-xl font-bold mb-1.5 font-manrope text-white">Absolute Zen Mode</h3>
+                                    <p class="text-xs text-zinc-400 leading-relaxed max-w-[95%]">A focused environment stripped of algorithms. No sidebars, no autoplaying rabbit holes—just you and the material.</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Card 4 -->
-                    <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/10 bg-black shadow-2xl overflow-hidden group p-0 w-[400px] h-[300px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
-                        <div class="relative h-full w-full flex flex-col">
-                            <div class="flex-1 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=800&auto=format&fit=crop" alt="Smart Streaks" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 right-0 p-8 text-white z-10">
-                                <div class="mb-3 inline-flex p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-orange-400">
-                                    <iconify-icon icon="lucide:flame" class="w-5 h-5"></iconify-icon>
+                        <!-- Card 4 -->
+                        <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/[0.06] bg-zinc-900/80 shadow-2xl overflow-hidden group p-0 w-[360px] h-[270px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
+                            <div class="relative h-full w-full flex flex-col">
+                                <span class="active-badge">Active Module</span>
+                                <div class="flex-1 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=800&auto=format&fit=crop" alt="Smart Streaks" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
                                 </div>
-                                <h3 class="text-2xl font-bold mb-2 font-manrope">Smart Streaks</h3>
-                                <p class="text-sm text-zinc-300 leading-relaxed max-w-[95%]">Gamify your consistency. Visually track your daily study targets with GitHub-style contribution grids.</p>
+                                <div class="absolute bottom-0 left-0 right-0 p-6 text-white z-10">
+                                    <div class="mb-2.5 inline-flex p-1.5 rounded-lg bg-[var(--primary-hex)]/10 border border-[var(--primary-hex)]/20 text-[var(--primary-hex)]">
+                                        <iconify-icon icon="lucide:flame" class="w-4.5 h-4.5"></iconify-icon>
+                                    </div>
+                                    <h3 class="text-xl font-bold mb-1.5 font-manrope text-white">Smart Streaks</h3>
+                                    <p class="text-xs text-zinc-400 leading-relaxed max-w-[95%]">Gamify your consistency. Visually track your daily study targets with GitHub-style contribution grids.</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Card 5 -->
-                    <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/10 bg-black shadow-2xl overflow-hidden group p-0 w-[400px] h-[300px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
-                        <div class="relative h-full w-full flex flex-col">
-                            <div class="flex-1 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" alt="Deep Work Ecosystem" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 right-0 p-8 text-white z-10">
-                                <div class="mb-3 inline-flex p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-purple-400">
-                                    <iconify-icon icon="lucide:timer" class="w-5 h-5"></iconify-icon>
+                        <!-- Card 5 -->
+                        <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/[0.06] bg-zinc-900/80 shadow-2xl overflow-hidden group p-0 w-[360px] h-[270px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
+                            <div class="relative h-full w-full flex flex-col">
+                                <span class="active-badge">Active Module</span>
+                                <div class="flex-1 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" alt="Deep Work Ecosystem" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
                                 </div>
-                                <h3 class="text-2xl font-bold mb-2 font-manrope">Deep Work Ecosystem</h3>
-                                <p class="text-sm text-zinc-300 leading-relaxed max-w-[95%]">Log productive sessions with integrated Pomodoro timers, layered with ambient focus frequencies, and rain soundscapes.</p>
+                                <div class="absolute bottom-0 left-0 right-0 p-6 text-white z-10">
+                                    <div class="mb-2.5 inline-flex p-1.5 rounded-lg bg-[var(--primary-hex)]/10 border border-[var(--primary-hex)]/20 text-[var(--primary-hex)]">
+                                        <iconify-icon icon="lucide:timer" class="w-4.5 h-4.5"></iconify-icon>
+                                    </div>
+                                    <h3 class="text-xl font-bold mb-1.5 font-manrope text-white">Deep Work Ecosystem</h3>
+                                    <p class="text-xs text-zinc-400 leading-relaxed max-w-[95%]">Log sessions with integrated Pomodoro timers, layered with ambient focus frequencies.</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Card 6 -->
-                    <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/10 bg-black shadow-2xl overflow-hidden group p-0 w-[400px] h-[300px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
-                        <div class="relative h-full w-full flex flex-col">
-                            <div class="flex-1 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop" alt="Spaced Repetition" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 right-0 p-8 text-white z-10">
-                                <div class="mb-3 inline-flex p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-yellow-400">
-                                    <iconify-icon icon="lucide:brain" class="w-5 h-5"></iconify-icon>
+                        <!-- Card 6 -->
+                        <div class="card-swap-item absolute top-1/2 left-1/2 rounded-xl border border-white/[0.06] bg-zinc-900/80 shadow-2xl overflow-hidden group p-0 w-[360px] h-[270px]" style="transform-style: preserve-3d; will-change: transform; backface-visibility: hidden;">
+                            <div class="relative h-full w-full flex flex-col">
+                                <span class="active-badge">Active Module</span>
+                                <div class="flex-1 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop" alt="Spaced Repetition" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
                                 </div>
-                                <h3 class="text-2xl font-bold mb-2 font-manrope">Spaced Repetition</h3>
-                                <p class="text-sm text-zinc-300 leading-relaxed max-w-[95%]">Algorithmically scheduled reviews to ensure long-term retention. Never forget what you've learned again.</p>
+                                <div class="absolute bottom-0 left-0 right-0 p-6 text-white z-10">
+                                    <div class="mb-2.5 inline-flex p-1.5 rounded-lg bg-[var(--primary-hex)]/10 border border-[var(--primary-hex)]/20 text-[var(--primary-hex)]">
+                                        <iconify-icon icon="lucide:brain" class="w-4.5 h-4.5"></iconify-icon>
+                                    </div>
+                                    <h3 class="text-xl font-bold mb-1.5 font-manrope text-white">Spaced Repetition</h3>
+                                    <p class="text-xs text-zinc-400 leading-relaxed max-w-[95%]">Algorithmically scheduled reviews to ensure long-term retention. Never forget what you've learned again.</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
             </div>
         </div>
@@ -219,24 +432,24 @@
 </section>
 
 <!-- Metrics Ticker -->
-<section class="py-10 bg-black border-y border-white/5 overflow-hidden">
-    <div class="flex whitespace-nowrap animate-[shimmer_20s_linear_infinite]"
+<section class="py-10 bg-white/[0.01] border-y border-white/[0.06] backdrop-blur-sm overflow-hidden">
+    <div class="flex whitespace-nowrap"
         style="animation: scroll-left 30s linear infinite;">
         <!-- Ticker Items -->
         {% for i in '12' %}
         <div class="flex items-center gap-12 px-6">
-            <div class="flex items-center gap-3"><span class="text-zinc-600 font-bold tracking-widest text-sm">USERS
-                    ACTIVATED</span><span class="text-2xl font-black font-manrope text-white">142.8K</span></div>
-            <div class="flex items-center gap-3"><span class="text-zinc-600 font-bold tracking-widest text-sm">STUDY
-                    TIME</span><span class="text-2xl font-black font-manrope text-[#ef233c]">12.4M MINS</span></div>
+            <div class="flex items-center gap-3"><span class="text-zinc-500 font-bold tracking-widest text-sm">USERS
+                    ACTIVATED</span><span class="text-2xl font-black font-manrope text-white"><span class="count-up-number" data-target="142.8" data-decimal="true" data-suffix="K">0</span></span></div>
+            <div class="flex items-center gap-3"><span class="text-zinc-500 font-bold tracking-widest text-sm">STUDY
+                    TIME</span><span class="text-2xl font-black font-manrope text-[var(--primary-hex)]"><span class="count-up-number" data-target="12.4" data-decimal="true" data-suffix="M">0</span> MINS</span></div>
             <div class="flex items-center gap-3"><span
-                    class="text-zinc-600 font-bold tracking-widest text-sm">CERTIFICATES ISSUED</span><span
-                    class="text-2xl font-black font-manrope text-white">48.9K</span></div>
-            <div class="flex items-center gap-3"><span class="text-zinc-600 font-bold tracking-widest text-sm">AI
-                    QUERIES PROCESSED</span><span class="text-2xl font-black font-manrope text-[#ef233c]">8.2M</span>
+                    class="text-zinc-500 font-bold tracking-widest text-sm">CERTIFICATES ISSUED</span><span
+                    class="text-2xl font-black font-manrope text-white"><span class="count-up-number" data-target="48.9" data-decimal="true" data-suffix="K">0</span></span></div>
+            <div class="flex items-center gap-3"><span class="text-zinc-500 font-bold tracking-widest text-sm">AI
+                    QUERIES PROCESSED</span><span class="text-2xl font-black font-manrope text-[var(--primary-hex)]"><span class="count-up-number" data-target="8.2" data-decimal="true" data-suffix="M">0</span></span>
             </div>
-            <div class="flex items-center gap-3"><span class="text-zinc-600 font-bold tracking-widest text-sm">RETENTION
-                    RATE</span><span class="text-2xl font-black font-manrope text-white">94.2%</span></div>
+            <div class="flex items-center gap-3"><span class="text-zinc-500 font-bold tracking-widest text-sm">RETENTION
+                    RATE</span><span class="text-2xl font-black font-manrope text-white"><span class="count-up-number" data-target="94.2" data-decimal="true" data-suffix="%">0</span></span></div>
         </div>
         {% endfor %}
     </div>
@@ -254,7 +467,7 @@
 </section>
 
 <!-- Code Integration Block -->
-<section class="py-32 px-6 bg-black">
+<section class="py-32 px-6 bg-white/[0.01] border-y border-white/[0.06]">
     <div class="max-w-4xl mx-auto">
         <div class="text-center mb-12 animate-fade-up">
             <h2 class="text-3xl md:text-5xl font-semibold text-white tracking-tight font-manrope mb-4">
@@ -263,144 +476,188 @@
             <p class="text-zinc-400">Programmatically import and manage curriculums.</p>
         </div>
 
-        <div class="rounded-xl overflow-hidden border border-zinc-800 bg-[#0d0d0d] shadow-2xl animate-fade-up">
-            <div class="flex items-center px-4 py-3 bg-zinc-900 border-b border-zinc-800">
+        <div class="rounded-xl overflow-hidden border border-white/[0.08] bg-zinc-950 shadow-2xl animate-fade-up">
+            <div class="flex items-center px-4 py-3 bg-[#0e0e11] border-b border-white/[0.06]">
                 <div class="flex gap-2">
                     <div class="w-3 h-3 rounded-full bg-red-500"></div>
                     <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
                     <div class="w-3 h-3 rounded-full bg-green-500"></div>
                 </div>
-                <div class="ml-4 text-xs font-mono text-zinc-500">import_course.py</div>
+                <div class="ml-4 text-xs font-mono text-zinc-400">import_course.py</div>
             </div>
             <div class="p-6 overflow-x-auto">
-                <pre><code class="text-sm font-mono leading-relaxed"><span class="text-[#ef233c]">import</span> os
-<span class="text-[#ef233c]">from</span> courses.utils <span class="text-[#ef233c]">import</span> fetch_youtube_playlist
+                <pre><code class="text-sm font-mono leading-relaxed"><span class="text-[var(--primary-hex)]">import</span> os
+<span class="text-[var(--primary-hex)]">from</span> courses.utils <span class="text-[var(--primary-hex)]">import</span> fetch_youtube_playlist
 
-<span class="text-zinc-600"># Initialize EduTech AI Core Parser Engine</span>
-<span class="text-blue-400">playlist_id</span> = <span class="text-green-400">"PL4Gr5tOAPttLoyQD_tWZ8c_s6nB-4jYjU"</span>
-<span class="text-blue-400">course_data</span> = fetch_youtube_playlist(<span class="text-blue-400">playlist_id</span>)
+<span class="text-zinc-500"># Initialize EduTech AI Core Parser Engine</span>
+<span class="text-sky-300">playlist_id</span> = <span class="text-green-300">"PL4Gr5tOAPttLoyQD_tWZ8c_s6nB-4jYjU"</span>
+<span class="text-sky-300">course_data</span> = fetch_youtube_playlist(<span class="text-sky-300">playlist_id</span>)
 
-<span class="text-purple-400">print</span>(<span class="text-green-400">f"Importing: {course_data['title']}"</span>)
-<span class="text-purple-400">print</span>(<span class="text-green-400">f"Extracted {len(course_data['videos'])} lessons successfully!"</span>)</code></pre>
+<span class="text-purple-300">print</span>(<span class="text-green-300">f"Importing: {course_data['title']}"</span>)
+<span class="text-purple-300">print</span>(<span class="text-green-300">f"Extracted {len(course_data['videos'])} lessons successfully!"</span>)</code></pre>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Pricing -->
-<section class="py-32 px-6 bg-black relative border-t border-white/5">
+<section class="py-32 px-6 bg-transparent relative border-t border-white/[0.06]">
     <div class="max-w-7xl mx-auto">
         <div class="text-center mb-20">
             <h2 class="text-4xl md:text-5xl font-semibold text-white font-manrope mb-4">Simple, Transparent Pricing</h2>
             <p class="text-zinc-400">Start for free, scale as you learn.</p>
-        </div>        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
             <!-- Starter -->
             <div
-                class="p-8 border border-white/[0.06] bg-[#070707]/60 backdrop-blur-md hover:border-[#ef233c]/40 hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)] transition-all duration-300 rounded-2xl flex flex-col group">
-                <h3 class="text-xl font-bold font-manrope mb-2 text-white group-hover:text-[#ef233c] transition-colors">Free Plan</h3>
-                <p class="text-zinc-500 text-sm mb-8 h-10">Get started on your learning journey.</p>
+                class="p-8 border border-white/[0.06] bg-white/[0.02] backdrop-blur-md hover:border-[var(--primary-hex)]/40 hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.1)] transition-all duration-300 rounded-2xl flex flex-col group">
+                <h3 class="text-xl font-bold font-manrope mb-2 text-white group-hover:text-[var(--primary-hex)] transition-colors">Free Plan</h3>
+                <p class="text-zinc-400 text-sm mb-8 h-10">Get started on your learning journey.</p>
                 <div class="mb-8 flex items-baseline gap-1">
-                    <span class="text-zinc-500 font-semibold">₹</span>
-                    <span class="text-5xl font-black tracking-tight text-white">0</span>
-                    <span class="text-zinc-500 text-sm">/mo</span>
+                    <span class="text-zinc-550 font-semibold font-manrope">₹</span>
+                    <span class="text-5xl font-black tracking-tight text-white"><span class="count-up-number" data-target="0">0</span></span>
+                    <span class="text-zinc-550 text-sm">/mo</span>
                 </div>
                 <ul class="space-y-4 mb-8 flex-1">
                     <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> Up to 3 course playlists
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/10 p-1 rounded-full"></iconify-icon> Up to 3 course playlists
                     </li>
                     <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> Plain text lecture notes
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/10 p-1 rounded-full"></iconify-icon> Plain text lecture notes
                     </li>
                     <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> Basic video progress tracking
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/10 p-1 rounded-full"></iconify-icon> Basic video progress tracking
                     </li>
                 </ul>
                 <a href="{% url 'register' %}"
-                    class="w-full py-3.5 px-4 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-center duration-300">Get
+                    class="w-full py-3.5 px-4 bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/[0.08] rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-center duration-300">Get
                     Started</a>
             </div>
 
             <!-- Pro -->
             <div
-                class="relative p-8 border-2 border-[#ef233c] bg-[#0c0c0c]/85 shadow-[0_0_50px_rgba(239,35,60,0.15)] rounded-2xl flex flex-col scale-105 z-10 hover:shadow-[0_0_60px_rgba(239,35,60,0.25)] transition-all duration-300">
+                class="relative p-8 border-2 border-[var(--primary-hex)] bg-zinc-950/60 backdrop-blur-md shadow-[0_8px_30px_rgba(var(--primary-rgb),0.15)] rounded-2xl flex flex-col scale-105 z-10 hover:shadow-[0_12px_40px_rgba(var(--primary-rgb),0.25)] transition-all duration-300">
                 <div
-                    class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#ef233c] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(239,35,60,0.5)]">
+                    class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[var(--primary-hex)] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-[0_4px_15px_rgba(var(--primary-rgb),0.3)]">
                     Most Popular</div>
-                <h3 class="text-xl font-bold font-manrope mb-2 text-[#ef233c]">Pro Plan</h3>
-                <p class="text-zinc-400 text-sm mb-8 h-10">Accelerate your study workflow.</p>
+                <h3 class="text-xl font-bold font-manrope mb-2 text-[var(--primary-hex)]">Pro Plan</h3>
+                <p class="text-zinc-300 text-sm mb-8 h-10">Accelerate your study workflow.</p>
                 <div class="mb-8 flex items-baseline gap-1">
-                    <span class="text-zinc-500 font-semibold">₹</span>
-                    <span class="text-5xl font-black tracking-tight text-white">99</span>
-                    <span class="text-zinc-500 text-sm">/mo</span>
+                    <span class="text-zinc-400 font-semibold font-manrope">₹</span>
+                    <span class="text-5xl font-black tracking-tight text-white"><span class="count-up-number" data-target="99">0</span></span>
+                    <span class="text-zinc-550 text-sm">/mo</span>
                 </div>
                 <ul class="space-y-4 mb-8 flex-1">
-                    <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> Up to 20 course playlists
+                    <li class="flex items-center gap-3 text-sm text-zinc-200">
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/15 p-1 rounded-full"></iconify-icon> Up to 20 course playlists
                     </li>
-                    <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> AI-powered conceptual quizzes
+                    <li class="flex items-center gap-3 text-sm text-zinc-200">
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/15 p-1 rounded-full"></iconify-icon> AI-powered conceptual quizzes
                     </li>
-                    <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> AI Dynamic study scheduler
+                    <li class="flex items-center gap-3 text-sm text-zinc-200">
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/15 p-1 rounded-full"></iconify-icon> AI Dynamic study scheduler
                     </li>
-                    <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> Advanced study streak analytics
+                    <li class="flex items-center gap-3 text-sm text-zinc-200">
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/15 p-1 rounded-full"></iconify-icon> Advanced study streak analytics
                     </li>
                 </ul>
                 <a href="{% url 'pricing' %}"
-                    class="w-full py-3.5 px-4 bg-[#ef233c] hover:bg-red-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-center shadow-[0_4px_20px_rgba(239,35,60,0.3)] duration-300">Go
+                    class="w-full py-3.5 px-4 bg-[var(--primary-hex)] hover:bg-[var(--primary-dark)] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-center shadow-[0_4px_20px_rgba(var(--primary-rgb),0.25)] duration-300">Go
                     Pro</a>
             </div>
 
             <!-- Team -->
             <div
-                class="p-8 border border-white/[0.06] bg-[#070707]/60 backdrop-blur-md hover:border-[#ef233c]/40 hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)] transition-all duration-300 rounded-2xl flex flex-col group">
-                <h3 class="text-xl font-bold font-manrope mb-2 text-white group-hover:text-[#ef233c] transition-colors">Ultra Plan</h3>
-                <p class="text-zinc-500 text-sm mb-8 h-10">Unlimited learning with an AI Coach.</p>
+                class="p-8 border border-white/[0.06] bg-white/[0.02] backdrop-blur-md hover:border-[var(--primary-hex)]/40 hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.1)] transition-all duration-300 rounded-2xl flex flex-col group">
+                <h3 class="text-xl font-bold font-manrope mb-2 text-white group-hover:text-[var(--primary-hex)] transition-colors">Ultra Plan</h3>
+                <p class="text-zinc-400 text-sm mb-8 h-10">Unlimited learning with an AI Coach.</p>
                 <div class="mb-8 flex items-baseline gap-1">
-                    <span class="text-zinc-500 font-semibold">₹</span>
-                    <span class="text-5xl font-black tracking-tight text-white">149</span>
-                    <span class="text-zinc-500 text-sm">/mo</span>
+                    <span class="text-zinc-550 font-semibold font-manrope">₹</span>
+                    <span class="text-5xl font-black tracking-tight text-white"><span class="count-up-number" data-target="149">0</span></span>
+                    <span class="text-zinc-550 text-sm">/mo</span>
                 </div>
                 <ul class="space-y-4 mb-8 flex-1">
                     <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> <strong>Unlimited</strong> course playlists
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/10 p-1 rounded-full"></iconify-icon> <strong>Unlimited</strong> course playlists
                     </li>
                     <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> AI Tutor Chatbot
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/10 p-1 rounded-full"></iconify-icon> AI Tutor Chatbot
                     </li>
                     <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> Spaced Repetition Flashcards
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/10 p-1 rounded-full"></iconify-icon> Spaced Repetition Flashcards
                     </li>
                     <li class="flex items-center gap-3 text-sm text-zinc-300">
-                        <iconify-icon icon="lucide:check" class="text-[#ef233c] bg-[#ef233c]/10 p-1 rounded-full"></iconify-icon> Priority 24/7 technical support
+                        <iconify-icon icon="lucide:check" class="text-[var(--primary-hex)] bg-[var(--primary-hex)]/10 p-1 rounded-full"></iconify-icon> Priority 24/7 technical support
                     </li>
                 </ul>
                 <a href="{% url 'pricing' %}"
-                    class="w-full py-3.5 px-4 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-center duration-300">Upgrade
+                    class="w-full py-3.5 px-4 bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/[0.08] rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-center duration-300">Upgrade
                     to Ultra</a>
             </div>
-        </div>  </div>
+        </div>
     </div>
 </section>
 
 <!-- CTA Waitlist -->
-<section class="py-32 px-6 text-center bg-zinc-950/40">
+<section class="py-32 px-6 text-center bg-transparent border-t border-white/[0.06]">
     <div class="max-w-3xl mx-auto">
-        <h2 class="text-5xl md:text-7xl font-bold font-manrope mb-8 tracking-tighter">Ready to <span
-                class="text-[#ef233c]">Learn?</span></h2>
+        <h2 class="text-5xl md:text-7xl font-bold font-manrope mb-8 tracking-tighter text-white">Ready to <span
+                class="text-[var(--primary-hex)]">Learn?</span></h2>
         <p class="text-xl text-zinc-400 mb-12">Start organizing your knowledge today and experience true deep work.</p>
 
         <form class="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
             <input type="email" placeholder="Enter your email"
-                class="flex-1 bg-white/5 border border-white/10 rounded-full px-6 py-4 text-white focus:outline-none focus:border-[#ef233c] transition-all"
+                class="flex-1 bg-white/[0.02] border border-white/[0.08] rounded-full px-6 py-4 text-white placeholder-zinc-500 focus:outline-none focus:border-[var(--primary-hex)] focus:ring-1 focus:ring-[var(--primary-hex)] transition-all bg-white/[0.02]"
                 required>
             <button type="submit"
-                class="bg-[#ef233c] hover:bg-red-700 text-white font-bold rounded-full px-8 py-4 transition-all whitespace-nowrap">Join
+                class="bg-[var(--primary-hex)] hover:bg-[var(--primary-dark)] text-white font-bold rounded-full px-8 py-4 transition-all whitespace-nowrap shadow-[0_4px_15px_rgba(var(--primary-rgb),0.2)]">Join
                 Now</button>
         </form>
     </div>
 </section>
 
+<script>
+    window.onCardActive = function(index) {
+        document.querySelectorAll('.card-detail-item').forEach(btn => {
+            btn.classList.remove('active-detail');
+        });
+        const activeBtn = document.querySelector(`.card-detail-item[data-index="${index}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active-detail');
+        }
+    };
+    
+    window.jumpToCard = function(index) {
+        if (window.cardSwapInstance) {
+            window.cardSwapInstance.jumpTo(index);
+        }
+    };
 
+    // Initialize WebGL LightRays on DOM Load
+    document.addEventListener('DOMContentLoaded', () => {
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-hex').trim() || '#2563eb';
+        
+        if (typeof window.LightRays !== 'undefined') {
+            new window.LightRays('#hero-lightrays', {
+                raysOrigin: 'top-center',
+                raysColor: primaryColor,
+                raysSpeed: 1.2,
+                lightSpread: 1.0,
+                rayLength: 1.8,
+                followMouse: true,
+                mouseInfluence: 0.25,
+                noiseAmount: 0.02,
+                distortion: 0.06
+            });
+        }
+
+        if (typeof window.TubesBackground !== 'undefined') {
+            new window.TubesBackground('#hero-tubes', {
+                colors: [primaryColor, "#f967fb", "#6958d5"],
+                lightsColors: [primaryColor, "#fe8a2e", "#ff008a", "#60aed5"],
+                enableClickInteraction: true
+            });
+        }
+    });
+</script>
 {% endblock %}

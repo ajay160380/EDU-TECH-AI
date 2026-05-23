@@ -190,9 +190,8 @@
                                 <button type="button" onclick="setTheme('green')" class="w-12 h-12 rounded-full bg-[#10b981] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#09090b] focus:ring-[#10b981] hover:scale-110 transition-transform theme-btn" data-theme-val="green" title="Emerald Green"></button>
                                 
                                 <button type="button" onclick="setTheme('purple')" class="w-12 h-12 rounded-full bg-[#8b5cf6] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#09090b] focus:ring-[#8b5cf6] hover:scale-110 transition-transform theme-btn" data-theme-val="purple" title="Royal Purple"></button>
-
-                                <button type="button" onclick="setTheme('yellow')" class="w-12 h-12 rounded-full bg-[#eab308] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#09090b] focus:ring-[#eab308] hover:scale-110 transition-transform theme-btn" data-theme-val="yellow" title="Cyber Yellow"></button>
                             </div>
+
                         </div>
 
                     </div>
@@ -579,6 +578,7 @@
             document.documentElement.setAttribute('data-theme-color', color);
             localStorage.setItem('eduThemeColor', color);
             showToast('Theme updated to ' + color);
+            updateSwatchHighlights(color);
             
             // Save to backend
             var fd = new FormData();
@@ -589,24 +589,58 @@
                 body: fd
             }).catch(console.error);
         };
+
+        function updateSwatchHighlights(activeColor) {
+            document.querySelectorAll('.theme-btn').forEach(function(btn) {
+                if (btn.getAttribute('data-theme-val') === activeColor) {
+                    btn.classList.remove('border-transparent');
+                    btn.classList.add('border-white', 'scale-110', 'ring-2', 'ring-white');
+                } else {
+                    btn.classList.add('border-transparent');
+                    btn.classList.remove('border-white', 'scale-110', 'ring-2', 'ring-white');
+                }
+            });
+        }
+
+        // Initialize highlights on load
+        document.addEventListener('DOMContentLoaded', function() {
+            var activeColor = document.documentElement.getAttribute('data-theme-color') || 'blue';
+            updateSwatchHighlights(activeColor);
+        });
     })();
 </script>
 {% endblock %}
 
 {% block extra_head %}
 <style>
+    :root {
+        --profile-bg: rgba(255, 255, 255, 0.7);
+        --profile-border: rgba(0, 0, 0, 0.06);
+        --profile-card-bg: rgba(255, 255, 255, 0.6);
+        --profile-card-border: rgba(0, 0, 0, 0.04);
+        --profile-card-hover-bg: rgba(255, 255, 255, 0.8);
+    }
+    [data-theme="dark"] {
+        --profile-bg: rgba(20, 20, 30, 0.6);
+        --profile-border: rgba(255, 255, 255, 0.08);
+        --profile-card-bg: rgba(255, 255, 255, 0.03);
+        --profile-card-border: rgba(255, 255, 255, 0.05);
+        --profile-card-hover-bg: rgba(255, 255, 255, 0.06);
+    }
+
     .glass-card-profile {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+        background: var(--profile-bg);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--profile-border);
         border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.03);
         transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .glass-card-profile:hover {
-        border-color: rgba(var(--primary-rgb), 0.25);
-        box-shadow: 0 12px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px rgba(var(--primary-rgb), 0.08);
+        border-color: rgba(37, 99, 235, 0.2);
+        box-shadow: 0 12px 40px -15px rgba(0, 0, 0, 0.05), 0 0 25px rgba(37, 99, 235, 0.05);
     }
 
     .profile-field-card {
@@ -615,20 +649,20 @@
         justify-content: space-between;
         gap: 1rem;
         padding: 1rem 1.25rem;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.005));
+        background: var(--profile-card-bg);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--profile-card-border);
         border-radius: 16px;
         cursor: pointer;
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .profile-field-card:hover {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
-        border-color: rgba(var(--primary-rgb), 0.25);
+        background: var(--profile-card-hover-bg);
+        border-color: rgba(37, 99, 235, 0.2);
         transform: translateY(-1px);
-        box-shadow: 0 8px 25px -10px rgba(0, 0, 0, 0.6), 0 0 15px rgba(var(--primary-rgb), 0.06);
+        box-shadow: 0 8px 25px -10px rgba(0, 0, 0, 0.04), 0 0 15px rgba(37, 99, 235, 0.05);
     }
 
     .profile-section.hidden {
@@ -657,6 +691,92 @@
 
     .avatar-upload-wrapper {
         cursor: pointer;
+    }
+
+    /* Light Theme Styling Overrides */
+    [data-theme="light"] .profile-section h2, [data-theme="light"] .profile-section h3 {
+        color: #0f172a !important;
+    }
+
+    [data-theme="light"] .text-white {
+        color: #0f172a !important;
+    }
+    
+    [data-theme="light"] .text-zinc-400 {
+        color: #475569 !important;
+    }
+    
+    [data-theme="light"] .text-zinc-500 {
+        color: #64748b !important;
+    }
+
+    [data-theme="light"] .border-white\/\[0\.10\], [data-theme="light"] .border-white\/\[0\.12\], [data-theme="light"] .border-white\/\[0\.06\], [data-theme="light"] .border-white\/\[0\.15\] {
+        border-color: rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* Modal / Popup styling */
+    [data-theme="light"] .fixed.inset-0.bg-black\/80 {
+        background-color: rgba(15, 23, 42, 0.3) !important;
+        backdrop-filter: blur(8px) !important;
+    }
+
+    [data-theme="light"] .bg-black\/40 {
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        color: #0f172a !important;
+        border-color: rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    [data-theme="light"] .bg-black\/40::placeholder {
+        color: #94a3b8 !important;
+    }
+
+    /* Toast overlay background */
+    [data-theme="light"] .bg-zinc-900\/90 {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border-color: rgba(0, 0, 0, 0.08) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    /* Theme Switcher Pill Selectors — Light Mode */
+    [data-theme="light"] .dynamic-border-bg {
+        background-color: rgba(0, 0, 0, 0.04) !important;
+        border-color: rgba(0, 0, 0, 0.06) !important;
+    }
+    [data-theme="light"] .dynamic-border {
+        border-color: rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* Dynamic classes updated by JS */
+    .profile-nav-btn {
+        transition: all 0.2s ease-in-out;
+    }
+
+    [data-theme="light"] .profile-nav-btn.text-white {
+        color: #2563eb !important;
+        background-color: rgba(37, 99, 235, 0.08) !important;
+        border-color: rgba(37, 99, 235, 0.15) !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.04) !important;
+    }
+
+    [data-theme="light"] .profile-nav-btn.text-zinc-400 {
+        color: #475569 !important;
+        background-color: transparent !important;
+        border-color: transparent !important;
+    }
+
+    [data-theme="light"] .profile-nav-btn.text-zinc-400:hover {
+        color: #2563eb !important;
+        background-color: rgba(37, 99, 235, 0.04) !important;
+    }
+
+    /* User photo glow shadow */
+    .avatar-upload-wrapper .rounded-full {
+        box-shadow: 0 0 20px rgba(37, 99, 235, 0.1) !important;
+    }
+    
+    .avatar-upload-wrapper:hover .rounded-full {
+        box-shadow: 0 0 30px rgba(37, 99, 235, 0.2) !important;
+        border-color: rgba(37, 99, 235, 0.3) !important;
     }
 </style>
 {% endblock %}

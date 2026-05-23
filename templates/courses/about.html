@@ -3,11 +3,18 @@
 
 {% block title %}EduTech AI — Our Mission: Reclaiming Focus{% endblock %}
 
+{% block extra_head %}
+{% endblock %}
+
 {% block content %}
 
 <!-- Hero Section -->
-<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6">
-    <div class="text-center max-w-4xl mx-auto">
+<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6 relative overflow-hidden" id="about-lightrays-container">
+    <!-- WebGL Atmospheric LightRays -->
+    <div id="about-lightrays" class="absolute inset-0 z-0 pointer-events-none" style="opacity: 0.45;"></div>
+    <!-- WebGL Neon Tubes 3D Cursor -->
+    <canvas id="about-tubes" class="absolute inset-0 w-full h-full block z-[1] pointer-events-none" style="opacity: 0.8; touch-action: none;"></canvas>
+    <div class="text-center max-w-4xl mx-auto relative z-10">
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up"
             style="animation-delay: 0.1s;">
             <span class="relative flex h-2 w-2">
@@ -47,7 +54,7 @@
                         class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(239,35,60,0.15),transparent_70%)]">
                     </div>
                     <div class="relative text-center">
-                        <div class="text-8xl font-black text-[#991b1b] mb-4 font-manrope">67%</div>
+                        <div class="text-8xl font-black text-[#991b1b] mb-4 font-manrope"><span class="count-up-number" data-target="67">0</span>%</div>
                         <p class="text-zinc-400 text-sm leading-relaxed max-w-xs mx-auto">
                             Of students report significant focus degradation when learning through traditional
                             social-media platforms
@@ -576,17 +583,17 @@
             class="rounded-3xl bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border border-primary/10 backdrop-blur-sm p-10 md:p-14">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div class="animate-fade-up" style="animation-delay: 0.2s;">
-                    <div class="text-4xl md:text-5xl font-black text-white font-manrope mb-2">100<span
+                    <div class="text-4xl md:text-5xl font-black text-white font-manrope mb-2"><span class="count-up-number" data-target="100">0</span><span
                             class="text-primary">%</span></div>
                     <p class="text-zinc-400 text-sm">Distraction-Free Environment</p>
                 </div>
                 <div class="animate-fade-up" style="animation-delay: 0.35s;">
-                    <div class="text-4xl md:text-5xl font-black text-white font-manrope mb-2">3<span
+                    <div class="text-4xl md:text-5xl font-black text-white font-manrope mb-2"><span class="count-up-number" data-target="3">0</span><span
                             class="text-primary">x</span></div>
                     <p class="text-zinc-400 text-sm">Better Retention vs. Raw YouTube</p>
                 </div>
                 <div class="animate-fade-up" style="animation-delay: 0.5s;">
-                    <div class="text-4xl md:text-5xl font-black text-white font-manrope mb-2">24<span
+                    <div class="text-4xl md:text-5xl font-black text-white font-manrope mb-2"><span class="count-up-number" data-target="24">0</span><span
                             class="text-primary">/7</span></div>
                     <p class="text-zinc-400 text-sm">AI Study Buddy Availability</p>
                 </div>
@@ -636,4 +643,35 @@
     </div>
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize WebGL Background Elements on DOM Load
+    document.addEventListener('DOMContentLoaded', () => {
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-hex').trim() || '#2563eb';
+
+        if (typeof window.LightRays !== 'undefined') {
+            new window.LightRays('#about-lightrays', {
+                raysOrigin: 'top-center',
+                raysColor: primaryColor,
+                raysSpeed: 1.0,
+                lightSpread: 1.1,
+                rayLength: 2.0,
+                followMouse: true,
+                mouseInfluence: 0.2,
+                noiseAmount: 0.02,
+                distortion: 0.05
+            });
+        }
+
+        if (typeof window.TubesBackground !== 'undefined') {
+            new window.TubesBackground('#about-tubes', {
+                colors: [primaryColor, "#f967fb", "#6958d5"],
+                lightsColors: [primaryColor, "#fe8a2e", "#ff008a", "#60aed5"],
+                enableClickInteraction: true
+            });
+        }
+    });
+</script>
 {% endblock %}

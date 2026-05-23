@@ -5,21 +5,66 @@
 
 {% block content %}
 <style>
+    #register-view-wrapper {
+        position: relative; min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center; overflow: hidden; background: transparent;
+    }
+    #register-form-card {
+        position: relative; z-index: 1; padding: 3rem 2.5rem; max-width: 440px; width: 100%; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); background: rgba(15, 23, 42, 0.65) !important; border: 1px solid rgba(255,255,255,0.08) !important; backdrop-filter: blur(24px) !important; -webkit-backdrop-filter: blur(24px) !important;
+    }
+    #register-form-header h2 {
+        color: #ffffff !important;
+        font-size: 1.8rem;
+        font-family: 'Outfit';
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+    #register-form-header p {
+        color: #94a3b8 !important;
+        font-size: 0.9rem;
+    }
+    .form-label {
+        color: #cbd5e1 !important;
+        display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+    }
     .form-input {
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        background: rgba(255,255,255,0.03) !important;
+        border: 1px solid rgba(255,255,255,0.08) !important;
+        color: #f4f4f5 !important;
+        width: 100%; padding: 0.85rem 1rem; border-radius: 12px; font-family: 'Inter';
     }
     .form-input:focus {
-        border-color: #ef233c !important;
-        box-shadow: 0 0 15px rgba(239, 35, 60, 0.25) !important;
-        background: rgba(255, 255, 255, 0.05) !important;
+        border-color: var(--primary-hex) !important;
+        box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.2) !important;
+        background: rgba(255,255,255,0.05) !important;
         outline: none !important;
+    }
+    #register-form-footer {
+        color: #94a3b8 !important;
+        text-align: center; margin-top: 2rem; font-size: 0.85rem;
+    }
+    #register-form-footer a {
+        color: var(--primary-hex) !important;
+        font-weight: 600;
+        transition: color 0.3s;
+    }
+    #register-form-footer a:hover {
+        text-decoration: underline;
+    }
+    .form-group {
+        margin-bottom: 1.25rem;
     }
 </style>
 <div class="auth-wrapper" id="register-view-wrapper">
+    <!-- WebGL Atmospheric LightRays -->
+    <div id="register-lightrays" class="absolute inset-0 z-0 pointer-events-none" style="opacity: 0.4;"></div>
+    <!-- WebGL Neon Tubes 3D Cursor -->
+    <canvas id="register-tubes" class="absolute inset-0 w-full h-full block z-[1] pointer-events-none" style="opacity: 0.8; touch-action: none;"></canvas>
     <div class="glass-card auth-card" id="register-form-card">
 
         <header class="auth-header" id="register-form-header" style="text-align: center; margin-bottom: 2rem;">
-            <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.25rem; box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.4); overflow: hidden;">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.25rem; box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.15); overflow: hidden;">
                 <img src="{% static 'images/logo_e3.png' %}" alt="EduTech AI Logo" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <h2>Join EduTech AI</h2>
@@ -65,4 +110,35 @@
 
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize WebGL Background Elements on DOM Load
+    document.addEventListener('DOMContentLoaded', () => {
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-hex').trim() || '#2563eb';
+
+        if (typeof window.LightRays !== 'undefined') {
+            new window.LightRays('#register-lightrays', {
+                raysOrigin: 'top-right',
+                raysColor: primaryColor,
+                raysSpeed: 0.8,
+                lightSpread: 1.2,
+                rayLength: 2.2,
+                followMouse: true,
+                mouseInfluence: 0.15,
+                noiseAmount: 0.03,
+                distortion: 0.05
+            });
+        }
+
+        if (typeof window.TubesBackground !== 'undefined') {
+            new window.TubesBackground('#register-tubes', {
+                colors: [primaryColor, "#f967fb", "#6958d5"],
+                lightsColors: [primaryColor, "#fe8a2e", "#ff008a", "#60aed5"],
+                enableClickInteraction: true
+            });
+        }
+    });
+</script>
 {% endblock %}
