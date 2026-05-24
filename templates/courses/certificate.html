@@ -450,17 +450,18 @@
 <div class="cert-page-wrapper">
 
     <!-- Action Control Bar -->
-    <div class="cert-actions" style="width: 100%; max-width: 1100px; display: flex; justify-content: space-between; align-items: center;">
+    <div class="cert-actions"
+        style="width: 100%; max-width: 1100px; display: flex; justify-content: space-between; align-items: center;">
         {% if is_public_view %}
-            <a href="{% url 'home' %}" class="btn btn-secondary"
-                style="border-radius: 50px; font-weight: 600; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; text-decoration: none !important;">
-                ← Back to Home
-            </a>
+        <a href="{% url 'home' %}" class="btn btn-secondary"
+            style="border-radius: 50px; font-weight: 600; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; text-decoration: none !important;">
+            ← Back to Home
+        </a>
         {% else %}
-            <a href="{% url 'learn_view' course.id %}" class="btn btn-secondary"
-                style="border-radius: 50px; font-weight: 600; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; text-decoration: none !important;">
-                ← Back to Classroom
-            </a>
+        <a href="{% url 'learn_view' course.id %}" class="btn btn-secondary"
+            style="border-radius: 50px; font-weight: 600; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; text-decoration: none !important;">
+            ← Back to Classroom
+        </a>
         {% endif %}
         <div style="display: flex; gap: 12px; align-items: center;">
             <button onclick="copyShareableLink()" class="btn btn-secondary"
@@ -476,21 +477,27 @@
 
     {% if is_public_view %}
     <!-- Public Verification Banner & Sign Up CTA -->
-    <div class="public-verify-banner" style="width: 100%; max-width: 1100px; background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.15), rgba(var(--primary-rgb), 0.05)); border: 1px solid rgba(var(--primary-rgb), 0.2); border-radius: 16px; padding: 1.5rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
+    <div class="public-verify-banner"
+        style="width: 100%; max-width: 1100px; background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.15), rgba(var(--primary-rgb), 0.05)); border: 1px solid rgba(var(--primary-rgb), 0.2); border-radius: 16px; padding: 1.5rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
         <div style="display: flex; align-items: center; gap: 14px;">
-            <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); display: flex; align-items: center; justify-content: center; color: #22c55e; font-size: 24px; box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);">
+            <div
+                style="width: 48px; height: 48px; border-radius: 50%; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); display: flex; align-items: center; justify-content: center; color: #22c55e; font-size: 24px; box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);">
                 🛡️
             </div>
             <div style="text-align: left;">
-                <h4 style="margin: 0 0 4px 0; color: #fff; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <h4
+                    style="margin: 0 0 4px 0; color: #fff; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
                     EduTech AI Verified Credential
-                    <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; background: #22c55e; color: #0b0f19; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.05em; display: inline-flex; align-items: center; box-shadow: 0 0 10px rgba(34,197,94,0.3); line-height: 1;">Active</span>
+                    <span
+                        style="font-size: 10px; font-weight: 800; text-transform: uppercase; background: #22c55e; color: #0b0f19; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.05em; display: inline-flex; align-items: center; box-shadow: 0 0 10px rgba(34,197,94,0.3); line-height: 1;">Active</span>
                 </h4>
-                <p style="margin: 0; color: #94a3b8; font-size: 13px;">This official certificate has been verified as authentic and completed on EduTech AI.</p>
+                <p style="margin: 0; color: #94a3b8; font-size: 13px;">This official certificate has been verified as
+                    authentic and completed on EduTech AI.</p>
             </div>
         </div>
         <div>
-            <a href="{% url 'register' %}" class="btn btn-primary" style="border-radius: 50px; font-weight: 700; padding: 0.75rem 2rem; background: var(--primary-hex); color: #fff; box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4); text-decoration: none !important; display: inline-flex; align-items: center; gap: 8px; font-size: 14px;">
+            <a href="{% url 'register' %}" class="btn btn-primary"
+                style="border-radius: 50px; font-weight: 700; padding: 0.75rem 2rem; background: var(--primary-hex); color: #fff; box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4); text-decoration: none !important; display: inline-flex; align-items: center; gap: 8px; font-size: 14px;">
                 Create Your Account 🚀
             </a>
         </div>
@@ -524,11 +531,11 @@
             <!-- Recipient name block: falls back dynamically to the course verified graduate user object (cert_user) or requesting user -->
             <div class="recipient-name">
                 {% if cert_user %}
-                    {{ cert_user.first_name }} {{ cert_user.last_name|default:"" }}
-                    {% if not cert_user.first_name %}{{ cert_user.username }}{% endif %}
+                {{ cert_user.first_name }} {{ cert_user.last_name|default:"" }}
+                {% if not cert_user.first_name %}{{ cert_user.username }}{% endif %}
                 {% else %}
-                    {{ request.user.first_name }} {{ request.user.last_name|default:"" }}
-                    {% if not request.user.first_name %}{{ request.user.username }}{% endif %}
+                {{ request.user.first_name }} {{ request.user.last_name|default:"" }}
+                {% if not request.user.first_name %}{{ request.user.username }}{% endif %}
                 {% endif %}
             </div>
 
@@ -555,7 +562,8 @@
                 </div>
                 <div>
                     <div class="meta-label">Credential ID</div>
-                    <div class="meta-val" style="font-family: monospace; font-size: 0.95rem; color: #475569;">{{ cert_id }}</div>
+                    <div class="meta-val" style="font-family: monospace; font-size: 0.95rem; color: #475569;">{{ cert_id
+                        }}</div>
                 </div>
             </div>
 
@@ -568,13 +576,19 @@
             </div>
 
             <!-- Right Official Signature Line -->
-            <div class="sig-col">
+            <div class="sig-col"
+                style="display: flex; flex-direction: column; align-items: flex-end; position: relative;">
                 <div
-                    style="font-family: 'Mrs Saint Delafield', 'Alex Brush', cursive; font-size: 4.5rem; color: #0f172a; line-height: 0.6; margin-bottom: 0.5rem; transform: rotate(-5deg); padding-right: 1.5rem; font-weight: 500;">
-                    Gagan</div>
-                <div class="sig-line"></div>
-                <div class="sig-name">Ajay Vishwakarma</div>
-                <div class="sig-title">Founder & CEO, EduTech AI</div>
+                    style="font-family: 'Mrs Saint Delafield', 'Alex Brush', cursive; font-size: 4.75rem; color: #1e40af; line-height: 0.5; margin-bottom: -0.4rem; transform: rotate(-3deg) translateY(6px); padding-right: 2rem; font-weight: 500; text-shadow: 0.5px 0.5px 1.5px rgba(30,58,138,0.2); filter: contrast(1.1); user-select: none; z-index: 10;">
+                    Ajay Kumar</div>
+                <div class="sig-line"
+                    style="width: 240px; height: 1px; background: #0f172a; margin-bottom: 0.5rem; opacity: 0.8;"></div>
+                <div class="sig-name"
+                    style="font-size: 0.9rem; font-weight: 700; color: #0f172a; letter-spacing: 0.05em;">Ajay Kumar
+                </div>
+                <div class="sig-title"
+                    style="font-size: 0.75rem; font-weight: 500; color: #64748b; letter-spacing: 0.05em;">Founder & CEO,
+                    EduTech AI</div>
             </div>
 
         </div>
@@ -593,13 +607,13 @@
 
         let certName = "Student";
         {% if cert_user and cert_user.first_name %}
-            certName = "{{ cert_user.first_name }}";
+        certName = "{{ cert_user.first_name }}";
         {% elif cert_user and cert_user.username %}
-            certName = "{{ cert_user.username }}";
+        certName = "{{ cert_user.username }}";
         {% elif request.user.first_name %}
-            certName = "{{ request.user.first_name }}";
+        certName = "{{ request.user.first_name }}";
         {% elif request.user.username %}
-            certName = "{{ request.user.username }}";
+        certName = "{{ request.user.username }}";
         {% endif %}
 
         // Configure html2pdf parameters (Generates 300DPI high-resolution verified A4 landscape print PDF with CORS support active)
