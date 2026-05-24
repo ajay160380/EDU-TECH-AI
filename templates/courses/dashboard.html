@@ -1596,51 +1596,74 @@
         transform: scale(1.08)
     }
 
-    /* TOAST */
+    /* ULTRA-PREMIUM TOAST DESIGN */
     .toast-wrap {
         position: fixed;
-        bottom: 100px;
+        bottom: 40px;
         left: 50%;
         transform: translateX(-50%);
-        z-index: 200;
+        z-index: 999;
         display: flex;
         flex-direction: column;
-        gap: 8px;
-        align-items: center
+        gap: 12px;
+        align-items: center;
+        pointer-events: none;
     }
 
     .toast {
-        padding: 12px 20px;
-        background: var(--bg2);
-        border: 1px solid var(--border2);
-        border-radius: 10px;
-        color: var(--text);
-        font-size: 12px;
+        pointer-events: auto;
+        padding: 14px 24px;
+        background: rgba(15, 23, 42, 0.85) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        color: #f8fafc !important;
+        font-size: 0.85rem;
+        font-weight: 500;
         display: flex;
         align-items: center;
-        gap: 10px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-        animation: toastIn .3s ease;
-        white-space: nowrap
+        gap: 12px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
 
     .toast.warn {
-        border-color: rgba(245, 197, 66, 0.3)
+        border-color: rgba(245, 158, 11, 0.35) !important;
+        background: linear-gradient(135deg, rgba(20, 15, 10, 0.95), rgba(15, 23, 42, 0.95)) !important;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 25px rgba(245, 158, 11, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .toast.warn span:first-child {
+        display: inline-block;
+        animation: pulse-glow 2s infinite ease-in-out;
     }
 
     .toast.success {
-        border-color: rgba(13, 211, 162, 0.3)
+        border-color: rgba(16, 185, 129, 0.35) !important;
+        background: linear-gradient(135deg, rgba(10, 20, 15, 0.95), rgba(15, 23, 42, 0.95)) !important;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 25px rgba(16, 185, 129, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.4)); }
+        50% { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.8)); }
     }
 
     @keyframes toastIn {
         from {
             opacity: 0;
-            transform: translateY(8px)
+            transform: translateY(20px) scale(0.95);
         }
-
         to {
             opacity: 1;
-            transform: translateY(0)
+            transform: translateY(0) scale(1);
         }
     }
 
@@ -2564,7 +2587,7 @@
     setTimeout(() => {
         const h = new Date().getHours();
         if (h >= 18 || true) {
-            showToast(`🌙 Your {{ profile.streak_count|default:"0" }}-day streak is alive! Log a session before midnight to keep it.`, 'warn', 8000);
+            showToast(`🔥 <strong>Your {{ profile.streak_count|default:"1" }}-Day Streak is Active!</strong> Log a study session before midnight to keep your learning momentum alive! 🚀`, 'warn', 8000);
         }
     }, 2500);
     // ── TIME & TABS ────────────────────────────────────────────────────
