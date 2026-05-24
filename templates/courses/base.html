@@ -279,6 +279,16 @@
             color: #f4f4f5 !important;
         }
         
+        /* Premium Navbar Transition & Interactive Micro-Animation */
+        nav {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        nav:hover {
+            transform: translateY(-2px) scale(1.008) !important;
+            box-shadow: 0 12px 40px rgba(var(--primary-rgb), 0.22), 0 0 20px rgba(var(--primary-rgb), 0.12) !important;
+            border-color: rgba(var(--primary-rgb), 0.35) !important;
+        }
+
         /* Dark Theme Navbar & Footer overrides */
         [data-theme="dark"] nav {
             background-color: rgba(20, 20, 30, 0.75) !important;
