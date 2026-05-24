@@ -4,7 +4,6 @@
 {% block title %}Certificate of Mastery - EduTech AI Professional Academy{% endblock %}
 
 {% block content %}
-<!-- Premium Certificate Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link
@@ -449,7 +448,6 @@
 
 <div class="cert-page-wrapper">
 
-    <!-- Action Control Bar -->
     <div class="cert-actions"
         style="width: 100%; max-width: 1100px; display: flex; justify-content: space-between; align-items: center;">
         {% if is_public_view %}
@@ -476,7 +474,6 @@
     </div>
 
     {% if is_public_view %}
-    <!-- Public Verification Banner & Sign Up CTA -->
     <div class="public-verify-banner"
         style="width: 100%; max-width: 1100px; background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.15), rgba(var(--primary-rgb), 0.05)); border: 1px solid rgba(var(--primary-rgb), 0.2); border-radius: 16px; padding: 1.5rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
         <div style="display: flex; align-items: center; gap: 14px;">
@@ -504,10 +501,8 @@
     </div>
     {% endif %}
 
-    <!-- Main Professional Parchment Frame -->
     <div class="cert-frame">
 
-        <!-- Intricate Borders -->
         <div class="cert-border-outer"></div>
         <div class="cert-border-inner"></div>
         <div class="corner-accent corner-tl"></div>
@@ -515,10 +510,8 @@
         <div class="corner-accent corner-bl"></div>
         <div class="corner-accent corner-br"></div>
 
-        <!-- Watermark Crest -->
         <div class="cert-watermark-crest">ET</div>
 
-        <!-- Content Structure -->
         <div class="cert-content">
             <div class="org-title">
                 EduTech AI Verified
@@ -528,7 +521,6 @@
 
             <div class="award-statement">This professional credential is proudly conferred upon</div>
 
-            <!-- Recipient name block: falls back dynamically to the course verified graduate user object (cert_user) or requesting user -->
             <div class="recipient-name">
                 {% if cert_user %}
                 {{ cert_user.first_name }} {{ cert_user.last_name|default:"" }}
@@ -551,10 +543,8 @@
             </div>
         </div>
 
-        <!-- Footer Signatures & Badges -->
         <div class="cert-footer-grid">
 
-            <!-- Left Metadata -->
             <div class="meta-col">
                 <div style="margin-bottom: 1rem;">
                     <div class="meta-label">Date of Award</div>
@@ -562,12 +552,10 @@
                 </div>
                 <div>
                     <div class="meta-label">Credential ID</div>
-                    <div class="meta-val" style="font-family: monospace; font-size: 0.95rem; color: #475569;">{{ cert_id
-                        }}</div>
+                    <div class="meta-val" style="font-family: monospace; font-size: 0.95rem; color: #475569;">{{ cert_id }}</div>
                 </div>
             </div>
 
-            <!-- Center Official Foil Seal -->
             <div class="seal-container">
                 <div class="foil-seal">
                     <div class="seal-icon">🏛️</div>
@@ -576,19 +564,13 @@
             </div>
 
             <!-- Right Official Signature Line -->
-            <div class="sig-col"
-                style="display: flex; flex-direction: column; align-items: flex-end; position: relative;">
+            <div class="sig-col" style="display: flex; flex-direction: column; align-items: flex-end; position: relative;">
                 <div
-                    style="font-family: 'Mrs Saint Delafield', 'Alex Brush', cursive; font-size: 4.75rem; color: #1e40af; line-height: 0.5; margin-bottom: -0.4rem; transform: rotate(-3deg) translateY(6px); padding-right: 2rem; font-weight: 500; text-shadow: 0.5px 0.5px 1.5px rgba(30,58,138,0.2); filter: contrast(1.1); user-select: none; z-index: 10;">
+                    style="font-family: 'Mrs Saint Delafield', 'Alex Brush', cursive; font-size: 4.75rem; color: #000000; line-height: 0.5; margin-bottom: -0.6rem; transform: rotate(-3deg) translateY(-8px); padding-right: 1.5rem; font-weight: 700; text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.15); user-select: none; z-index: 10;">
                     Ajay Kumar</div>
-                <div class="sig-line"
-                    style="width: 240px; height: 1px; background: #0f172a; margin-bottom: 0.5rem; opacity: 0.8;"></div>
-                <div class="sig-name"
-                    style="font-size: 0.9rem; font-weight: 700; color: #0f172a; letter-spacing: 0.05em;">Ajay Kumar
-                </div>
-                <div class="sig-title"
-                    style="font-size: 0.75rem; font-weight: 500; color: #64748b; letter-spacing: 0.05em;">Founder & CEO,
-                    EduTech AI</div>
+                <div class="sig-line" style="width: 240px; height: 1px; background: #000000; margin-bottom: 0.5rem;"></div>
+                <div class="sig-name" style="font-size: 0.9rem; font-weight: 700; color: #000000; letter-spacing: 0.05em;">Ajay Kumar</div>
+                <div class="sig-title" style="font-size: 0.75rem; font-weight: 500; color: #64748b; letter-spacing: 0.05em;">Founder & CEO, EduTech AI</div>
             </div>
 
         </div>
@@ -597,7 +579,6 @@
 
 </div>
 
-<!-- html2pdf Library for Direct PDF Generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
     function downloadCertificate() {
