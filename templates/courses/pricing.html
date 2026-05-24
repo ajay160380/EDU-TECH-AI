@@ -182,7 +182,7 @@
                     <p class="text-xs text-slate-500 mt-1">Accelerate your study workflow</p>
 
                     <div class="my-6">
-                        <span class="text-4xl font-black text-slate-900" id="price-pro">₹99</span>
+                        <span class="text-4xl font-black text-slate-900">₹<span id="price-pro">99</span></span>
                         <span class="text-slate-500 text-sm" id="period-pro">/month</span>
                     </div>
 
@@ -246,7 +246,7 @@
                     <p class="text-xs text-slate-400 mt-1">Unlimited learning with an AI Coach</p>
 
                     <div class="my-6">
-                        <span class="text-4xl font-black text-slate-900" id="price-ultra">₹149</span>
+                        <span class="text-4xl font-black text-slate-900">₹<span id="price-ultra">149</span></span>
                         <span class="text-slate-500 text-sm" id="period-ultra">/month</span>
                     </div>
 
@@ -384,17 +384,41 @@
     const periodPro = document.getElementById('period-pro');
     const periodUltra = document.getElementById('period-ultra');
 
+    function animatePriceChange(element, startVal, endVal) {
+        const duration = 800; // 800ms animation
+        const startTime = performance.now();
+        
+        function update(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const ease = progress * (2 - progress); // Ease out quad
+            const current = Math.floor(startVal + (endVal - startVal) * ease);
+            
+            element.textContent = current;
+            
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                element.textContent = endVal;
+            }
+        }
+        requestAnimationFrame(update);
+    }
+
     // Toggle billing cycle click
     toggleBtn.addEventListener('click', () => {
+        const currentPro = parseInt(pricePro.textContent) || 99;
+        const currentUltra = parseInt(priceUltra.textContent) || 149;
+
         if (billingCycle === 'monthly') {
             billingCycle = 'yearly';
             toggleDot.style.transform = 'translateX(24px)';
             labelMonthly.classList.replace('text-slate-900', 'text-slate-400');
             labelYearly.classList.replace('text-slate-400', 'text-slate-900');
 
-            // Apply 20% discount prices
-            pricePro.textContent = '₹950';
-            priceUltra.textContent = '₹1430';
+            // Apply 20% discount prices with smooth count-up animation
+            animatePriceChange(pricePro, currentPro, 950);
+            animatePriceChange(priceUltra, currentUltra, 1430);
             periodPro.textContent = '/year';
             periodUltra.textContent = '/year';
         } else {
@@ -403,9 +427,9 @@
             labelMonthly.classList.replace('text-slate-400', 'text-slate-900');
             labelYearly.classList.replace('text-slate-900', 'text-slate-400');
 
-            // Standard prices
-            pricePro.textContent = '₹99';
-            priceUltra.textContent = '₹149';
+            // Standard prices with smooth countdown animation
+            animatePriceChange(pricePro, currentPro, 99);
+            animatePriceChange(priceUltra, currentUltra, 149);
             periodPro.textContent = '/month';
             periodUltra.textContent = '/month';
         }

@@ -288,6 +288,7 @@ def dashboard(request):
     import datetime
     import random
     from django.core.cache import cache
+    import json
 
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     profile.sync_streak()
@@ -341,22 +342,22 @@ def dashboard(request):
     today = datetime.date.today()
     streak_grid = []
 
-    # Pre-fetch all progress and session dates in one range query
-    heatmap_start = today - datetime.timedelta(days=27)
+    # Pre-fetch all progress and session dates for all-time
     progress_dates = (
-        Progress.objects.filter(user=user, completed_at__date__gte=heatmap_start)
+        Progress.objects.filter(user=user)
         .values('completed_at__date')
         .annotate(count=Count('id'))
     )
     session_dates = (
-        StudySession.objects.filter(user=user, completed_date__gte=heatmap_start)
+        StudySession.objects.filter(user=user)
         .values('completed_date')
         .annotate(count=Count('id'))
     )
-    # Build lookup dicts
-    progress_lookup = {p['completed_at__date']: p['count'] for p in progress_dates}
-    session_lookup = {s['completed_date']: s['count'] for s in session_dates}
+    # Build lookup dicts for all time
+    progress_lookup = {p['completed_at__date']: p['count'] for p in progress_dates if p['completed_at__date']}
+    session_lookup = {s['completed_date']: s['count'] for s in session_dates if s['completed_date']}
 
+    # Construct 28-day streak grid for backward compatibility
     for i in range(27, -1, -1):
         day = today - datetime.timedelta(days=i)
         total_actions = progress_lookup.get(day, 0) + session_lookup.get(day, 0)
@@ -379,6 +380,16 @@ def dashboard(request):
             'level': level,
             'actions': total_actions,
         })
+
+    # Construct complete all-time activity map for GitHub style heatmap
+    activity_map = {}
+    for d, c in progress_lookup.items():
+        d_str = d.strftime('%Y-%m-%d')
+        activity_map[d_str] = activity_map.get(d_str, 0) + c
+    for d, c in session_lookup.items():
+        d_str = d.strftime('%Y-%m-%d')
+        activity_map[d_str] = activity_map.get(d_str, 0) + c
+    activity_map_json = json.dumps(activity_map)
 
     # ---- Contextual Insight Engine (Randomized) ----
     possible_insights = []
@@ -602,6 +613,7 @@ def dashboard(request):
         'last_updated': last_updated,
         'courses_json': courses_json,
         'streak_grid_json': streak_grid_json,
+        'activity_map_json': activity_map_json,
     }
     return render(request, 'courses/dashboard.html', context)
 
@@ -955,6 +967,7 @@ def certificate_view(request, course_id):
             
     context = {
         'course': course,
+        'cert_user': request.user,
         'cert_id': cert_formatted,
         'issue_date': datetime.date.today(),
         'instructor_name': instructor_name
@@ -1680,3 +1693,78 @@ def shipping_view(request):
     Renders the shipping/delivery policy page.
     """
     return render(request, 'courses/shipping.html')
+
+
+def verify_certificate_view(request, credential_id):
+    """
+    Publicly verifies and renders a Certificate of Mastery by its Credential ID.
+    Does NOT require user authentication. Shows a premium sign-up CTA for guests.
+
+    Lookup Mechanism:
+    - Cleans the raw incoming credential ID parameter.
+    - Queries all courses where exam has been passed (passed_exam=True).
+    - Iterates over matched records to verify completion percentage matches 100%.
+    - Re-hashes dynamically: hashlib.md5("CERT-FOCUSTUBE-{course_id}-{user_id}")
+    - Compares MD5 hashes to identify the correct course/user record securely.
+    - If valid, renders the A4 landscape certificate context for guests/public.
+    - If invalid, routes seamlessly to a custom glassmorphic warning error page.
+    """
+    clean_id = credential_id.replace('-', '').upper().strip()
+    if len(clean_id) > 12:
+        if clean_id.startswith('FT'):
+            clean_id = clean_id[2:]
+            
+    # Find matching completed course across ALL users
+    matched_course = None
+    import hashlib
+    import datetime
+    from .models import Course
+    
+    completed_courses = Course.objects.filter(passed_exam=True)
+    
+    for course in completed_courses:
+        if course.completed_percentage == 100:
+            cert_raw = f"CERT-FOCUSTUBE-{course.id}-{course.user.id}"
+            cert_id = hashlib.md5(cert_raw.encode()).hexdigest().upper()[:12]
+            if cert_id == clean_id:
+                matched_course = course
+                break
+            
+    if not matched_course:
+        # Render dynamic verify error page
+        context = {
+            'credential_id': credential_id,
+            'is_public_view': True
+        }
+        return render(request, 'courses/verify_error.html', context)
+        
+    # Generate verification details
+    cert_raw = f"CERT-FOCUSTUBE-{matched_course.id}-{matched_course.user.id}"
+    cert_id = hashlib.md5(cert_raw.encode()).hexdigest().upper()[:12]
+    cert_formatted = f"FT-{cert_id[:4]}-{cert_id[4:8]}-{cert_id[8:]}"
+    
+    # Extract YouTube channel name
+    instructor_name = "EduTech AI Verified Faculty"
+    try:
+        from .utils import fetch_youtube_playlist
+        import re
+        data = fetch_youtube_playlist(matched_course.playlist_id)
+        if data and data.get('channel_name'):
+            instructor_name = data['channel_name']
+    except Exception:
+        if "by " in matched_course.title.lower():
+            parts = re.split(r'by\s+', matched_course.title, flags=re.IGNORECASE)
+            if len(parts) > 1:
+                instructor_name = parts[1].strip()
+                
+    issue_date = matched_course.last_exam_attempt.date() if matched_course.last_exam_attempt else datetime.date.today()
+                
+    context = {
+        'course': matched_course,
+        'cert_user': matched_course.user,
+        'cert_id': cert_formatted,
+        'issue_date': issue_date,
+        'instructor_name': instructor_name,
+        'is_public_view': True
+    }
+    return render(request, 'courses/certificate.html', context)

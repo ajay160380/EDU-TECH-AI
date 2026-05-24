@@ -439,17 +439,17 @@
         {% for i in '12' %}
         <div class="flex items-center gap-12 px-6">
             <div class="flex items-center gap-3"><span class="text-zinc-500 font-bold tracking-widest text-sm">USERS
-                    ACTIVATED</span><span class="text-2xl font-black font-manrope text-white"><span class="count-up-number" data-target="142.8" data-decimal="true" data-suffix="K">0</span></span></div>
+                    ACTIVATED</span><span class="text-2xl font-black font-manrope text-white"><span class="count-up-number" data-target="1.5" data-decimal="true" data-suffix="K">0</span></span></div>
             <div class="flex items-center gap-3"><span class="text-zinc-500 font-bold tracking-widest text-sm">STUDY
-                    TIME</span><span class="text-2xl font-black font-manrope text-[var(--primary-hex)]"><span class="count-up-number" data-target="12.4" data-decimal="true" data-suffix="M">0</span> MINS</span></div>
+                    TIME</span><span class="text-2xl font-black font-manrope text-[var(--primary-hex)]"><span class="count-up-number" data-target="4.8" data-decimal="true" data-suffix="K">0</span> MINS</span></div>
             <div class="flex items-center gap-3"><span
                     class="text-zinc-500 font-bold tracking-widest text-sm">CERTIFICATES ISSUED</span><span
-                    class="text-2xl font-black font-manrope text-white"><span class="count-up-number" data-target="48.9" data-decimal="true" data-suffix="K">0</span></span></div>
+                    class="text-2xl font-black font-manrope text-white"><span class="count-up-number" data-target="1.2" data-decimal="true" data-suffix="K">0</span></span></div>
             <div class="flex items-center gap-3"><span class="text-zinc-500 font-bold tracking-widest text-sm">AI
-                    QUERIES PROCESSED</span><span class="text-2xl font-black font-manrope text-[var(--primary-hex)]"><span class="count-up-number" data-target="8.2" data-decimal="true" data-suffix="M">0</span></span>
+                    QUERIES PROCESSED</span><span class="text-2xl font-black font-manrope text-[var(--primary-hex)]"><span class="count-up-number" data-target="3.4" data-decimal="true" data-suffix="K">0</span></span>
             </div>
             <div class="flex items-center gap-3"><span class="text-zinc-500 font-bold tracking-widest text-sm">RETENTION
-                    RATE</span><span class="text-2xl font-black font-manrope text-white"><span class="count-up-number" data-target="94.2" data-decimal="true" data-suffix="%">0</span></span></div>
+                    RATE</span><span class="text-2xl font-black font-manrope text-white"><span class="count-up-number" data-target="98.4" data-decimal="true" data-suffix="%">0</span></span></div>
         </div>
         {% endfor %}
     </div>
@@ -503,9 +503,27 @@
 <!-- Pricing -->
 <section class="py-32 px-6 bg-transparent relative border-t border-white/[0.06]">
     <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-20">
+        <div class="text-center mb-12">
             <h2 class="text-4xl md:text-5xl font-semibold text-white font-manrope mb-4">Simple, Transparent Pricing</h2>
             <p class="text-zinc-400">Start for free, scale as you learn.</p>
+            
+            <!-- Monthly / Yearly Billing Toggle -->
+            <div class="flex items-center justify-center gap-4 mt-8">
+                <span id="home-label-monthly" class="text-sm font-semibold text-white">Monthly</span>
+                <button type="button" id="home-billing-toggle-btn"
+                    class="w-14 h-8 rounded-full p-1 bg-white/[0.08] border border-white/[0.12] transition-all duration-300 relative focus:outline-none" style="display: flex; align-items: center;">
+                    <div id="home-toggle-dot"
+                        class="w-6 h-6 rounded-full bg-[var(--primary-hex)] shadow-md transform transition-all duration-300 translate-x-0">
+                    </div>
+                </button>
+                <div class="flex items-center gap-2">
+                    <span id="home-label-yearly" class="text-sm font-semibold text-zinc-450">Yearly</span>
+                    <span
+                        class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wide">
+                        Save 20%
+                    </span>
+                </div>
+            </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
             <!-- Starter -->
@@ -544,8 +562,8 @@
                 <p class="text-zinc-300 text-sm mb-8 h-10">Accelerate your study workflow.</p>
                 <div class="mb-8 flex items-baseline gap-1">
                     <span class="text-zinc-400 font-semibold font-manrope">₹</span>
-                    <span class="text-5xl font-black tracking-tight text-white"><span class="count-up-number" data-target="99">0</span></span>
-                    <span class="text-zinc-550 text-sm">/mo</span>
+                    <span class="text-5xl font-black tracking-tight text-white"><span class="count-up-number" id="home-price-pro" data-target="99">0</span></span>
+                    <span class="text-zinc-550 text-sm" id="home-period-pro">/mo</span>
                 </div>
                 <ul class="space-y-4 mb-8 flex-1">
                     <li class="flex items-center gap-3 text-sm text-zinc-200">
@@ -573,8 +591,8 @@
                 <p class="text-zinc-400 text-sm mb-8 h-10">Unlimited learning with an AI Coach.</p>
                 <div class="mb-8 flex items-baseline gap-1">
                     <span class="text-zinc-550 font-semibold font-manrope">₹</span>
-                    <span class="text-5xl font-black tracking-tight text-white"><span class="count-up-number" data-target="149">0</span></span>
-                    <span class="text-zinc-550 text-sm">/mo</span>
+                    <span class="text-5xl font-black tracking-tight text-white"><span class="count-up-number" id="home-price-ultra" data-target="149">0</span></span>
+                    <span class="text-zinc-550 text-sm" id="home-period-ultra">/mo</span>
                 </div>
                 <ul class="space-y-4 mb-8 flex-1">
                     <li class="flex items-center gap-3 text-sm text-zinc-300">
@@ -656,6 +674,66 @@
                 colors: [primaryColor, "#f967fb", "#6958d5"],
                 lightsColors: [primaryColor, "#fe8a2e", "#ff008a", "#60aed5"],
                 enableClickInteraction: true
+            });
+        }
+
+        // Home Pricing Toggle
+        let homeBillingCycle = 'monthly';
+        const homeToggleBtn = document.getElementById('home-billing-toggle-btn');
+        const homeToggleDot = document.getElementById('home-toggle-dot');
+        const homeLabelMonthly = document.getElementById('home-label-monthly');
+        const homeLabelYearly = document.getElementById('home-label-yearly');
+
+        const homePricePro = document.getElementById('home-price-pro');
+        const homePriceUltra = document.getElementById('home-price-ultra');
+        const homePeriodPro = document.getElementById('home-period-pro');
+        const homePeriodUltra = document.getElementById('home-period-ultra');
+
+        if (homeToggleBtn) {
+            homeToggleBtn.addEventListener('click', () => {
+                if (homeBillingCycle === 'monthly') {
+                    homeBillingCycle = 'yearly';
+                    homeToggleDot.style.transform = 'translateX(24px)';
+                    homeLabelMonthly.classList.replace('text-white', 'text-zinc-450');
+                    homeLabelYearly.classList.replace('text-zinc-450', 'text-white');
+
+                    // Update targets and values
+                    homePricePro.setAttribute('data-target', '950');
+                    homePriceUltra.setAttribute('data-target', '1430');
+                    homePeriodPro.textContent = '/yr';
+                    homePeriodUltra.textContent = '/yr';
+                    
+                    // Re-trigger count up for the new prices!
+                    if (window.initCountUpAnimation) {
+                        homePricePro.textContent = '0';
+                        homePriceUltra.textContent = '0';
+                        window.initCountUpAnimation();
+                    } else {
+                        homePricePro.textContent = '950';
+                        homePriceUltra.textContent = '1430';
+                    }
+                } else {
+                    homeBillingCycle = 'monthly';
+                    homeToggleDot.style.transform = 'translateX(0)';
+                    homeLabelMonthly.classList.replace('text-zinc-450', 'text-white');
+                    homeLabelYearly.classList.replace('text-white', 'text-zinc-450');
+
+                    // Standard prices
+                    homePricePro.setAttribute('data-target', '99');
+                    homePriceUltra.setAttribute('data-target', '149');
+                    homePeriodPro.textContent = '/mo';
+                    homePeriodUltra.textContent = '/mo';
+                    
+                    // Re-trigger count up
+                    if (window.initCountUpAnimation) {
+                        homePricePro.textContent = '0';
+                        homePriceUltra.textContent = '0';
+                        window.initCountUpAnimation();
+                    } else {
+                        homePricePro.textContent = '99';
+                        homePriceUltra.textContent = '149';
+                    }
+                }
             });
         }
     });

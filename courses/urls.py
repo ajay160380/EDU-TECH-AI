@@ -47,4 +47,5 @@ urlpatterns = [
     path('blog/', views.blog_view, name='blog'),
     path('careers/', views.careers_view, name='careers'),
     path('shipping/', views.shipping_view, name='shipping'),
+    path('certificate/verify/<str:credential_id>/', views.verify_certificate_view, name='verify_certificate'),
 ]

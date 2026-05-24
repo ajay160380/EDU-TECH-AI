@@ -13,6 +13,24 @@
     <meta name="keywords" content="EdTech, YouTube course importer, focus room, pomodoro timer, AI study buddy">
     <meta name="author" content="EduTech AI Team">
 
+    <!-- Theme Initialization (must run before anything to prevent FOUC) -->
+    <script>
+        (function () {
+            const html = document.documentElement;
+            html.setAttribute('data-theme', 'dark');
+            window.__THEME_STATE__ = 'dark';
+            
+            let savedColor = 'red';
+            {% if request.user.is_authenticated and request.resolver_match and request.resolver_match.url_name in 'dashboard profile import_course focus_room learn_view certificate final_exam' %}
+                savedColor = '{{ request.user.profile.theme_color|default:"red" }}';
+            {% else %}
+                savedColor = 'red';
+            {% endif %}
+            
+            html.setAttribute('data-theme-color', savedColor);
+        }) ();
+    </script>
+
     <!-- Tailwind CSS (via CDN for Red Noir Style) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -37,14 +55,14 @@
     <!-- CSS stylesheet (with static version for fast browser caching) -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}?v={% now 'U' %}">
 
-    <!-- Premium White & Blue Custom Styling -->
+    <!-- Premium White & Red Custom Styling -->
     <style>
         :root {
-            --accent-red: #2563eb; /* Royal Blue */
-            --accent-red-glow: rgba(37, 99, 235, 0.2);
-            --primary-hex: #2563eb;
-            --primary-rgb: 37, 99, 235;
-            --primary-dark: #1d4ed8;
+            --accent-red: #ef233c; /* Red Noir default */
+            --accent-red-glow: rgba(239, 35, 60, 0.2);
+            --primary-hex: #ef233c;
+            --primary-rgb: 239, 35, 60;
+            --primary-dark: #d90429;
         }
 
         html[data-theme-color="red"] {
@@ -623,6 +641,350 @@
         {% else %}
         <!-- Tiny spacer for logged-in users — keeps dashboard distraction-free -->
         <div class="h-[10px]"></div>
+
+        <!-- Sleek Glassmorphic Floating Zen Bar (Dashboard/Profile overlay) -->
+        <div id="floating-zen-bar" class="select-none fixed bottom-6 right-6 z-[99] bg-zinc-950/70 border border-white/[0.08] backdrop-blur-xl rounded-full pl-3 pr-5 py-3 shadow-[0_10px_35px_rgba(0,0,0,0.5),_0_0_20px_rgba(var(--primary-rgb),0.1)] flex items-center gap-3 transition-all duration-300 scale-95 opacity-0 pointer-events-none translate-y-4">
+            <!-- Drag Handle Option -->
+            <div id="zen-bar-drag-handle" class="w-6 h-6 flex items-center justify-center cursor-grab active:cursor-grabbing text-zinc-500 hover:text-zinc-300 transition-colors">
+                <iconify-icon icon="lucide:grip-vertical" class="w-4 h-4"></iconify-icon>
+            </div>
+            
+            <!-- Pulse Indicator -->
+            <span class="flex h-2.5 w-2.5 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/75 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+            </span>
+            
+            <!-- Timer display -->
+            <div class="flex flex-col text-left">
+                <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Focus Mode</span>
+                <span id="zen-bar-timer" class="text-sm font-bold text-white leading-tight">25:00</span>
+            </div>
+
+            <div class="h-6 w-[1px] bg-white/[0.08]"></div>
+
+            <!-- Controls -->
+            <div class="flex items-center gap-2">
+                <!-- Play/Pause Timer -->
+                <button id="zen-bar-toggle-timer" class="w-8 h-8 rounded-full bg-white/[0.04] border border-white/[0.08] hover:bg-primary/20 hover:border-primary/40 flex items-center justify-center text-zinc-300 hover:text-white transition-all">
+                    <iconify-icon icon="lucide:play" id="zen-bar-timer-icon" class="w-4 h-4"></iconify-icon>
+                </button>
+                <!-- Play/Pause Audio -->
+                <button id="zen-bar-toggle-audio" class="w-8 h-8 rounded-full bg-white/[0.04] border border-white/[0.08] hover:bg-primary/20 hover:border-primary/40 flex items-center justify-center text-zinc-300 hover:text-white transition-all">
+                    <iconify-icon icon="lucide:music" id="zen-bar-audio-icon" class="w-4 h-4"></iconify-icon>
+                </button>
+                <!-- Go to Focus Room -->
+                <a href="{% url 'focus_room' %}" class="w-8 h-8 rounded-full bg-primary hover:bg-primary-dark flex items-center justify-center text-white transition-all shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]">
+                    <iconify-icon icon="lucide:external-link" class="w-4 h-4"></iconify-icon>
+                </a>
+            </div>
+        </div>
+
+        <!-- Hidden Global SoundCloud Player for Persistent Background Music -->
+        <div style="position: fixed; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; z-index: -9999;">
+            <iframe id="global-soundcloud-iframe" width="100" height="100" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%232563eb&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
+        </div>
+        <script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
+
+        <!-- Global Audio & Zen Mode Sync System -->
+        <script>
+            (function() {
+                // Initialize global SoundCloud Widget
+                let scWidget = null;
+                function getWidget() {
+                    const iframe = document.getElementById('global-soundcloud-iframe');
+                    if (iframe && !scWidget) {
+                        try {
+                            if (typeof SC !== 'undefined' && SC.Widget) {
+                                scWidget = SC.Widget(iframe);
+                            }
+                        } catch(e) {
+                            console.log("SC API not loaded yet", e);
+                        }
+                    }
+                    return scWidget;
+                }
+
+                function updateGlobalSync() {
+                    const isRunning = localStorage.getItem('pomodoro_running') === 'true';
+                    const endTime = parseInt(localStorage.getItem('pomodoro_end_time')) || 0;
+                    const totalSeconds = parseInt(localStorage.getItem('pomodoro_total_seconds')) || 25 * 60;
+                    const mode = localStorage.getItem('pomodoro_mode') || 'study';
+                    const lofiPlaying = localStorage.getItem('lofi_playing') === 'true';
+                    const lofiTrackUrl = localStorage.getItem('lofi_track_url') || 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%23ef233c&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false';
+                    const lofiVolume = parseFloat(localStorage.getItem('lofi_volume')) || 0.5;
+
+                    // Sync audio state
+                    const iframe = document.getElementById('global-soundcloud-iframe');
+                    const widget = getWidget();
+                    const isFocusRoom = document.querySelector('.focus-room-layout') !== null;
+
+                    if (iframe && widget) {
+                        // Prevent infinite reload loop and stuttering by tracking state variables
+                        window.currentLofiTrackUrl = window.currentLofiTrackUrl || '';
+                        window.globalLofiPlayingState = window.globalLofiPlayingState || '';
+                        window.globalLofiVolumeState = typeof window.globalLofiVolumeState !== 'undefined' ? window.globalLofiVolumeState : -1;
+                        
+                        const expectedUrl = lofiTrackUrl;
+                        
+                        // Always keep the hidden player pre-loaded with the correct track URL in the active tab (prevents throttling delay)
+                        if (window.currentLofiTrackUrl !== expectedUrl) {
+                            window.currentLofiTrackUrl = expectedUrl;
+                            
+                            const shouldPlayGlobal = lofiPlaying && (!isFocusRoom || document.visibilityState === 'hidden');
+                            
+                            // If it should play right now, load it with auto_play=true. Otherwise, pre-load with auto_play=false to prevent double audio.
+                            const targetUrl = shouldPlayGlobal ? expectedUrl.replace('auto_play=false', 'auto_play=true') : expectedUrl.replace('auto_play=true', 'auto_play=false');
+                            
+                            iframe.src = targetUrl;
+                            scWidget = null; // Force widget re-creation
+                            
+                            const newWidget = getWidget();
+                            if (newWidget) {
+                                newWidget.bind(SC.Widget.Events.READY, () => {
+                                    newWidget.setVolume(lofiVolume * 100);
+                                    if (shouldPlayGlobal) {
+                                        window.globalLofiPlayingState = 'playing';
+                                        newWidget.play();
+                                    } else {
+                                        window.globalLofiPlayingState = 'paused';
+                                        newWidget.pause();
+                                    }
+                                });
+                            }
+                        } else {
+                            // If URL is already loaded, just sync the play/pause/volume states
+                            const shouldPlayGlobal = lofiPlaying && (!isFocusRoom || document.visibilityState === 'hidden');
+                            if (shouldPlayGlobal) {
+                                if (window.globalLofiPlayingState !== 'playing') {
+                                    window.globalLofiPlayingState = 'playing';
+                                    widget.play();
+                                }
+                                if (window.globalLofiVolumeState !== lofiVolume) {
+                                    window.globalLofiVolumeState = lofiVolume;
+                                    widget.setVolume(lofiVolume * 100);
+                                }
+                            } else {
+                                if (window.globalLofiPlayingState !== 'paused') {
+                                    window.globalLofiPlayingState = 'paused';
+                                    widget.pause();
+                                }
+                            }
+                        }
+                    }
+
+                    // Calculate remaining seconds based on real timestamp
+                    let remaining = 0;
+                    if (isRunning) {
+                        remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+                        if (remaining <= 0) {
+                            localStorage.setItem('pomodoro_running', 'false');
+                            localStorage.setItem('pomodoro_remaining_seconds', '0');
+                        }
+                    } else {
+                        remaining = parseInt(localStorage.getItem('pomodoro_remaining_seconds')) || totalSeconds;
+                    }
+
+                    // Render floating bar UI
+                    const floatingBar = document.getElementById('floating-zen-bar');
+                    const isLearnView = document.querySelector('.zen-layout') !== null;
+
+                    // Show floating bar only on other pages when timer or lofi is active
+                    const shouldShowBar = !isFocusRoom && !isLearnView && (isRunning || lofiPlaying);
+
+                    if (floatingBar) {
+                        if (shouldShowBar) {
+                            floatingBar.classList.remove('opacity-0', 'pointer-events-none', 'scale-95', 'translate-y-4');
+                            floatingBar.classList.add('opacity-100', 'scale-100', 'translate-y-0');
+                        } else {
+                            floatingBar.classList.add('opacity-0', 'pointer-events-none', 'scale-95', 'translate-y-4');
+                            floatingBar.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
+                        }
+
+                        // Update time display
+                        const timerDisplay = document.getElementById('zen-bar-timer');
+                        if (timerDisplay) {
+                            const mins = Math.floor(remaining / 60);
+                            const secs = remaining % 60;
+                            timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+                        }
+
+                        // Update timer icon
+                        const timerIcon = document.getElementById('zen-bar-timer-icon');
+                        if (timerIcon) {
+                            timerIcon.setAttribute('icon', isRunning ? 'lucide:pause' : 'lucide:play');
+                        }
+
+                        // Update audio icon
+                        const audioIcon = document.getElementById('zen-bar-audio-icon');
+                        if (audioIcon) {
+                            audioIcon.setAttribute('icon', lofiPlaying ? 'lucide:pause' : 'lucide:music');
+                        }
+                    }
+                }
+
+                // Bind click handlers for the floating bar
+                document.addEventListener('DOMContentLoaded', () => {
+                    const toggleTimerBtn = document.getElementById('zen-bar-toggle-timer');
+                    const toggleAudioBtn = document.getElementById('zen-bar-toggle-audio');
+
+                    if (toggleTimerBtn) {
+                        toggleTimerBtn.addEventListener('click', () => {
+                            const isRunning = localStorage.getItem('pomodoro_running') === 'true';
+                            if (isRunning) {
+                                const endTime = parseInt(localStorage.getItem('pomodoro_end_time')) || 0;
+                                const remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+                                localStorage.setItem('pomodoro_running', 'false');
+                                localStorage.setItem('pomodoro_remaining_seconds', remaining.toString());
+                            } else {
+                                const remaining = parseInt(localStorage.getItem('pomodoro_remaining_seconds')) || 25 * 60;
+                                localStorage.setItem('pomodoro_running', 'true');
+                                localStorage.setItem('pomodoro_end_time', (Date.now() + remaining * 1000).toString());
+                            }
+                            updateGlobalSync();
+                        });
+                    }
+
+                    if (toggleAudioBtn) {
+                        toggleAudioBtn.addEventListener('click', () => {
+                            const lofiPlaying = localStorage.getItem('lofi_playing') === 'true';
+                            localStorage.setItem('lofi_playing', lofiPlaying ? 'false' : 'true');
+                            updateGlobalSync();
+                        });
+                    }
+
+                    // --- Sleek Draggable Floating Zen Bar ---
+                    (() => {
+                        const bar = document.getElementById('floating-zen-bar');
+                        if (!bar) return;
+                        const handle = document.getElementById('zen-bar-drag-handle');
+                        if (!handle) return;
+
+                        // Add touch styling
+                        bar.style.touchAction = 'none';
+
+                        let isDragging = false;
+                        let startX, startY;
+
+                        // Load saved position from localStorage immediately
+                        const savedLeft = localStorage.getItem('zen_bar_position_left');
+                        const savedTop = localStorage.getItem('zen_bar_position_top');
+                        if (savedLeft !== null && savedTop !== null) {
+                            bar.style.bottom = 'auto';
+                            bar.style.right = 'auto';
+                            bar.style.left = savedLeft;
+                            bar.style.top = savedTop;
+
+                            const clampPosition = () => {
+                                const rect = bar.getBoundingClientRect();
+                                if (rect.width === 0 || rect.height === 0) return;
+                                
+                                let left = parseFloat(bar.style.left);
+                                let top = parseFloat(bar.style.top);
+                                
+                                const maxX = window.innerWidth - rect.width;
+                                const maxY = window.innerHeight - rect.height;
+                                
+                                left = Math.max(0, Math.min(left, maxX));
+                                top = Math.max(0, Math.min(top, maxY));
+                                
+                                bar.style.left = left + 'px';
+                                bar.style.top = top + 'px';
+                            };
+
+                            window.addEventListener('load', clampPosition);
+                            window.addEventListener('resize', clampPosition);
+                            // Run once with small delay to ensure rendering completes
+                            setTimeout(clampPosition, 100);
+                        }
+
+                        // Mouse Events
+                        handle.addEventListener('mousedown', dragStart);
+                        document.addEventListener('mousemove', drag);
+                        document.addEventListener('mouseup', dragEnd);
+
+                        // Touch Events
+                        handle.addEventListener('touchstart', dragStart, { passive: false });
+                        document.addEventListener('touchmove', drag, { passive: false });
+                        document.addEventListener('touchend', dragEnd);
+
+                        function dragStart(e) {
+                            isDragging = true;
+                            handle.style.cursor = 'grabbing';
+                            bar.style.transition = 'none'; // Temporarily disable active transitions to make dragging ultra-responsive!
+                            
+                            // Handle both touch and mouse coords
+                            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                            const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+                            // Get current position of the bar
+                            const rect = bar.getBoundingClientRect();
+                            
+                            // Switch Tailwind default fixed position properties to dynamic inline positioning
+                            bar.style.bottom = 'auto';
+                            bar.style.right = 'auto';
+                            bar.style.left = rect.left + 'px';
+                            bar.style.top = rect.top + 'px';
+
+                            startX = clientX - rect.left;
+                            startY = clientY - rect.top;
+
+                            // Clear any active selection ranges to prevent highlight flickering
+                            window.getSelection()?.removeAllRanges();
+
+                            e.preventDefault();
+                        }
+
+                        function drag(e) {
+                            if (!isDragging) return;
+
+                            const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                            const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+
+                            let left = clientX - startX;
+                            let top = clientY - startY;
+
+                            // Screen boundaries check
+                            const rect = bar.getBoundingClientRect();
+                            const maxX = window.innerWidth - rect.width;
+                            const maxY = window.innerHeight - rect.height;
+
+                            left = Math.max(0, Math.min(left, maxX));
+                            top = Math.max(0, Math.min(top, maxY));
+
+                            bar.style.left = left + 'px';
+                            bar.style.top = top + 'px';
+
+                            if (e.cancelable) {
+                                e.preventDefault();
+                            }
+                        }
+
+                        function dragEnd() {
+                            if (!isDragging) return;
+                            isDragging = false;
+                            handle.style.cursor = 'grab';
+                            bar.style.transition = ''; // Restore transition classes for smooth show/hide behavior!
+
+                            // Persist coordinates across page navigations
+                            localStorage.setItem('zen_bar_position_left', bar.style.left);
+                            localStorage.setItem('zen_bar_position_top', bar.style.top);
+                        }
+                    })();
+                });
+
+                // Listen for visibility changes to instantly transfer play states
+                document.addEventListener('visibilitychange', () => {
+                    updateGlobalSync();
+                });
+
+                setInterval(updateGlobalSync, 1000);
+                updateGlobalSync();
+
+                // Expose function globally so focus_room.html can trigger immediate sync
+                window.syncGlobalAudio = updateGlobalSync;
+            })();
+        </script>
         {% endif %}
     </div>
 
@@ -639,21 +1001,6 @@
 
     <!-- JavaScript Interactive Scripts -->
     <script src="{% static 'js/main.js' %}?v=1.2.0"></script>
-
-    <!-- Theme Initialization (must run before main.js to set correct state) -->
-    <script>
-        (function () {
-            const html = document.documentElement;
-            html.setAttribute('data-theme', 'dark');
-            window.__THEME_STATE__ = 'dark';
-            let savedColor = {% if request.user.is_authenticated %}'{{ request.user.profile.theme_color|default:"blue" }}'{% else %}localStorage.getItem('eduThemeColor') || 'blue'{% endif %};
-            if (savedColor === 'yellow') {
-                savedColor = 'blue';
-                localStorage.setItem('eduThemeColor', 'blue');
-            }
-            html.setAttribute('data-theme-color', savedColor);
-        }) ();
-    </script>
     {% block extra_js %}{% endblock %}
 </body>
 

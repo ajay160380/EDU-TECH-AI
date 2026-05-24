@@ -450,16 +450,52 @@
 <div class="cert-page-wrapper">
 
     <!-- Action Control Bar -->
-    <div class="cert-actions">
-        <a href="{% url 'learn_view' course.id %}" class="btn btn-secondary"
-            style="border-radius: 50px; font-weight: 600; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff;">
-            ← Back to Classroom
-        </a>
-        <button onclick="downloadCertificate()" class="btn btn-primary"
-            style="border-radius: 50px; font-weight: 700; padding: 0.75rem 2rem; background: #38bdf8; color: #0f172a; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); border: none; cursor: pointer;">
-            🖨️ Download Certificate (PDF)
-        </button>
+    <div class="cert-actions" style="width: 100%; max-width: 1100px; display: flex; justify-content: space-between; align-items: center;">
+        {% if is_public_view %}
+            <a href="{% url 'home' %}" class="btn btn-secondary"
+                style="border-radius: 50px; font-weight: 600; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; text-decoration: none !important;">
+                ← Back to Home
+            </a>
+        {% else %}
+            <a href="{% url 'learn_view' course.id %}" class="btn btn-secondary"
+                style="border-radius: 50px; font-weight: 600; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; text-decoration: none !important;">
+                ← Back to Classroom
+            </a>
+        {% endif %}
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <button onclick="copyShareableLink()" class="btn btn-secondary"
+                style="border-radius: 50px; font-weight: 600; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                🔗 Copy Verification Link
+            </button>
+            <button onclick="downloadCertificate()" class="btn btn-primary"
+                style="border-radius: 50px; font-weight: 700; padding: 0.75rem 2rem; background: #38bdf8; color: #0f172a; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); border: none; cursor: pointer;">
+                🖨️ Download Certificate (PDF)
+            </button>
+        </div>
     </div>
+
+    {% if is_public_view %}
+    <!-- Public Verification Banner & Sign Up CTA -->
+    <div class="public-verify-banner" style="width: 100%; max-width: 1100px; background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.15), rgba(var(--primary-rgb), 0.05)); border: 1px solid rgba(var(--primary-rgb), 0.2); border-radius: 16px; padding: 1.5rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); display: flex; align-items: center; justify-content: center; color: #22c55e; font-size: 24px; box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);">
+                🛡️
+            </div>
+            <div style="text-align: left;">
+                <h4 style="margin: 0 0 4px 0; color: #fff; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                    EduTech AI Verified Credential
+                    <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; background: #22c55e; color: #0b0f19; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.05em; display: inline-flex; align-items: center; box-shadow: 0 0 10px rgba(34,197,94,0.3); line-height: 1;">Active</span>
+                </h4>
+                <p style="margin: 0; color: #94a3b8; font-size: 13px;">This official certificate has been verified as authentic and completed on EduTech AI.</p>
+            </div>
+        </div>
+        <div>
+            <a href="{% url 'register' %}" class="btn btn-primary" style="border-radius: 50px; font-weight: 700; padding: 0.75rem 2rem; background: var(--primary-hex); color: #fff; box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4); text-decoration: none !important; display: inline-flex; align-items: center; gap: 8px; font-size: 14px;">
+                Create Your Account 🚀
+            </a>
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Main Professional Parchment Frame -->
     <div class="cert-frame">
@@ -485,9 +521,15 @@
 
             <div class="award-statement">This professional credential is proudly conferred upon</div>
 
+            <!-- Recipient name block: falls back dynamically to the course verified graduate user object (cert_user) or requesting user -->
             <div class="recipient-name">
-                {{ request.user.first_name }} {{ request.user.last_name|default:"" }}
-                {% if not request.user.first_name %}{{ request.user.username }}{% endif %}
+                {% if cert_user %}
+                    {{ cert_user.first_name }} {{ cert_user.last_name|default:"" }}
+                    {% if not cert_user.first_name %}{{ cert_user.username }}{% endif %}
+                {% else %}
+                    {{ request.user.first_name }} {{ request.user.last_name|default:"" }}
+                    {% if not request.user.first_name %}{{ request.user.username }}{% endif %}
+                {% endif %}
             </div>
 
             <div class="citation-body">
@@ -549,10 +591,22 @@
             showToast("⏳ Generating high-resolution verified PDF certificate...", "info");
         }
 
+        let certName = "Student";
+        {% if cert_user and cert_user.first_name %}
+            certName = "{{ cert_user.first_name }}";
+        {% elif cert_user and cert_user.username %}
+            certName = "{{ cert_user.username }}";
+        {% elif request.user.first_name %}
+            certName = "{{ request.user.first_name }}";
+        {% elif request.user.username %}
+            certName = "{{ request.user.username }}";
+        {% endif %}
+
+        // Configure html2pdf parameters (Generates 300DPI high-resolution verified A4 landscape print PDF with CORS support active)
         const element = document.querySelector('.cert-frame');
         const opt = {
             margin: 0,
-            filename: `EduTech_AI_Certificate_{{ request.user.first_name|default:request.user.username }}.pdf`,
+            filename: `EduTech_AI_Certificate_${certName}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
             html2canvas: { scale: 3, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
@@ -562,6 +616,19 @@
             if (typeof showToast === 'function') {
                 showToast("✅ Certificate downloaded successfully!", "success");
             }
+        });
+    }
+
+    function copyShareableLink() {
+        const verifyUrl = window.location.origin + "/certificate/verify/{{ cert_id }}/";
+        navigator.clipboard.writeText(verifyUrl).then(() => {
+            if (typeof showToast === 'function') {
+                showToast("📋 Verification link copied to clipboard!", "success");
+            } else {
+                alert("📋 Verification link copied to clipboard!");
+            }
+        }).catch(err => {
+            console.error("Failed to copy link: ", err);
         });
     }
 </script>

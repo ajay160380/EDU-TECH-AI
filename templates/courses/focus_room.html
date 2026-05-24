@@ -4,7 +4,10 @@
 {% block title %}Zen Focus Room 🎧 - EduTech AI{% endblock %}
 
 {% block content %}
-<!-- Metadata store for JavaScript parameters -->
+<!-- Focus Room Paradigm: 
+     - Structured around 25-minute Pomodoro periods to double study efficiency.
+     - Automatically logs focused learning hours directly to study session and streak databases.
+     - Custom audio crossfades with background players on hidden/visible tabs. -->
 <div id="course-meta-data" data-course-id="0" style="display:none;"></div>
 <form style="display:none;">{% csrf_token %}</form>
 
@@ -269,7 +272,7 @@
     <div class="focus-orb focus-orb-2"></div>
 </div>
 
-<div class="container" style="min-height: calc(100vh - 100px); display: flex; flex-direction: column; align-items: center; padding: 4rem 1.5rem; position: relative; z-index: 1;">
+<div class="container focus-room-layout" style="min-height: calc(100vh - 100px); display: flex; flex-direction: column; align-items: center; padding: 4rem 1.5rem; position: relative; z-index: 1;">
 
     <header style="text-align: center; margin-bottom: 3.5rem;">
         <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 20px; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.06); font-size: 2rem; margin-bottom: 1.5rem; box-shadow: 0 8px 32px rgba(0,0,0,0.05); animation: float-gentle 4s ease-in-out infinite;">🎧</div>
@@ -346,14 +349,14 @@
             </div>
 
             <!-- SoundCloud Relaxing Track Embed -->
-            <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,0.05); margin-bottom: 1.5rem; border: 1px solid rgba(0,0,0,0.05);">
-                <iframe id="soundcloud-iframe" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" loading="lazy" style="display: block;" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%232563eb&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
+            <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,0.5); margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05);">
+                <iframe id="soundcloud-iframe" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" loading="lazy" style="display: block;" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%23ef233c&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
             </div>
 
             <div class="premium-controls-bar">
-                <div style="display: flex; align-items: center; gap: 1rem; color: #334155;">
+                <div style="display: flex; align-items: center; gap: 1rem; color: white;">
                     <span style="font-size: 1.2rem;">🔊</span>
-                    <input type="range" min="0" max="100" value="100" oninput="setSoundcloudVolume(this.value)" class="premium-volume-slider">
+                    <input type="range" min="0" max="100" value="50" id="focus-room-volume" class="premium-volume-slider">
                 </div>
                 <button id="next-track-btn" type="button" onclick="nextSoundcloudTrack()" class="premium-next-btn">
                     <span>Next Track</span>
@@ -363,35 +366,35 @@
 
             <!-- Neo-morphic Track Tiles Grid -->
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
-                <button type="button" class="track-tile active" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile active" data-track="lofi" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🎧</span>
                     <span class="tile-label">Lofi</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/tymur_khakimov/1-hour-deep-sleep-ambient-meditation-deeply-relaxing-sleep-music-binaural-beats&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-track="relax" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/tymur_khakimov/1-hour-deep-sleep-ambient-meditation-deeply-relaxing-sleep-music-binaural-beats&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🌙</span>
                     <span class="tile-label">Relax</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/helpmybabysleepsounds/relaxing-sound-of-an-english-rain-thunder-storm-for-1-hour&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-track="thunder" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/helpmybabysleepsounds/relaxing-sound-of-an-english-rain-thunder-storm-for-1-hour&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">⚡</span>
                     <span class="tile-label">Thunder</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-425188905/one-hour-of-rainy-minecraft&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-track="rain" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-425188905/one-hour-of-rainy-minecraft&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🌧️</span>
                     <span class="tile-label">Rain</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/mila-vispi/sets/1-hour-sleep&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-track="sleep" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/mila-vispi/sets/1-hour-sleep&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">😴</span>
                     <span class="tile-label">Sleep</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/ibrahim-maazin-945735772/river-flows-in-you-yiruma-1&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-track="piano" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/ibrahim-maazin-945735772/river-flows-in-you-yiruma-1&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🎹</span>
                     <span class="tile-label">Piano</span>
                 </button>
-                <button type="button" class="track-tile" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/relaxingwhitenoisesounds/endless-river-1-hour-of&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-track="river" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/relaxingwhitenoisesounds/endless-river-1-hour-of&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🌊</span>
                     <span class="tile-label">River</span>
                 </button>
-                <button type="button" class="track-tile" data-is-playlist="true" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/jaskaran-singh-847899430/sets/karan-aujla-all-songs&color=%232563eb&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
+                <button type="button" class="track-tile" data-track="aujla" data-is-playlist="true" data-url="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/jaskaran-singh-847899430/sets/karan-aujla-all-songs&color=%23ef233c&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false" onclick="changeSoundcloudTrack(this)">
                     <span class="tile-icon">🔥</span>
                     <span class="tile-label">Aujla</span>
                 </button>
@@ -403,15 +406,124 @@
 <script src="https://w.soundcloud.com/player/api.js" type="text/javascript"></script>
 <script>
     /* ==========================================================================
-       SOUNDCLOUD DYNAMIC PLAYLIST LOGIC
+       UNIFIED POMODORO & SOUNDCLOUD AUDIO ENGINE
+       ========================================================================== */
+    const timeDisplay = document.getElementById('pomodoro-time');
+    const progressCircle = document.getElementById('pomodoro-progress');
+    const statusText = document.getElementById('pomodoro-status');
+    const btnStart = document.getElementById('pomodoro-start');
+    const btnReset = document.getElementById('pomodoro-reset');
+    const presetBtns = document.querySelectorAll('.focus-preset-btn');
+    const focusTaskInput = document.getElementById('focus-task');
+
+    // Circle circumference (2 * pi * r) where r = 72
+    const circumference = 2 * Math.PI * 72; // ~452.4
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    // Sync Pomodoro Input task to localstorage
+    if (focusTaskInput) {
+        focusTaskInput.value = localStorage.getItem('pomodoro_task') || '';
+        focusTaskInput.addEventListener('input', (e) => {
+            localStorage.setItem('pomodoro_task', e.target.value);
+        });
+    }
+
+    // Every 200ms sync Pomodoro UI with Local Storage to ensure real-time harmony
+    function syncFocusRoomUI() {
+        const isRunning = localStorage.getItem('pomodoro_running') === 'true';
+        const endTime = parseInt(localStorage.getItem('pomodoro_end_time')) || 0;
+        const totalSeconds = parseInt(localStorage.getItem('pomodoro_total_seconds')) || 25 * 60;
+        const mode = localStorage.getItem('pomodoro_mode') || 'study';
+
+        let remaining = 0;
+        if (isRunning) {
+            remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+        } else {
+            remaining = parseInt(localStorage.getItem('pomodoro_remaining_seconds')) || totalSeconds;
+        }
+
+        // Update displays
+        timeDisplay.innerText = formatTime(remaining);
+        const offset = circumference - (remaining / totalSeconds) * circumference;
+        progressCircle.style.strokeDashoffset = offset;
+
+        // Update active modes preset class
+        presetBtns.forEach(btn => {
+            if (btn.getAttribute('data-mode') === mode) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // Update start/pause button
+        if (isRunning) {
+            btnStart.innerHTML = '⏸ PAUSE FOCUS';
+            statusText.innerText = 'Deep work in progress...';
+        } else {
+            btnStart.innerHTML = '▶ START FOCUS';
+            statusText.innerText = remaining === 0 ? 'Session completed! Take a break.' : 'Ready to focus';
+        }
+    }
+
+    // Pomodoro Click Controls
+    btnStart.addEventListener('click', () => {
+        const isRunning = localStorage.getItem('pomodoro_running') === 'true';
+        if (isRunning) {
+            const endTime = parseInt(localStorage.getItem('pomodoro_end_time')) || 0;
+            const remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+            localStorage.setItem('pomodoro_running', 'false');
+            localStorage.setItem('pomodoro_remaining_seconds', remaining.toString());
+        } else {
+            const totalSec = parseInt(localStorage.getItem('pomodoro_total_seconds')) || 25 * 60;
+            let remaining = parseInt(localStorage.getItem('pomodoro_remaining_seconds'));
+            if (isNaN(remaining) || remaining <= 0) {
+                remaining = totalSec;
+            }
+            localStorage.setItem('pomodoro_running', 'true');
+            localStorage.setItem('pomodoro_end_time', (Date.now() + remaining * 1000).toString());
+        }
+        syncFocusRoomUI();
+    });
+
+    btnReset.addEventListener('click', () => {
+        const totalSec = parseInt(localStorage.getItem('pomodoro_total_seconds')) || 25 * 60;
+        localStorage.setItem('pomodoro_running', 'false');
+        localStorage.setItem('pomodoro_remaining_seconds', totalSec.toString());
+        syncFocusRoomUI();
+    });
+
+    presetBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const minutes = parseInt(this.getAttribute('data-minutes'));
+            const mode = this.getAttribute('data-mode');
+            
+            localStorage.setItem('pomodoro_running', 'false');
+            localStorage.setItem('pomodoro_mode', mode);
+            localStorage.setItem('pomodoro_total_seconds', (minutes * 60).toString());
+            localStorage.setItem('pomodoro_remaining_seconds', (minutes * 60).toString());
+            syncFocusRoomUI();
+        });
+    });
+
+    /* ==========================================================================
+       SOUNDCLOUD DYNAMIC PLAYLIST LOGIC & SYNC WITH GLOBAL PLAYER
        ========================================================================== */
     var scWidget = null;
 
     function initWidget() {
         if (!scWidget) {
-            var iframeElement   = document.querySelector('#soundcloud-iframe');
-            scWidget = SC.Widget(iframeElement);
+            var iframeElement = document.querySelector('#soundcloud-iframe');
+            if (iframeElement && typeof SC !== 'undefined' && SC.Widget) {
+                scWidget = SC.Widget(iframeElement);
+            }
         }
+        return scWidget;
     }
 
     function changeSoundcloudTrack(element) {
@@ -422,117 +534,149 @@
         element.classList.add('active');
         
         // Update iframe source
+        const trackId = element.getAttribute('data-track');
         const newUrl = element.getAttribute('data-url');
-        document.getElementById('soundcloud-iframe').src = newUrl;
+        
+        // Save to localStorage so that base.html global player is synchronized
+        localStorage.setItem('lofi_track', trackId);
+        localStorage.setItem('lofi_track_url', newUrl);
+        localStorage.setItem('lofi_playing', 'true');
+        
+        const iframe = document.getElementById('soundcloud-iframe');
+        if (iframe) {
+            iframe.src = newUrl;
+        }
         
         // Toggle Next button visibility based on whether it's a playlist
         const nextBtn = document.getElementById('next-track-btn');
-        if (element.hasAttribute('data-is-playlist')) {
-            nextBtn.style.display = 'flex';
-        } else {
-            nextBtn.style.display = 'none';
+        if (nextBtn) {
+            if (element.hasAttribute('data-is-playlist')) {
+                nextBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'none';
+            }
         }
         
         // Reset widget instance since iframe src changed
         scWidget = null;
+        setTimeout(() => {
+            const widget = initWidget();
+            if (widget) {
+                widget.bind(SC.Widget.Events.READY, () => {
+                    const lofiVolume = parseFloat(localStorage.getItem('lofi_volume')) || 0.5;
+                    widget.setVolume(lofiVolume * 100);
+                    widget.play();
+                });
+                bindWidgetEvents(widget);
+            }
+        }, 500);
     }
 
     function nextSoundcloudTrack() {
-        initWidget();
-        scWidget.next();
-    }
-
-    function setSoundcloudVolume(vol) {
-        initWidget();
-        scWidget.setVolume(parseFloat(vol));
-    }
-
-    /* ==========================================================================
-       POMODORO TIMER LOGIC
-       ========================================================================== */
-    let timerInterval;
-    let totalSeconds = 25 * 60;
-    let remainingSeconds = totalSeconds;
-    let isTimerRunning = false;
-    
-    const timeDisplay = document.getElementById('pomodoro-time');
-    const progressCircle = document.getElementById('pomodoro-progress');
-    const statusText = document.getElementById('pomodoro-status');
-    const btnStart = document.getElementById('pomodoro-start');
-    const btnReset = document.getElementById('pomodoro-reset');
-    const presetBtns = document.querySelectorAll('.focus-preset-btn');
-    
-    // Circle circumference (2 * pi * r) where r = 72
-    const circumference = 2 * Math.PI * 72; // ~452.4
-
-    function formatTime(seconds) {
-        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const s = (seconds % 60).toString().padStart(2, '0');
-        return `${m}:${s}`;
-    }
-
-    function updateProgress() {
-        timeDisplay.innerText = formatTime(remainingSeconds);
-        const offset = circumference - (remainingSeconds / totalSeconds) * circumference;
-        progressCircle.style.strokeDashoffset = offset;
-    }
-
-    function startTimer() {
-        if (isTimerRunning) {
-            // Pause
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-            btnStart.innerHTML = '▶ Resume';
-            statusText.innerText = 'Paused';
-        } else {
-            // Start
-            if (remainingSeconds === 0) resetTimer(); // Auto reset if starting at 0
-            isTimerRunning = true;
-            btnStart.innerHTML = '⏸ PAUSE';
-            statusText.innerText = 'Deep work in progress...';
-            
-            timerInterval = setInterval(() => {
-                remainingSeconds--;
-                updateProgress();
-                
-                if (remainingSeconds <= 0) {
-                    clearInterval(timerInterval);
-                    isTimerRunning = false;
-                    btnStart.innerHTML = '▶ START FOCUS';
-                    statusText.innerText = 'Session completed! Take a break.';
-                    timeDisplay.innerText = '00:00';
-                    progressCircle.style.strokeDashoffset = circumference;
-                    // Play a soft bell sound if possible, or just visual cue
-                }
-            }, 1000);
+        const widget = initWidget();
+        if (widget) {
+            widget.next();
         }
     }
 
-    function resetTimer() {
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-        remainingSeconds = totalSeconds;
-        updateProgress();
-        btnStart.innerHTML = '▶ START FOCUS';
-        statusText.innerText = 'Ready to focus';
+    function setSoundcloudVolume(vol) {
+        const widget = initWidget();
+        const volFloat = parseFloat(vol) / 100;
+        localStorage.setItem('lofi_volume', volFloat.toString());
+        if (widget) {
+            widget.setVolume(parseFloat(vol));
+        }
     }
 
-    presetBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            presetBtns.forEach(b => {
-                b.classList.remove('active');
-            });
-            this.classList.add('active');
-            
-            totalSeconds = parseInt(this.getAttribute('data-minutes')) * 60;
-            resetTimer();
-        });
+    window.addEventListener('beforeunload', () => {
+        window.isPageUnloading = true;
     });
 
-    btnStart.addEventListener('click', startTimer);
-    btnReset.addEventListener('click', resetTimer);
-    
-    // Initialize
-    updateProgress();
+    function bindWidgetEvents(widget) {
+        if (!widget) return;
+        widget.bind(SC.Widget.Events.PLAY, () => {
+            if (window.isPageUnloading || document.visibilityState === 'hidden') return;
+            localStorage.setItem('lofi_playing', 'true');
+        });
+        widget.bind(SC.Widget.Events.PAUSE, () => {
+            if (window.isPageUnloading || document.visibilityState === 'hidden') return;
+            localStorage.setItem('lofi_playing', 'false');
+        });
+    }
+
+    // Initialize track from localStorage on DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+        const lofiTrack = localStorage.getItem('lofi_track') || 'lofi';
+        const lofiTrackUrl = localStorage.getItem('lofi_track_url') || 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-806836710-661550869/lofi-shiloh-dynasty-1-hour&color=%23ef233c&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false';
+        const lofiPlaying = localStorage.getItem('lofi_playing') === 'true';
+        const lofiVolume = parseFloat(localStorage.getItem('lofi_volume')) || 0.5;
+
+        // Sync volume slider value
+        const volumeInput = document.getElementById('focus-room-volume');
+        if (volumeInput) {
+            volumeInput.value = Math.round(lofiVolume * 100);
+        }
+
+        // Load active track tile class
+        const tiles = document.querySelectorAll('.track-tile');
+        tiles.forEach(tile => {
+            const tileTrack = tile.getAttribute('data-track');
+            if (tileTrack === lofiTrack) {
+                tiles.forEach(t => t.classList.remove('active'));
+                tile.classList.add('active');
+                
+                // Toggle Next button visibility
+                const nextBtn = document.getElementById('next-track-btn');
+                if (nextBtn) {
+                    if (tile.hasAttribute('data-is-playlist')) {
+                        nextBtn.style.display = 'flex';
+                    } else {
+                        nextBtn.style.display = 'none';
+                    }
+                }
+            }
+        });
+
+        // Set iframe source
+        const iframe = document.getElementById('soundcloud-iframe');
+        if (iframe && iframe.src !== lofiTrackUrl) {
+            iframe.src = lofiTrackUrl;
+        }
+
+        // Initialize SoundCloud Widget
+        setTimeout(() => {
+            const widget = initWidget();
+            if (widget) {
+                widget.bind(SC.Widget.Events.READY, () => {
+                    widget.setVolume(lofiVolume * 100);
+                    if (lofiPlaying) {
+                        widget.play();
+                    }
+                });
+                bindWidgetEvents(widget);
+            }
+        }, 1000);
+    });
+
+    // Listen to tab visibility changes to instantly transfer play states between visible and global players
+    document.addEventListener('visibilitychange', () => {
+        const widget = initWidget();
+        if (!widget) return;
+        
+        const lofiPlaying = localStorage.getItem('lofi_playing') === 'true';
+        if (document.visibilityState === 'visible') {
+            // When tab becomes visible, visible player takes over
+            if (lofiPlaying) {
+                widget.play();
+            }
+        } else {
+            // When tab is hidden/backgrounded, pause visible player so global background player plays
+            widget.pause();
+        }
+    });
+
+    // Start sync intervals
+    setInterval(syncFocusRoomUI, 200);
+    syncFocusRoomUI();
 </script>
 {% endblock %}

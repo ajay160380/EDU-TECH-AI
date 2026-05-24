@@ -1,0 +1,35 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}Credential Verification Error - EduTech AI{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; padding: 2rem 1rem; text-align: center; box-sizing: border-box;">
+    <!-- Intricate Glassmorphic Card (Styled to match Pro Space Noir / Red Noir theme swatches) -->
+    <!-- Incorporates 16px high-fidelity backdrop blurs, 8% white executive boundaries, and outer shadow drops -->
+    <div style="max-width: 450px; w: 100%; background: rgba(9, 15, 25, 0.6); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 20px; padding: 2.5rem; box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; gap: 24px; box-sizing: border-box;">
+        <!-- Error Badge Graphic -->
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 28px; animation: pulse 2s infinite;">
+            ⚠️
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <h2 style="margin: 0; font-size: 20px; font-weight: 700; color: #fff; tracking-tight">Credential Not Found</h2>
+            <p style="margin: 0; font-size: 13.5px; color: #94a3b8; leading-relaxed">
+                The certificate credential ID <span style="font-family: monospace; color: #f87171; background: rgba(239, 68, 68, 0.15); padding: 2px 6px; rounded: 4px; border: 1px solid rgba(239, 68, 68, 0.2); font-size: 13px;">{{ credential_id }}</span> is either invalid, expired, or has been revoked.
+            </p>
+        </div>
+
+        <div style="height: 1px; width: 100%; background: rgba(255,255,255,0.08);"></div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box;">
+            <a href="{% url 'register' %}" class="btn btn-primary" style="display: flex; align-items: center; justify-content: center; border-radius: 50px !important; font-weight: 700; padding: 0.75rem 2rem !important; background: var(--primary-hex); color: #fff; box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3); text-decoration: none !important; transition: all 0.2s ease;">
+                Create Your Account 🚀
+            </a>
+            <a href="{% url 'home' %}" class="btn btn-secondary" style="display: flex; align-items: center; justify-content: center; border-radius: 50px !important; font-weight: 600; padding: 0.75rem 2rem !important; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08) !important; color: #fff; text-decoration: none !important; transition: all 0.2s ease;">
+                Go back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
