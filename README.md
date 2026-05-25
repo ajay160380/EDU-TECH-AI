@@ -4,6 +4,7 @@
 ![Django](https://img.shields.io/badge/Django-6.0.4-092e20?style=for-the-badge&logo=django)
 ![Python](https://img.shields.io/badge/Python-3.14-3776ab?style=for-the-badge&logo=python)
 
+
 EduTech AI is a premium, high-fidelity EdTech SaaS platform built with Python (Django) that transforms standard YouTube playlists into comprehensive, interactive learning workspaces. Powered by advanced AI models, the platform acts as an automated study companion, offering textbook-level summaries, customized study plans, smart interactive quizzes, a focused Pomodoro study room, and automated grading systems with dynamic PDF certificate generation on exam completion.
 
 ---
