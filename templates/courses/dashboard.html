@@ -1936,8 +1936,8 @@
     </header>
 
     <!-- AI INSIGHT WIDGET (Always Visible on Top) -->
-    <div class="insight-card anim-in d2"
-        style="margin-bottom: 28px; background: rgba(var(--primary-rgb), 0.03) !important; border: 1px solid rgba(var(--primary-rgb), 0.15) !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important; display: flex; flex-direction: row !important; align-items: center; gap: 20px; padding: 24px;">
+    <div class="insight-card anim-in d2" id="ai-advisor-card" onclick="handleAdvisorClick()"
+        style="margin-bottom: 28px; background: rgba(var(--primary-rgb), 0.03) !important; border: 1px solid rgba(var(--primary-rgb), 0.15) !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important; display: flex; flex-direction: row !important; align-items: center; gap: 20px; padding: 24px; cursor: pointer; transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);">
         <!-- Text Content (Left side) -->
         <div
             style="flex: 1; display: flex; flex-direction: column; text-align: left !important; align-items: flex-start !important;">
@@ -1953,14 +1953,19 @@
             <div class="insight-title" style="font-size: 16px; margin-bottom: 4px; color: #fff; font-weight: 700;">{{ insight.title }}</div>
             <div class="insight-body" style="font-size: 13px; line-height: 1.6; color: var(--text2);">{{ insight.message }}</div>
             {% if insight.cta_url %}
-            <a class="insight-cta" href="{{ insight.cta_url }}"
+            <a class="insight-cta" href="{{ insight.cta_url }}" onclick="event.stopPropagation();"
                 style="background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.15), rgba(var(--primary-rgb), 0.05)); border-color: rgba(var(--primary-rgb), 0.3); color: var(--primary-hex); margin-top: 8px; text-decoration: none; align-self: flex-start; padding: 6px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; transition: all 0.2s;">{{ insight.cta_label }} →</a>
             {% endif %}
             {% else %}
-            <div class="insight-title" style="font-size: 16px; margin-bottom: 4px; color: #fff; font-weight: 700;">Ready
-                to Elevate Your Learning</div>
-            <div class="insight-body" style="font-size: 13px; line-height: 1.6; color: var(--text2);">Start a new course
-                or complete study sessions to receive real-time, personalized AI recommendations here.</div>
+            {% if user.profile.plan_type == 'pro' or user.profile.plan_type == 'ultra' %}
+            <div class="insight-title" style="font-size: 16px; margin-bottom: 4px; color: #fff; font-weight: 700;">Streak at Risk</div>
+            <div class="insight-body" style="font-size: 13px; line-height: 1.6; color: var(--text2);">Your {{ profile.streak_count|default:"1" }}-day streak is at risk! Study today to keep it alive.</div>
+            <div style="display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 6px 16px; border-radius: 8px; background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.15), rgba(var(--primary-rgb), 0.05)); border: 1px solid rgba(var(--primary-rgb), 0.3); color: var(--primary-hex); font-weight: 700; font-size: 12px; letter-spacing: 0.3px; transition: all 0.3s;">💬 Open AI Assistant →</div>
+            {% else %}
+            <div class="insight-title" style="font-size: 16px; margin-bottom: 4px; color: #fff; font-weight: 700;">Streak at Risk</div>
+            <div class="insight-body" style="font-size: 13px; line-height: 1.6; color: var(--text2);">Your {{ profile.streak_count|default:"1" }}-day streak is at risk! Study today to keep it alive.</div>
+            <div style="display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 6px 16px; border-radius: 8px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05)); border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; font-weight: 700; font-size: 12px; letter-spacing: 0.3px; transition: all 0.3s;">⚡ Upgrade to Pro / Ultra to Activate AI Assistant</div>
+            {% endif %}
             {% endif %}
         </div>
 
@@ -2221,7 +2226,7 @@
 </div>
 
 <!-- AI CHAT -->
-{% if user.profile.plan_type == 'ultra' %}
+{% if user.profile.plan_type == 'ultra' or user.profile.plan_type == 'pro' %}
 <div class="ai-fab">
     <div class="ai-panel" id="ai-panel">
         <div class="ai-panel-head">
@@ -2534,7 +2539,20 @@
     // ── AI CHAT ──────────────────────────────────────────────────────────
     const aiPanel = document.getElementById('ai-panel');
     const aiMessages = document.getElementById('ai-messages');
-    function toggleChat() { aiPanel.classList.toggle('open') }
+    function toggleChat() { if (aiPanel) aiPanel.classList.toggle('open'); }
+
+    // AI Advisor Card Click Handler
+    function handleAdvisorClick() {
+        {% if user.profile.plan_type == 'pro' or user.profile.plan_type == 'ultra' %}
+            // Pro / Ultra user → open assistant panel
+            if (aiPanel) {
+                aiPanel.classList.add('open');
+            }
+        {% else %}
+            // Free user → show upgrade recommendation toast
+            showToast(`🔒 <strong>AI Assistant is a Pro / Ultra Feature!</strong> Upgrade your plan to unlock your personal AI study companion. <a href="{% url 'pricing' %}" style="color: #f59e0b; text-decoration: underline; font-weight: 700;">Upgrade Now →</a>`, 'warn', 10000);
+        {% endif %}
+    }
     function addMsg(text, cls) {
         const div = document.createElement('div');
         div.className = `ai-msg ${cls}`;
