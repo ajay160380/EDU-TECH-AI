@@ -29,4 +29,4 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Command to run the production WSGI application with gunicorn
-CMD python manage.py migrate --noinput && gunicorn focustube.wsgi:application --bind 0.0.0.0:$PORT
+CMD python manage.py migrate --noinput && chmod -R 777 /app && gunicorn focustube.wsgi:application --bind 0.0.0.0:$PORT
