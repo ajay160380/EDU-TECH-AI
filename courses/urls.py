@@ -46,6 +46,7 @@ urlpatterns = [
     path('docs/', views.docs_view, name='docs'),
     path('blog/', views.blog_view, name='blog'),
     path('careers/', views.careers_view, name='careers'),
-    path('shipping/', views.shipping_view, name='shipping'),
+    path('refund/', views.refund_view, name='refund'),
+    path('contact/', views.contact_view, name='contact'),
     path('certificate/verify/<str:credential_id>/', views.verify_certificate_view, name='verify_certificate'),
 ]
