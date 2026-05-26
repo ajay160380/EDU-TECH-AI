@@ -6,8 +6,10 @@
 {% block content %}
 
 <!-- Hero Section -->
-<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6">
-    <div class="text-center max-w-4xl mx-auto">
+<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6 relative overflow-hidden" id="features-view-wrapper">
+    <!-- WebGL Neon Tubes 3D Cursor -->
+    <canvas id="features-tubes" class="absolute inset-0 w-full h-full block z-[1] pointer-events-none" style="opacity: 0.8; touch-action: none;"></canvas>
+    <div class="text-center max-w-4xl mx-auto relative z-10">
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up"
             style="animation-delay: 0.1s;">
             <span class="relative flex h-2 w-2">
@@ -113,4 +115,26 @@
     </div>
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize WebGL Neon Tubes Background on Features Page
+    document.addEventListener('DOMContentLoaded', () => {
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-hex').trim() || '#2563eb';
+        if (typeof window.TubesBackground !== 'undefined') {
+            new window.TubesBackground('#features-tubes', {
+                colors: [primaryColor, "#f967fb", "#6958d5"],
+                lightsColors: [primaryColor, "#fe8a2e", "#ff008a", "#60aed5"],
+                enableClickInteraction: true,
+                clickForce: 1.5,
+                noiseForce: 0.05,
+                ribbonWidth: 3.5,
+                ribbonCount: 8,
+                speedMultiplier: 1.0,
+                cursorTracking: true
+            });
+        }
+    });
+</script>
 {% endblock %}
