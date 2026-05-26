@@ -1284,57 +1284,67 @@ def login_google(request):
     Receives a Firebase ID token, verifies it, matches it against
     Django's User models, logs them in, and returns a JSON response.
     """
-    id_token = request.POST.get('id_token')
-    if not id_token:
-        return JsonResponse({'status': 'error', 'message': 'Missing Firebase ID Token'}, status=400)
-        
-    user_info = verify_firebase_token(id_token)
-    if not user_info:
-        return JsonResponse({'status': 'error', 'message': 'Invalid Firebase ID Token'}, status=401)
-        
-    uid = user_info['uid']
-    email = user_info['email']
-    name = user_info['name']
-    
-    # Generate unique username
-    if not email:
-        username = f"google_{uid[:15]}"
-        email = f"{username}@focustube.com"
-    else:
-        username = email.split('@')[0]
-        
-    base_username = username
-    counter = 1
-    while User.objects.filter(username=username).exclude(email=email).exists():
-        username = f"{base_username}_{counter}"
-        counter += 1
-        
-    # Find or create user
-    user = User.objects.filter(email=email).first()
-    if not user:
-        user = User.objects.filter(username=username).first()
-        
-    if not user:
-        user = User.objects.create_user(username=username, email=email)
-        user.set_unusable_password()
-        user.save()
-        if name:
-            user.first_name = name
-            user.save()
+    try:
+        id_token = request.POST.get('id_token')
+        if not id_token:
+            return JsonResponse({'status': 'error', 'message': 'Missing Firebase ID Token'}, status=400)
             
-    # Establish Session
-    login(request, user)
-    
-    # Ensure profile exists without falsely bumping study streak
-    profile, _ = UserProfile.objects.get_or_create(user=user)
-    
-    messages.success(request, f"Welcome, {user.username}! Signed in securely via Google SSO.")
-    
-    return JsonResponse({
-        'status': 'success',
-        'username': user.username,
-        'redirect_url': '/dashboard/'
-    })
+        user_info = verify_firebase_token(id_token)
+        if not user_info:
+            return JsonResponse({'status': 'error', 'message': 'Invalid Firebase ID Token'}, status=401)
+            
+        uid = user_info['uid']
+        email = user_info['email']
+        name = user_info['name']
+        
+        # Generate unique username
+        if not email:
+            username = f"google_{uid[:15]}"
+            email = f"{username}@focustube.com"
+        else:
+            username = email.split('@')[0]
+            
+        base_username = username
+        counter = 1
+        while User.objects.filter(username=username).exclude(email=email).exists():
+            username = f"{base_username}_{counter}"
+            counter += 1
+            
+        # Find or create user
+        user = User.objects.filter(email=email).first()
+        if not user:
+            user = User.objects.filter(username=username).first()
+            
+        if not user:
+            user = User.objects.create_user(username=username, email=email)
+            user.set_unusable_password()
+            user.save()
+            if name:
+                user.first_name = name
+                user.save()
+                
+        # Establish Session
+        login(request, user)
+        
+        # Ensure profile exists without falsely bumping study streak
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        
+        messages.success(request, f"Welcome, {user.username}! Signed in securely via Google SSO.")
+        
+        return JsonResponse({
+            'status': 'success',
+            'username': user.username,
+            'redirect_url': '/dashboard/'
+        })
+    except Exception as e:
+        import traceback
+        tb = traceback.format_exc()
+        print(f"CRITICAL 500 error in login_google: {e}\n{tb}")
+        return JsonResponse({
+            'status': 'error',
+            'message': f"Server Exception: {str(e)}",
+            'traceback': tb
+        }, status=500)
 
 import razorpay
 from django.views.decorators.csrf import csrf_exempt
