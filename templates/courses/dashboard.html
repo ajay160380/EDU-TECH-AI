@@ -1924,7 +1924,7 @@
             <button class="btn btn-secondary" onclick="openPalette()"
                 style="border-radius: 9999px !important; padding: 8px 20px !important; font-size: 13px !important; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.08) !important; background: rgba(255,255,255,0.03) !important; color: white !important; transition: all 0.2s ease; cursor: pointer;">
                 <iconify-icon icon="lucide:command" style="font-size: 14px; color: rgba(255,255,255,0.6); display: inline-flex; align-items: center;"></iconify-icon>
-                <span>Command Palette</span>
+                <span>Search</span>
                 <kbd style="margin-left: 4px; padding: 2px 6px; font-family: monospace; font-size: 10px; font-weight: 700; border-radius: 4px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); display: inline-flex; align-items: center; line-height: 1;">⌘K</kbd>
             </button>
             <a href="{% url 'import_course' %}" class="btn btn-primary"
@@ -2007,6 +2007,10 @@
         <button class="db-tab-btn" onclick="switchDashboardTab('analytics')"
             style="border-radius: 9999px !important; outline: none; border: none; padding: 10px 24px;">
             <span>📊</span> Analytics & Insights
+        </button>
+        <button class="db-tab-btn" onclick="switchDashboardTab('calendar')" id="tab-calendar-btn"
+            style="border-radius: 9999px !important; outline: none; border: none; padding: 10px 24px;">
+            <span>📅</span> Study Calendar
         </button>
     </div>
 
@@ -2195,6 +2199,179 @@
         </script>
         {% endif %}
     </div>
+</div>
+
+<!-- TAB SECTION 3: STUDY CALENDAR -->
+<div id="db-section-calendar" style="display: none;" class="anim-in d3">
+    {% if user.profile.plan_type == 'ultra' or user.profile.plan_type == 'pro' %}
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- STATS DASHBOARD ROW                                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 1.5rem;">
+        <!-- Stat 1: Total Scheduled -->
+        <div class="glass-card" style="padding: 1.25rem 1.5rem; border-radius: 20px; border: 1px solid rgba(99,102,241,0.15); background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(99,102,241,0.02) 100%); display: flex; align-items: center; gap: 14px; transform: none !important; transition: all 0.3s; box-shadow: 0 4px 20px rgba(99,102,241,0.06);" onmouseover="this.style.transform='translateY(-2px) !important'; this.style.boxShadow='0 8px 30px rgba(99,102,241,0.12)';" onmouseout="this.style.transform='none !important'; this.style.boxShadow='0 4px 20px rgba(99,102,241,0.06)';">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; box-shadow: 0 4px 15px rgba(99,102,241,0.3);">📋</div>
+            <div>
+                <div style="font-size: 1.6rem; font-weight: 800; color: #fff; font-family: 'Outfit'; line-height: 1;" id="cal-stat-total">0</div>
+                <div style="font-size: 0.72rem; color: #a5b4fc; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">Total Scheduled</div>
+            </div>
+        </div>
+        <!-- Stat 2: Completed Today -->
+        <div class="glass-card" style="padding: 1.25rem 1.5rem; border-radius: 20px; border: 1px solid rgba(16,185,129,0.15); background: linear-gradient(135deg, rgba(16,185,129,0.08) 0%, rgba(16,185,129,0.02) 100%); display: flex; align-items: center; gap: 14px; transform: none !important; transition: all 0.3s; box-shadow: 0 4px 20px rgba(16,185,129,0.06);" onmouseover="this.style.transform='translateY(-2px) !important'; this.style.boxShadow='0 8px 30px rgba(16,185,129,0.12)';" onmouseout="this.style.transform='none !important'; this.style.boxShadow='0 4px 20px rgba(16,185,129,0.06)';">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; box-shadow: 0 4px 15px rgba(16,185,129,0.3);">✅</div>
+            <div>
+                <div style="font-size: 1.6rem; font-weight: 800; color: #fff; font-family: 'Outfit'; line-height: 1;" id="cal-stat-completed-today">0</div>
+                <div style="font-size: 0.72rem; color: #6ee7b7; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">Done Today</div>
+            </div>
+        </div>
+        <!-- Stat 3: Completion Rate -->
+        <div class="glass-card" style="padding: 1.25rem 1.5rem; border-radius: 20px; border: 1px solid rgba(245,158,11,0.15); background: linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(245,158,11,0.02) 100%); display: flex; align-items: center; gap: 14px; transform: none !important; transition: all 0.3s; box-shadow: 0 4px 20px rgba(245,158,11,0.06);" onmouseover="this.style.transform='translateY(-2px) !important'; this.style.boxShadow='0 8px 30px rgba(245,158,11,0.12)';" onmouseout="this.style.transform='none !important'; this.style.boxShadow='0 4px 20px rgba(245,158,11,0.06)';">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; box-shadow: 0 4px 15px rgba(245,158,11,0.3);">📊</div>
+            <div>
+                <div style="font-size: 1.6rem; font-weight: 800; color: #fff; font-family: 'Outfit'; line-height: 1;" id="cal-stat-rate">0%</div>
+                <div style="font-size: 0.72rem; color: #fcd34d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">On Track</div>
+            </div>
+        </div>
+        <!-- Stat 4: Remaining -->
+        <div class="glass-card" style="padding: 1.25rem 1.5rem; border-radius: 20px; border: 1px solid rgba(239,68,68,0.15); background: linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(239,68,68,0.02) 100%); display: flex; align-items: center; gap: 14px; transform: none !important; transition: all 0.3s; box-shadow: 0 4px 20px rgba(239,68,68,0.06);" onmouseover="this.style.transform='translateY(-2px) !important'; this.style.boxShadow='0 8px 30px rgba(239,68,68,0.12)';" onmouseout="this.style.transform='none !important'; this.style.boxShadow='0 4px 20px rgba(239,68,68,0.06)';">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; box-shadow: 0 4px 15px rgba(239,68,68,0.3);">🔥</div>
+            <div>
+                <div style="font-size: 1.6rem; font-weight: 800; color: #fff; font-family: 'Outfit'; line-height: 1;" id="cal-stat-remaining">0</div>
+                <div style="font-size: 0.72rem; color: #fca5a5; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">Remaining</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- COURSE FILTER PILLS                                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; align-items: center;">
+        <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600; margin-right: 4px;">Filter:</span>
+        <button class="cal-filter-pill active" data-course-id="all" onclick="filterCalendarCourse('all', this)" style="padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.1); color: #fff; transition: all 0.25s; outline: none;">
+            🎯 All Courses
+        </button>
+        <div id="cal-course-filter-pills" style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <!-- Dynamically populated per course -->
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- MAIN LAYOUT: CALENDAR + TODAY'S AGENDA SIDEBAR             -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;" id="cal-main-layout">
+
+        <!-- LEFT: Calendar Grid -->
+        <div class="glass-card" style="padding: 1.75rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); background: rgba(15,15,25,0.65); transform: none !important; transition: none !important; box-shadow: var(--shadow-card), var(--highlight-top) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+            <!-- Calendar Navigation Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(139,92,246,0.1) 100%); border: 1px solid rgba(99,102,241,0.25); display: flex; align-items: center; justify-content: center; font-size: 1.15rem;">📅</div>
+                    <div>
+                        <h2 style="font-family: 'Outfit'; font-size: 1.35rem; font-weight: 800; color: #fff; margin: 0; line-height: 1.2;" id="calendar-month-year">May 2026</h2>
+                        <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500;" id="cal-subtitle">AI-Generated Study Roadmap</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                    <button onclick="calGoToday()" style="background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08)); border: 1px solid rgba(99,102,241,0.25); color: #a5b4fc; border-radius: 10px; padding: 7px 14px; cursor: pointer; transition: all 0.2s; font-size: 0.78rem; font-weight: 700; font-family: inherit;" onmouseover="this.style.background='linear-gradient(135deg, rgba(99,102,241,0.25), rgba(139,92,246,0.15))'" onmouseout="this.style.background='linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08))'">Today</button>
+                    <button onclick="prevMonth()" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fff; border-radius: 10px; width: 36px; height: 36px; cursor: pointer; transition: all 0.2s; font-size: 1rem;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">&larr;</button>
+                    <button onclick="nextMonth()" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fff; border-radius: 10px; width: 36px; height: 36px; cursor: pointer; transition: all 0.2s; font-size: 1rem;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">&rarr;</button>
+                </div>
+            </div>
+
+            <!-- Weekday Headers -->
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; color: rgba(148,163,184,0.6); margin-bottom: 6px; letter-spacing: 0.08em;">
+                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+            </div>
+            <div id="calendar-days-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;">
+                <!-- Days grid populated by JavaScript -->
+            </div>
+
+            <!-- Course Legend -->
+            <div id="cal-legend" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06);">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- RIGHT: Today's Agenda Sidebar -->
+        <div style="display: flex; flex-direction: column; gap: 16px;" id="cal-sidebar">
+            <!-- Today's Focus Card -->
+            <div class="glass-card" style="padding: 1.5rem; border-radius: 20px; border: 1px solid rgba(99,102,241,0.15); background: linear-gradient(135deg, rgba(15,15,25,0.7) 0%, rgba(99,102,241,0.04) 100%); transform: none !important; transition: none !important; box-shadow: var(--shadow-card), var(--highlight-top) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.25rem;">🎯</span>
+                        <h3 style="font-family: 'Outfit'; font-size: 1.05rem; color: #fff; font-weight: 700; margin: 0;">Today's Agenda</h3>
+                    </div>
+                    <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; background: rgba(255,255,255,0.04); padding: 3px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);" id="cal-today-date"></span>
+                </div>
+                <!-- Today's progress ring -->
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1rem; padding: 1rem; background: rgba(99,102,241,0.06); border-radius: 14px; border: 1px solid rgba(99,102,241,0.1);">
+                    <svg width="56" height="56" viewBox="0 0 56 56" style="flex-shrink: 0;">
+                        <circle cx="28" cy="28" r="22" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="5"/>
+                        <circle cx="28" cy="28" r="22" fill="none" stroke="url(#calProgressGrad)" stroke-width="5" stroke-linecap="round" id="cal-today-ring" stroke-dasharray="138.23" stroke-dashoffset="138.23" style="transform: rotate(-90deg); transform-origin: center; transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1);"/>
+                        <defs><linearGradient id="calProgressGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#10b981"/></linearGradient></defs>
+                        <text x="28" y="32" text-anchor="middle" fill="#fff" font-family="Outfit" font-size="13" font-weight="800" id="cal-today-ring-text">0%</text>
+                    </svg>
+                    <div>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: #fff;" id="cal-today-summary">No tasks scheduled</div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;" id="cal-today-subtitle">Import courses to generate your roadmap</div>
+                    </div>
+                </div>
+                <!-- Today's task list -->
+                <div id="cal-today-tasks" style="display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.08) transparent; padding-right: 4px;">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Weekly Overview Mini-Chart -->
+            <div class="glass-card" style="padding: 1.25rem 1.5rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); background: rgba(15,15,25,0.65); transform: none !important; transition: none !important; box-shadow: var(--shadow-card), var(--highlight-top) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1rem;">📈</span>
+                        <h3 style="font-family: 'Outfit'; font-size: 0.95rem; color: #fff; font-weight: 700; margin: 0;">This Week</h3>
+                    </div>
+                    <span style="font-size: 0.7rem; color: #a5b4fc; font-weight: 700; background: rgba(99,102,241,0.1); padding: 3px 10px; border-radius: 12px; border: 1px solid rgba(99,102,241,0.15);" id="cal-week-label"></span>
+                </div>
+                <div id="cal-weekly-bars" style="display: flex; gap: 6px; align-items: flex-end; height: 80px;">
+                    <!-- 7 bars rendered by JS -->
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 6px;">
+                    <span style="font-size: 0.65rem; color: var(--text-muted);">Mon</span>
+                    <span style="font-size: 0.65rem; color: var(--text-muted);">Tue</span>
+                    <span style="font-size: 0.65rem; color: var(--text-muted);">Wed</span>
+                    <span style="font-size: 0.65rem; color: var(--text-muted);">Thu</span>
+                    <span style="font-size: 0.65rem; color: var(--text-muted);">Fri</span>
+                    <span style="font-size: 0.65rem; color: var(--text-muted);">Sat</span>
+                    <span style="font-size: 0.65rem; color: var(--text-muted);">Sun</span>
+                </div>
+            </div>
+
+            <!-- Motivational Tip -->
+            <div style="padding: 1rem 1.25rem; border-radius: 16px; background: linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(239,68,68,0.03) 100%); border: 1px solid rgba(245,158,11,0.12); display: flex; align-items: flex-start; gap: 10px;">
+                <span style="font-size: 1.3rem; flex-shrink: 0;">💡</span>
+                <div>
+                    <div style="font-size: 0.8rem; font-weight: 700; color: #fcd34d; margin-bottom: 2px;">Pro Tip</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5;" id="cal-pro-tip">Consistent daily study beats marathon sessions. Even 15 minutes a day builds lasting knowledge through spaced repetition.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- LOCKED PREMIUM STATE FOR FREE USERS                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="glass-card" style="padding: 4rem 2rem; border-radius: 24px; text-align: center; background: linear-gradient(135deg, rgba(20,20,30,0.8) 0%, rgba(30,30,40,0.8) 100%); border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 450px;">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 1.5rem; box-shadow: 0 0 30px rgba(99,102,241,0.15);">
+            🔒
+        </div>
+        <h2 style="font-family: 'Outfit'; font-size: 2rem; color: #fff; font-weight: 800; margin-bottom: 0.75rem;">Study Calendar Locked</h2>
+        <p style="color: var(--text-secondary); max-width: 480px; line-height: 1.6; margin-bottom: 2rem;">
+            Upgrade to <strong style="color: #a5b4fc;">Pro</strong> or <strong style="color: #fcd34d;">Ultra</strong> to unlock dynamic AI-generated study roadmaps. Get customized daily agendas, completion tracking, and spaced repetition schedules that guarantee you finish courses on time.
+        </p>
+        <a href="{% url 'pricing' %}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: #fff; padding: 12px 28px; border-radius: 99px; font-weight: 700; text-decoration: none; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(99,102,241,0.3); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(99,102,241,0.4)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 15px rgba(99,102,241,0.3)';">
+            Unlock Features ⚡
+        </a>
+    </div>
+    {% endif %}
 </div>
 
 <!-- COMMAND PALETTE -->
@@ -2601,11 +2778,23 @@
         document.getElementById('toast-wrap').appendChild(t);
         setTimeout(() => { t.style.opacity = '0'; t.style.transition = '.3s'; setTimeout(() => t.remove(), 300) }, dur);
     }
-    // Streak at-risk demo
+    // Dynamic real-time Streak tracking alert
     setTimeout(() => {
-        const h = new Date().getHours();
-        if (h >= 18 || true) {
-            showToast(`🔥 <strong>Your {{ profile.streak_count|default:"1" }}-Day Streak is Active!</strong> Log a study session before midnight to keep your learning momentum alive! 🚀`, 'warn', 8000);
+        const hasStudiedToday = {{ activity_today|yesno:"true,false" }};
+        const streakCount = {{ profile.streak_count|default:0 }};
+        
+        if (hasStudiedToday) {
+            if (streakCount > 0) {
+                showToast(`🎉 <strong>Your ${streakCount}-Day Streak is Active & Saved!</strong> Great job keeping your learning momentum alive today! 🚀`, 'success', 8000);
+            } else {
+                showToast(`🎉 <strong>First day of your streak!</strong> Keep studying daily to build your learning momentum! 🚀`, 'success', 8000);
+            }
+        } else {
+            if (streakCount > 0) {
+                showToast(`🔥 <strong>Your ${streakCount}-Day Streak is at Risk!</strong> Log a study session before midnight to keep your learning momentum alive! 🚀`, 'warn', 8000);
+            } else {
+                showToast(`⚡ <strong>No active streak!</strong> Start a study session today to build your learning habit! 🚀`, 'info', 8000);
+            }
         }
     }, 2500);
     // ── TIME & TABS ────────────────────────────────────────────────────
@@ -2624,6 +2813,7 @@
     function switchDashboardTab(tab) {
         const coursesSection = document.getElementById('db-section-courses');
         const analyticsSection = document.getElementById('db-section-analytics');
+        const calendarSection = document.getElementById('db-section-calendar');
         const buttons = document.querySelectorAll('.db-tab-btn');
 
         if (!coursesSection || !analyticsSection) return;
@@ -2633,15 +2823,551 @@
         if (tab === 'courses') {
             coursesSection.style.display = 'block';
             analyticsSection.style.display = 'none';
+            if (calendarSection) calendarSection.style.display = 'none';
             buttons[0].classList.add('active');
-        } else {
+        } else if (tab === 'analytics') {
             coursesSection.style.display = 'none';
             analyticsSection.style.display = 'block';
+            if (calendarSection) calendarSection.style.display = 'none';
             buttons[1].classList.add('active');
             // Rebuild heatmap to handle canvas/grid recalculations
             renderYearlyHeatmap(currentHeatmapYear);
+        } else if (tab === 'calendar') {
+            coursesSection.style.display = 'none';
+            analyticsSection.style.display = 'none';
+            if (calendarSection) calendarSection.style.display = 'block';
+            buttons[2].classList.add('active');
+            // Rebuild calendar grid
+            renderStudyCalendar();
         }
     }
+
+    let currentCalMonth = new Date().getMonth();
+    let currentCalYear = new Date().getFullYear();
+    let calFilterCourseId = 'all';
+
+    // ── COURSE COLOR PALETTE ────────────────────────────────────────
+    const CAL_COLORS = [
+        { bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.3)', dot: '#6366f1', text: '#a5b4fc', name: 'Indigo' },
+        { bg: 'rgba(236,72,153,0.12)', border: 'rgba(236,72,153,0.3)', dot: '#ec4899', text: '#f9a8d4', name: 'Pink' },
+        { bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.3)', dot: '#10b981', text: '#6ee7b7', name: 'Emerald' },
+        { bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.3)', dot: '#f59e0b', text: '#fcd34d', name: 'Amber' },
+        { bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.3)', dot: '#8b5cf6', text: '#c4b5fd', name: 'Violet' },
+        { bg: 'rgba(14,165,233,0.12)', border: 'rgba(14,165,233,0.3)', dot: '#0ea5e9', text: '#7dd3fc', name: 'Sky' },
+        { bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.3)', dot: '#ef4444', text: '#fca5a5', name: 'Red' },
+        { bg: 'rgba(20,184,166,0.12)', border: 'rgba(20,184,166,0.3)', dot: '#14b8a6', text: '#5eead4', name: 'Teal' },
+    ];
+
+    // Assign stable color to each course by index
+    const courseColorMap = {};
+    COURSES.forEach((c, i) => { courseColorMap[c.id] = CAL_COLORS[i % CAL_COLORS.length]; });
+
+    // ── PRO TIPS ROTATION ───────────────────────────────────────────
+    const CAL_TIPS = [
+        "Consistent daily study beats marathon sessions. Even 15 minutes a day builds lasting knowledge through spaced repetition.",
+        "Try to study the same subject at the same time each day. Your brain creates stronger neural pathways with routine.",
+        "The Pomodoro technique works: 25 min focused study + 5 min break. Repeat 4x then take a longer break.",
+        "Review yesterday's lecture notes before starting today's video. This simple habit boosts retention by 40%.",
+        "Complete your hardest course first thing in the morning when your willpower is at its peak.",
+        "Teaching what you learn to someone else is the most effective way to solidify your understanding.",
+        "Mark videos as completed immediately after watching. Small wins create powerful motivation loops.",
+    ];
+    const tipEl = document.getElementById('cal-pro-tip');
+    if (tipEl) tipEl.textContent = CAL_TIPS[Math.floor(Math.random() * CAL_TIPS.length)];
+
+    // ── BUILD SCHEDULE MAP (all months) ─────────────────────────────
+    // Maps each calendar day to an array of scheduled video tasks.
+    // The schedule is computed from:
+    //   - course.created_date: "YYYY-MM-DD" string (the day the user imported the course)
+    //   - course.target: integer days (the user's goal to finish in N days)
+    //   - course.videos_data: array of {id, title, order, completed} sorted by order
+    //
+    // dailyTarget = ceil(totalVideos / targetDays)
+    // Day 0 = created_date → first dailyTarget videos
+    // Day 1 = created_date + 1 → next dailyTarget videos
+    // ... until all videos are scheduled or targetDays is reached
+    function buildScheduleMap() {
+        const map = {};
+        COURSES.forEach(course => {
+            if (!course.created_date || !course.videos_data || !course.videos_data.length) return;
+
+            // Parse "YYYY-MM-DD" as LOCAL date (not UTC)
+            // new Date("2026-05-17") parses as UTC midnight which shifts to wrong day in IST
+            const parts = course.created_date.split('-');
+            const startYear = parseInt(parts[0]);
+            const startMonth = parseInt(parts[1]) - 1; // JS months are 0-indexed
+            const startDay = parseInt(parts[2]);
+
+            const targetDays = course.target || 30;
+            // Sort videos by order to ensure correct sequence
+            const sortedVideos = [...course.videos_data].sort((a, b) => (a.order || 0) - (b.order || 0));
+            const totalVideos = sortedVideos.length;
+            const dailyTarget = Math.ceil(totalVideos / targetDays);
+
+            let videoIndex = 0;
+            for (let dayOffset = 0; dayOffset < targetDays && videoIndex < totalVideos; dayOffset++) {
+                // Create local date for this schedule day
+                const d = new Date(startYear, startMonth, startDay + dayOffset);
+                const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+                if (!map[key]) map[key] = [];
+
+                for (let k = 0; k < dailyTarget && videoIndex < totalVideos; k++) {
+                    const video = sortedVideos[videoIndex];
+                    map[key].push({
+                        courseId: course.id,
+                        courseTitle: course.title,
+                        videoId: video.id,
+                        videoTitle: video.title,
+                        completed: video.completed
+                    });
+                    videoIndex++;
+                }
+            }
+        });
+        return map;
+    }
+
+    // ── FILTER PILLS SETUP ──────────────────────────────────────────
+    function setupFilterPills() {
+        const container = document.getElementById('cal-course-filter-pills');
+        if (!container) return;
+        container.innerHTML = '';
+        COURSES.forEach(c => {
+            const color = courseColorMap[c.id];
+            const pill = document.createElement('button');
+            pill.className = 'cal-filter-pill';
+            pill.setAttribute('data-course-id', c.id);
+            pill.onclick = () => filterCalendarCourse(c.id, pill);
+            pill.style.cssText = `padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer; border: 1px solid ${color.border}; background: ${color.bg}; color: ${color.text}; transition: all 0.25s; outline: none; display: flex; align-items: center; gap: 5px;`;
+            pill.innerHTML = `<span style="width: 8px; height: 8px; border-radius: 50%; background: ${color.dot}; flex-shrink: 0;"></span>${c.title.length > 22 ? c.title.slice(0, 22) + '…' : c.title}`;
+            container.appendChild(pill);
+        });
+    }
+
+    window.filterCalendarCourse = function(courseId, btn) {
+        calFilterCourseId = courseId;
+        document.querySelectorAll('.cal-filter-pill').forEach(p => {
+            p.classList.remove('active');
+            p.style.opacity = '0.55';
+        });
+        if (btn) {
+            btn.classList.add('active');
+            btn.style.opacity = '1';
+        }
+        // Reset "All" pill
+        const allPill = document.querySelector('.cal-filter-pill[data-course-id="all"]');
+        if (courseId === 'all' && allPill) {
+            allPill.style.opacity = '1';
+            document.querySelectorAll('.cal-filter-pill').forEach(p => p.style.opacity = '1');
+        }
+        renderStudyCalendar();
+    };
+
+    // ── CALENDAR RENDER ─────────────────────────────────────────────
+    function renderStudyCalendar() {
+        const monthYearEl = document.getElementById('calendar-month-year');
+        const daysGridEl = document.getElementById('calendar-days-grid');
+        if (!monthYearEl || !daysGridEl) return;
+
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        monthYearEl.textContent = `${monthNames[currentCalMonth]} ${currentCalYear}`;
+
+        const subtitleEl = document.getElementById('cal-subtitle');
+        if (subtitleEl) subtitleEl.textContent = `${COURSES.length} course${COURSES.length !== 1 ? 's' : ''} • AI-Generated Roadmap`;
+
+        daysGridEl.innerHTML = '';
+
+        const firstDayIdx = new Date(currentCalYear, currentCalMonth, 1).getDay();
+        const totalDaysInMonth = new Date(currentCalYear, currentCalMonth + 1, 0).getDate();
+        const scheduleMap = buildScheduleMap();
+        const today = new Date();
+        const isCurrentMonthYear = (today.getFullYear() === currentCalYear && today.getMonth() === currentCalMonth);
+
+        // Stats accumulators
+        let totalScheduled = 0, totalCompleted = 0, todayScheduled = 0, todayCompleted = 0;
+
+        // Empty cells
+        for (let i = 0; i < firstDayIdx; i++) {
+            const empty = document.createElement('div');
+            empty.style.cssText = 'border-radius: 12px; min-height: 80px;';
+            daysGridEl.appendChild(empty);
+        }
+
+        // Day cells
+        for (let dayNum = 1; dayNum <= totalDaysInMonth; dayNum++) {
+            const dateKey = `${currentCalYear}-${currentCalMonth}-${dayNum}`;
+            let allItems = scheduleMap[dateKey] || [];
+            // Apply filter
+            let items = calFilterCourseId === 'all' ? allItems : allItems.filter(i => i.courseId == calFilterCourseId);
+
+            totalScheduled += items.length;
+            totalCompleted += items.filter(i => i.completed).length;
+
+            const isToday = isCurrentMonthYear && today.getDate() === dayNum;
+            const isPast = new Date(currentCalYear, currentCalMonth, dayNum) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const completedCount = items.filter(i => i.completed).length;
+            const allDone = items.length > 0 && completedCount === items.length;
+            const hasOverdue = isPast && items.length > 0 && !allDone;
+
+            if (isToday) {
+                todayScheduled = items.length;
+                todayCompleted = completedCount;
+            }
+
+            const cell = document.createElement('div');
+            let bgStyle = 'rgba(255,255,255,0.015)';
+            let borderStyle = '1px solid rgba(255,255,255,0.04)';
+            let shadowStyle = 'none';
+
+            if (isToday) {
+                bgStyle = 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.05) 100%)';
+                borderStyle = '2px solid rgba(99,102,241,0.45)';
+                shadowStyle = '0 0 20px rgba(99,102,241,0.12), inset 0 0 20px rgba(99,102,241,0.03)';
+            } else if (allDone) {
+                bgStyle = 'rgba(16,185,129,0.04)';
+                borderStyle = '1px solid rgba(16,185,129,0.12)';
+            } else if (hasOverdue) {
+                bgStyle = 'rgba(239,68,68,0.03)';
+                borderStyle = '1px solid rgba(239,68,68,0.08)';
+            }
+
+            cell.style.cssText = `background: ${bgStyle}; border: ${borderStyle}; border-radius: 14px; min-height: 80px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; transition: all 0.25s cubic-bezier(0.16,1,0.3,1); cursor: default; position: relative; box-shadow: ${shadowStyle};`;
+
+            cell.onmouseover = () => {
+                cell.style.transform = 'scale(1.04)';
+                cell.style.zIndex = '5';
+                cell.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)';
+            };
+            cell.onmouseout = () => {
+                cell.style.transform = 'scale(1)';
+                cell.style.zIndex = '';
+                cell.style.boxShadow = shadowStyle;
+            };
+
+            // Day number + today badge
+            const header = document.createElement('div');
+            header.style.cssText = 'display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;';
+
+            const numSpan = document.createElement('span');
+            numSpan.style.cssText = `font-size: 0.82rem; font-weight: 800; font-family: 'Outfit'; color: ${isToday ? '#a5b4fc' : '#94a3b8'};`;
+            numSpan.textContent = dayNum;
+            header.appendChild(numSpan);
+
+            if (isToday) {
+                const todayBadge = document.createElement('span');
+                todayBadge.style.cssText = 'font-size: 0.58rem; font-weight: 800; color: #6366f1; background: rgba(99,102,241,0.15); padding: 1px 6px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.05em;';
+                todayBadge.textContent = 'TODAY';
+                header.appendChild(todayBadge);
+            } else if (allDone && items.length > 0) {
+                const doneBadge = document.createElement('span');
+                doneBadge.style.cssText = 'font-size: 0.7rem;';
+                doneBadge.textContent = '✓';
+                header.appendChild(doneBadge);
+            }
+
+            cell.appendChild(header);
+
+            // Course color dots row
+            if (items.length > 0) {
+                const dotsRow = document.createElement('div');
+                dotsRow.style.cssText = 'display: flex; gap: 3px; flex-wrap: wrap; align-items: center;';
+
+                // Group by course to show unique dots
+                const coursesInDay = {};
+                items.forEach(item => {
+                    if (!coursesInDay[item.courseId]) coursesInDay[item.courseId] = { total: 0, done: 0, title: item.courseTitle };
+                    coursesInDay[item.courseId].total++;
+                    if (item.completed) coursesInDay[item.courseId].done++;
+                });
+
+                Object.keys(coursesInDay).forEach(cid => {
+                    const color = courseColorMap[cid] || CAL_COLORS[0];
+                    const info = coursesInDay[cid];
+                    const dot = document.createElement('div');
+                    const opacity = info.done === info.total ? '0.4' : '1';
+                    dot.style.cssText = `width: 7px; height: 7px; border-radius: 50%; background: ${color.dot}; opacity: ${opacity}; box-shadow: 0 0 6px ${color.dot}40; transition: all 0.2s; flex-shrink: 0;`;
+                    dot.title = `${info.title}: ${info.done}/${info.total} done`;
+                    dotsRow.appendChild(dot);
+                });
+
+                // Task count badge
+                const countBadge = document.createElement('span');
+                const countColor = allDone ? '#10b981' : (hasOverdue ? '#ef4444' : '#94a3b8');
+                countBadge.style.cssText = `font-size: 0.62rem; color: ${countColor}; font-weight: 700; margin-left: auto;`;
+                countBadge.textContent = `${completedCount}/${items.length}`;
+                dotsRow.appendChild(countBadge);
+
+                cell.appendChild(dotsRow);
+
+                // Mini progress bar
+                if (items.length > 0) {
+                    const progressBar = document.createElement('div');
+                    progressBar.style.cssText = 'height: 3px; border-radius: 4px; background: rgba(255,255,255,0.04); overflow: hidden; margin-top: auto;';
+                    const fill = document.createElement('div');
+                    const pct = Math.round((completedCount / items.length) * 100);
+                    const fillColor = pct === 100 ? '#10b981' : (hasOverdue ? '#ef4444' : '#6366f1');
+                    fill.style.cssText = `height: 100%; border-radius: 4px; background: ${fillColor}; width: ${pct}%; transition: width 0.6s cubic-bezier(0.16,1,0.3,1);`;
+                    progressBar.appendChild(fill);
+                    cell.appendChild(progressBar);
+                }
+            }
+
+            daysGridEl.appendChild(cell);
+        }
+
+        // ── UPDATE STAT COUNTERS ────────────────────────────────────
+        animateStatCounter('cal-stat-total', totalScheduled);
+        animateStatCounter('cal-stat-completed-today', todayCompleted);
+        animateStatCounter('cal-stat-remaining', totalScheduled - totalCompleted);
+        const ratePct = totalScheduled > 0 ? Math.round((totalCompleted / totalScheduled) * 100) : 0;
+        const rateEl = document.getElementById('cal-stat-rate');
+        if (rateEl) rateEl.textContent = `${ratePct}%`;
+
+        // ── UPDATE TODAY'S AGENDA SIDEBAR ────────────────────────────
+        updateTodayAgenda(scheduleMap);
+
+        // ── UPDATE WEEKLY MINI CHART ────────────────────────────────
+        updateWeeklyChart(scheduleMap);
+
+        // ── UPDATE COURSE LEGEND ────────────────────────────────────
+        updateCalendarLegend();
+    }
+
+    function animateStatCounter(id, target) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const start = parseInt(el.textContent) || 0;
+        if (start === target) return;
+        const duration = 600;
+        const startTime = performance.now();
+        function update(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.floor(start + (target - start) * ease);
+            if (progress < 1) requestAnimationFrame(update);
+            else el.textContent = target;
+        }
+        requestAnimationFrame(update);
+    }
+
+    // ── TODAY'S AGENDA ──────────────────────────────────────────────
+    function updateTodayAgenda(scheduleMap) {
+        const today = new Date();
+        const dateKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+        let items = scheduleMap[dateKey] || [];
+        if (calFilterCourseId !== 'all') items = items.filter(i => i.courseId == calFilterCourseId);
+
+        // Update date label
+        const dateEl = document.getElementById('cal-today-date');
+        if (dateEl) dateEl.textContent = today.toLocaleDateString('en', { month: 'short', day: 'numeric' });
+
+        const completedCount = items.filter(i => i.completed).length;
+        const pct = items.length > 0 ? Math.round((completedCount / items.length) * 100) : 0;
+
+        // Update progress ring
+        const ring = document.getElementById('cal-today-ring');
+        const ringText = document.getElementById('cal-today-ring-text');
+        if (ring) {
+            const circumference = 138.23;
+            const offset = circumference - (circumference * pct / 100);
+            ring.style.strokeDashoffset = offset;
+        }
+        if (ringText) ringText.textContent = `${pct}%`;
+
+        // Update summary
+        const summaryEl = document.getElementById('cal-today-summary');
+        const subtitleEl = document.getElementById('cal-today-subtitle');
+        if (summaryEl) {
+            if (items.length === 0) {
+                summaryEl.textContent = 'No tasks scheduled';
+            } else if (completedCount === items.length) {
+                summaryEl.textContent = '🎉 All done for today!';
+            } else {
+                summaryEl.textContent = `${completedCount} of ${items.length} tasks completed`;
+            }
+        }
+        if (subtitleEl) {
+            if (items.length === 0) {
+                subtitleEl.textContent = 'Import courses to generate your roadmap';
+            } else {
+                const remaining = items.length - completedCount;
+                subtitleEl.textContent = remaining > 0 ? `${remaining} video${remaining !== 1 ? 's' : ''} remaining today` : 'Great work keeping up your pace! 🚀';
+            }
+        }
+
+        // Render task list
+        const tasksContainer = document.getElementById('cal-today-tasks');
+        if (!tasksContainer) return;
+        tasksContainer.innerHTML = '';
+
+        if (items.length === 0) {
+            tasksContainer.innerHTML = '<div style="text-align: center; padding: 1.5rem 0; color: var(--text-muted); font-size: 0.82rem;">No scheduled lectures for today</div>';
+            return;
+        }
+
+        items.forEach((item, idx) => {
+            const color = courseColorMap[item.courseId] || CAL_COLORS[0];
+            const taskEl = document.createElement('a');
+            taskEl.href = `/course/${item.courseId}/learn/?video=${item.videoId}`;
+            taskEl.style.cssText = `text-decoration: none; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: ${item.completed ? 'rgba(16,185,129,0.04)' : 'rgba(255,255,255,0.02)'}; border: 1px solid ${item.completed ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.05)'}; transition: all 0.2s; animation: fadeInUp 0.3s ease-out ${idx * 0.05}s both;`;
+
+            taskEl.onmouseover = () => { taskEl.style.background = color.bg; taskEl.style.borderColor = color.border; taskEl.style.transform = 'translateX(4px)'; };
+            taskEl.onmouseout = () => { taskEl.style.background = item.completed ? 'rgba(16,185,129,0.04)' : 'rgba(255,255,255,0.02)'; taskEl.style.borderColor = item.completed ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.05)'; taskEl.style.transform = 'translateX(0)'; };
+
+            // Course color indicator
+            const indicator = document.createElement('div');
+            indicator.style.cssText = `width: 4px; height: 32px; border-radius: 4px; background: ${item.completed ? '#10b981' : color.dot}; flex-shrink: 0; opacity: ${item.completed ? '0.5' : '1'};`;
+            taskEl.appendChild(indicator);
+
+            // Task info
+            const info = document.createElement('div');
+            info.style.cssText = 'flex: 1; min-width: 0;';
+            info.innerHTML = `
+                <div style="font-size: 0.78rem; font-weight: 600; color: ${item.completed ? '#94a3b8' : '#e2e8f0'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ${item.completed ? 'text-decoration: line-through;' : ''}" title="${item.videoTitle}">${item.videoTitle}</div>
+                <div style="font-size: 0.65rem; color: ${color.text}; font-weight: 500; margin-top: 2px; opacity: 0.8;">${item.courseTitle.length > 28 ? item.courseTitle.slice(0, 28) + '…' : item.courseTitle}</div>
+            `;
+            taskEl.appendChild(info);
+
+            // Status
+            const status = document.createElement('span');
+            status.style.cssText = `font-size: 0.85rem; flex-shrink: 0;`;
+            status.textContent = item.completed ? '✅' : '▶';
+            taskEl.appendChild(status);
+
+            tasksContainer.appendChild(taskEl);
+        });
+    }
+
+    // ── WEEKLY MINI CHART ───────────────────────────────────────────
+    function updateWeeklyChart(scheduleMap) {
+        const barsContainer = document.getElementById('cal-weekly-bars');
+        const weekLabel = document.getElementById('cal-week-label');
+        if (!barsContainer) return;
+        barsContainer.innerHTML = '';
+
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0=Sun
+        const monday = new Date(today);
+        monday.setDate(today.getDate() - ((dayOfWeek + 6) % 7)); // Go to Monday
+
+        if (weekLabel) {
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            weekLabel.textContent = `${monday.toLocaleDateString('en', { month: 'short', day: 'numeric' })} – ${sunday.toLocaleDateString('en', { month: 'short', day: 'numeric' })}`;
+        }
+
+        let maxTasks = 1;
+        const weekData = [];
+        for (let i = 0; i < 7; i++) {
+            const d = new Date(monday);
+            d.setDate(monday.getDate() + i);
+            const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+            let items = scheduleMap[key] || [];
+            if (calFilterCourseId !== 'all') items = items.filter(it => it.courseId == calFilterCourseId);
+            const total = items.length;
+            const done = items.filter(it => it.completed).length;
+            if (total > maxTasks) maxTasks = total;
+            weekData.push({ total, done, isToday: d.toDateString() === today.toDateString() });
+        }
+
+        weekData.forEach((day, idx) => {
+            const barWrap = document.createElement('div');
+            barWrap.style.cssText = 'flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;';
+
+            const bar = document.createElement('div');
+            const h = day.total > 0 ? Math.max(12, (day.total / maxTasks) * 70) : 6;
+            const donePct = day.total > 0 ? (day.done / day.total) : 0;
+            const bgColor = day.total === 0 ? 'rgba(255,255,255,0.03)' : (donePct === 1 ? 'rgba(16,185,129,0.3)' : 'rgba(99,102,241,0.2)');
+            const borderColor = day.isToday ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.04)';
+            bar.style.cssText = `width: 100%; height: ${h}px; border-radius: 6px; background: ${bgColor}; border: 1px solid ${borderColor}; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); transition-delay: ${idx * 0.06}s;`;
+
+            if (day.total > 0 && donePct > 0) {
+                const fill = document.createElement('div');
+                fill.style.cssText = `position: absolute; bottom: 0; left: 0; width: 100%; height: ${donePct * 100}%; background: ${donePct === 1 ? '#10b981' : '#6366f1'}; border-radius: 6px; transition: height 0.6s cubic-bezier(0.16,1,0.3,1);`;
+                bar.appendChild(fill);
+            }
+
+            barWrap.appendChild(bar);
+
+            // Count label
+            if (day.total > 0) {
+                const label = document.createElement('span');
+                label.style.cssText = `font-size: 0.6rem; color: ${day.isToday ? '#a5b4fc' : 'var(--text-muted)'}; font-weight: 700;`;
+                label.textContent = `${day.done}/${day.total}`;
+                barWrap.appendChild(label);
+            }
+
+            barsContainer.appendChild(barWrap);
+        });
+    }
+
+    // ── COURSE LEGEND ───────────────────────────────────────────────
+    function updateCalendarLegend() {
+        const legendEl = document.getElementById('cal-legend');
+        if (!legendEl) return;
+        legendEl.innerHTML = '';
+
+        COURSES.forEach(c => {
+            if (!c.videos_data || !c.videos_data.length) return;
+            const color = courseColorMap[c.id];
+            const item = document.createElement('div');
+            item.style.cssText = 'display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--text-secondary); font-weight: 500;';
+            item.innerHTML = `<span style="width: 10px; height: 10px; border-radius: 50%; background: ${color.dot}; box-shadow: 0 0 8px ${color.dot}40; flex-shrink: 0;"></span>${c.title.length > 25 ? c.title.slice(0, 25) + '…' : c.title}`;
+            legendEl.appendChild(item);
+        });
+
+        // Add completion legend
+        if (COURSES.length > 0) {
+            const sep = document.createElement('div');
+            sep.style.cssText = 'width: 1px; height: 14px; background: rgba(255,255,255,0.08); margin: 0 4px;';
+            legendEl.appendChild(sep);
+
+            [
+                { label: 'Completed', bg: '#10b981' },
+                { label: 'Overdue', bg: '#ef4444' },
+                { label: 'Today', bg: '#6366f1' },
+            ].forEach(legend => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; align-items: center; gap: 5px; font-size: 0.68rem; color: var(--text-muted); font-weight: 500;';
+                item.innerHTML = `<span style="width: 8px; height: 3px; border-radius: 2px; background: ${legend.bg}; flex-shrink: 0;"></span>${legend.label}`;
+                legendEl.appendChild(item);
+            });
+        }
+    }
+
+    // ── NAVIGATION ──────────────────────────────────────────────────
+    window.prevMonth = function() {
+        currentCalMonth--;
+        if (currentCalMonth < 0) { currentCalMonth = 11; currentCalYear--; }
+        renderStudyCalendar();
+    };
+    window.nextMonth = function() {
+        currentCalMonth++;
+        if (currentCalMonth > 11) { currentCalMonth = 0; currentCalYear++; }
+        renderStudyCalendar();
+    };
+    window.calGoToday = function() {
+        currentCalMonth = new Date().getMonth();
+        currentCalYear = new Date().getFullYear();
+        renderStudyCalendar();
+    };
+
+    // ── RESPONSIVE LAYOUT ───────────────────────────────────────────
+    function handleCalendarResize() {
+        const layout = document.getElementById('cal-main-layout');
+        if (!layout) return;
+        if (window.innerWidth < 1100) {
+            layout.style.gridTemplateColumns = '1fr';
+        } else {
+            layout.style.gridTemplateColumns = '1fr 340px';
+        }
+    }
+    window.addEventListener('resize', handleCalendarResize);
+    handleCalendarResize();
+
+    // ── INITIAL SETUP ───────────────────────────────────────────────
+    setupFilterPills();
 
     // ── INTERACTIVE VIRTUAL CHARACTER MOUSE TRACKING ───────────────────
     document.addEventListener('mousemove', (e) => {
