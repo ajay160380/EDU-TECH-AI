@@ -29,6 +29,14 @@ Thumbs.db
 *.gif
 *.ico
 
+# Allow assets in static folder
+!static/**/*.png
+!static/**/*.jpg
+!static/**/*.jpeg
+!static/**/*.svg
+!static/**/*.gif
+!static/**/*.ico
+
 # Local test / validation scripts
 test_liquid_ether_rendering.py
 test_customizer_features.py
