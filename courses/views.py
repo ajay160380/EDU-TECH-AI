@@ -977,12 +977,24 @@ def certificate_view(request, course_id):
             if len(parts) > 1:
                 instructor_name = parts[1].strip()
             
+    # Base64 logo pre-encoder to bypass strict browser canvas taint policies (e.g. Safari)
+    import base64
+    from django.conf import settings
+    logo_base64 = ""
+    try:
+        logo_path = settings.BASE_DIR / 'static' / 'images' / 'logo_e3.png'
+        with open(logo_path, "rb") as image_file:
+            logo_base64 = base64.b64encode(image_file.read()).decode('utf-8')
+    except Exception as e:
+        print("Error base64 encoding logo for certificate:", e)
+
     context = {
         'course': course,
         'cert_user': request.user,
         'cert_id': cert_formatted,
         'issue_date': datetime.date.today(),
-        'instructor_name': instructor_name
+        'instructor_name': instructor_name,
+        'logo_base64': logo_base64
     }
     return render(request, 'courses/certificate.html', context)
 
@@ -1385,22 +1397,18 @@ def create_razorpay_order(request):
     order_id = None
     is_simulated = False
     
-    # If the credentials are placeholders or for testing, we skip Razorpay API calls to prevent auth crashes
-    # FORCING SIMULATION FOR 1-CLICK TESTING AS REQUESTED BY USER
-    is_simulated = True
-    if is_simulated:
-        try:
-            order_data = {
-                'amount': amount,
-                'currency': currency,
-                'receipt': f"receipt_{request.user.id}_{int(datetime.datetime.now().timestamp())}",
-                'notes': notes
-            }
-            order = razorpay_client.order.create(data=order_data)
-            order_id = order.get('id')
-        except Exception as e:
-            print(f"Razorpay Order creation failed: {e}. Falling back to simulation.")
-            is_simulated = True
+    try:
+        order_data = {
+            'amount': amount,
+            'currency': currency,
+            'receipt': f"receipt_{request.user.id}_{int(datetime.datetime.now().timestamp())}",
+            'notes': notes
+        }
+        order = razorpay_client.order.create(data=order_data)
+        order_id = order.get('id')
+    except Exception as e:
+        print(f"Razorpay Order creation failed: {e}. Falling back to simulation.")
+        is_simulated = True
             
     if is_simulated:
         order_id = f"order_simulated_{uuid.uuid4().hex[:12]}"
@@ -1776,13 +1784,25 @@ def verify_certificate_view(request, credential_id):
                 
     issue_date = matched_course.last_exam_attempt.date() if matched_course.last_exam_attempt else datetime.date.today()
                 
+    # Base64 logo pre-encoder to bypass strict browser canvas taint policies (e.g. Safari)
+    import base64
+    from django.conf import settings
+    logo_base64 = ""
+    try:
+        logo_path = settings.BASE_DIR / 'static' / 'images' / 'logo_e3.png'
+        with open(logo_path, "rb") as image_file:
+            logo_base64 = base64.b64encode(image_file.read()).decode('utf-8')
+    except Exception as e:
+        print("Error base64 encoding logo for verified certificate:", e)
+
     context = {
         'course': matched_course,
         'cert_user': matched_course.user,
         'cert_id': cert_formatted,
         'issue_date': issue_date,
         'instructor_name': instructor_name,
-        'is_public_view': True
+        'is_public_view': True,
+        'logo_base64': logo_base64
     }
     return render(request, 'courses/certificate.html', context)
 
@@ -1799,4 +1819,78 @@ def contact_view(request):
     Renders the Contact Us page.
     """
     return render(request, 'courses/contact.html')
+
+
+@login_required
+def download_certificate_view(request, course_id):
+    import hashlib
+    import datetime
+    from django.urls import reverse
+    from django.http import HttpResponse
+    from django.conf import settings
+    from playwright.sync_api import sync_playwright
+
+    course = get_object_or_404(Course, id=course_id)
+    
+    # Check if they have met course completion requirements
+    completed_videos = Progress.objects.filter(user=request.user, video__course=course, is_completed=True).count()
+    total_videos = Video.objects.filter(course=course).count()
+    
+    if total_videos == 0 or completed_videos < total_videos:
+        return HttpResponse("<script>alert('Please complete 100% of the course to unlock certificate download.'); window.close();</script>")
+
+    # Get absolute URL for the print-friendly certificate page
+    cert_url = request.build_absolute_uri(reverse('certificate', kwargs={'course_id': course_id}))
+    
+    # Django session cookies for playwright authentication
+    session_key = request.session.session_key
+    session_cookie_name = settings.SESSION_COOKIE_NAME
+    host = request.get_host().split(':')[0]  # Gets '127.0.0.1' or local domain
+
+    pdf_data = None
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            context = browser.new_context(
+                viewport={'width': 1100, 'height': 778},
+                device_scale_factor=2
+            )
+            # Inject session cookie to authenticate playwright session as the active user
+            context.add_cookies([{
+                'name': session_cookie_name,
+                'value': session_key,
+                'domain': host,
+                'path': '/'
+            }])
+            
+            page = context.new_page()
+            
+            # Navigate and wait for DOM, fonts, assets, and qrcode.js to fully settle
+            page.goto(cert_url, wait_until="networkidle")
+            page.wait_for_timeout(400)
+            
+            # Generate landscape vector PDF with 0 margins
+            pdf_data = page.pdf(
+                format='A4',
+                landscape=True,
+                print_background=True,
+                margin={'top': '0', 'right': '0', 'bottom': '0', 'left': '0'}
+            )
+            browser.close()
+    except Exception as e:
+        print("Playwright PDF generation failure:", e)
+        # Fallback redirect to print page if anything crashes
+        return HttpResponse(
+            f"<script>alert('Local device generation blocked. Redirecting to print fallback...'); window.location.href='{cert_url}';</script>"
+        )
+
+    if pdf_data:
+        # Return direct downloadable file response
+        response = HttpResponse(pdf_data, content_type='application/pdf')
+        filename = f"EduTech_AI_Mastery_{request.user.first_name or request.user.username}.pdf"
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+    else:
+        return redirect('certificate', course_id=course_id)
+
 

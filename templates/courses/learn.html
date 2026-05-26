@@ -286,6 +286,7 @@
                         Summary</button>
                     <button class="ai-tab-btn" data-tab="chat" id="tab-chat-btn">💬 AI Tutor & Workspace {% if profile.plan_type == 'free' %}<span style="font-size: 0.75rem; vertical-align: middle; margin-left: 2px;">🔒</span>{% endif %}</button>
                     <button class="ai-tab-btn" data-tab="quiz" id="tab-quiz-btn">✍️ Concept Quiz {% if profile.plan_type == 'free' %}<span style="font-size: 0.75rem; vertical-align: middle; margin-left: 2px;">🔒</span>{% endif %}</button>
+                    <button class="ai-tab-btn" data-tab="flashcards" id="tab-flashcards-btn">🎴 Smart Flashcards {% if profile.plan_type == 'free' or profile.plan_type == 'pro' %}<span style="font-size: 0.75rem; vertical-align: middle; margin-left: 2px;">🔒</span>{% endif %}</button>
                 </div>
                 <div
                     style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-secondary);">
@@ -297,6 +298,13 @@
 
             <!-- Panel 1: Instant Summaries (Markdown structured block) -->
             <section class="ai-content-panel active" id="ai-panel-summary">
+                {% if profile.plan_type == 'ultra' %}
+                <div style="margin-bottom: 1rem; text-align: right;">
+                    <button id="hinglish-toggle-btn" class="btn btn-sm" style="background: rgba(30, 64, 175, 0.2); border: 1px solid rgba(30, 64, 175, 0.4); color: var(--text-primary); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" onclick="toggleHinglishSummary()">
+                        🗣️ Translate to Hinglish
+                    </button>
+                </div>
+                {% endif %}
                 <div class="ai-summary-text" id="summary-markdown-block"
                     style="line-height: 1.6; color: var(--text-secondary); font-size: 0.95rem;">
                     <!-- Renders dynamic summary block generated via Groq -->
@@ -538,6 +546,72 @@
                     <a href="{% url 'pricing' %}" class="btn-learn-action"
                         style="background: linear-gradient(135deg, #1e40af, #1d4ed8); box-shadow: 0 4px 20px rgba(30, 64, 175, 0.4); font-size: 0.85rem; padding: 0.8rem 1.80rem; border-radius: 8px; text-decoration: none;">
                         ✨ Upgrade to Pro Plan
+                    </a>
+                </div>
+                {% endif %}
+            </section>
+
+            <!-- Panel 4: Smart Flashcards (Ultra Only) -->
+            <section class="ai-content-panel" id="ai-panel-flashcards" style="position: relative;">
+                {% if profile.plan_type == 'ultra' %}
+                <style>
+                    .flashcard { perspective: 1000px; width: 100%; height: 280px; margin-bottom: 1.5rem; cursor: pointer; display: none; }
+                    .flashcard.active { display: block; animation: slideUp 0.4s ease-out; }
+                    .flashcard-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+                    .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+                    .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; border-radius: 16px; font-size: 1.1rem; line-height: 1.6; }
+                    .flashcard-front { background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(30, 64, 175, 0.2); color: var(--text-primary); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+                    .flashcard-back { transform: rotateY(180deg); background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); color: #34d399; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+                    .flashcard-indicator { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; opacity: 0.6; }
+                </style>
+                <div class="flashcards-container">
+                    {% for q in ai_bundle.quiz %}
+                    <div class="flashcard {% if forloop.first %}active{% endif %}" id="flashcard-{{ forloop.counter }}" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <div class="flashcard-indicator">💡 Flashcard {{ forloop.counter }}</div>
+                                <div>{{ q.question }}</div>
+                                <div style="margin-top: 1.5rem; font-size: 0.8rem; opacity: 0.5;">Click to reveal answer</div>
+                            </div>
+                            <div class="flashcard-back">
+                                <div class="flashcard-indicator" style="color: #10b981;">✅ Answer</div>
+                                {% for opt in q.options %}
+                                    {% if forloop.counter0 == q.correct_index %}
+                                        <div>{{ opt }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                                <div style="margin-top: 1.5rem; font-size: 0.8rem; opacity: 0.5;">Click to flip back</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                        <button onclick="prevFlashcard()" class="btn btn-sm" style="background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 6px;">&larr; Previous</button>
+                        <span id="flashcard-counter" style="font-size: 0.85rem; color: var(--text-secondary);">1 / {{ ai_bundle.quiz|length }}</span>
+                        <button onclick="nextFlashcard()" class="btn btn-sm" style="background: rgba(30, 64, 175, 0.2); padding: 0.5rem 1rem; border-radius: 6px;">Next &rarr;</button>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Premium Locked Glassmorphic Card for Non-Ultra users -->
+                <div class="locked-feature-overlay"
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background: rgba(15, 10, 25, 0.45); border-radius: var(--radius-sm); border: 1px dashed rgba(245, 158, 11, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-align: center; padding: 2rem; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(245, 158, 11, 0.05);">
+                    <div
+                        style="position: absolute; top: -50px; right: -50px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%); pointer-events: none;">
+                    </div>
+                    <div
+                        style="font-size: 3.5rem; margin-bottom: 1rem; filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.4)); animation: float 3s ease-in-out infinite; cursor: default;">
+                        🎴</div>
+                    <h3
+                        style="font-family: 'Outfit'; font-size: 1.65rem; color: #fff; margin-bottom: 0.75rem; text-shadow: 0 0 10px rgba(255,255,255,0.1);">
+                        Smart Flashcards & Spaced Repetition</h3>
+                    <p
+                        style="color: var(--text-secondary); max-width: 420px; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.75rem;">
+                        Master concepts 3x faster with AI-generated Smart Flashcards. Exclusive to Ultra Plan subscribers.
+                    </p>
+                    <a href="{% url 'pricing' %}" class="btn-learn-action"
+                        style="background: linear-gradient(135deg, #d97706, #b45309); box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4); font-size: 0.85rem; padding: 0.8rem 1.80rem; border-radius: 8px; text-decoration: none;">
+                        ✨ Upgrade to Ultra Plan
                     </a>
                 </div>
                 {% endif %}
@@ -1223,6 +1297,77 @@
         }
         showToast('🎓 All videos completed! Great job!', 'success');
     }
+    window.nextFlashcard = function() {
+        const cards = document.querySelectorAll('.flashcard');
+        if (!cards.length) return;
+        let activeIdx = Array.from(cards).findIndex(c => c.classList.contains('active'));
+        cards[activeIdx].classList.remove('active', 'flipped');
+        activeIdx = (activeIdx + 1) % cards.length;
+        cards[activeIdx].classList.add('active');
+        document.getElementById('flashcard-counter').textContent = `${activeIdx + 1} / ${cards.length}`;
+    };
+    window.prevFlashcard = function() {
+        const cards = document.querySelectorAll('.flashcard');
+        if (!cards.length) return;
+        let activeIdx = Array.from(cards).findIndex(c => c.classList.contains('active'));
+        cards[activeIdx].classList.remove('active', 'flipped');
+        activeIdx = (activeIdx - 1 + cards.length) % cards.length;
+        cards[activeIdx].classList.add('active');
+        document.getElementById('flashcard-counter').textContent = `${activeIdx + 1} / ${cards.length}`;
+    };
+    
+    window.toggleHinglishSummary = function() {
+        const btn = document.getElementById('hinglish-toggle-btn');
+        if (btn.disabled) return;
+        
+        btn.disabled = true;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '🔄 Translating...';
+        
+        const videoId = document.getElementById('player-iframe').src.split('/').pop().split('?')[0]; // simple fallback
+        // Better way to get video id, assume it's in the URL or available via active_video logic.
+        // We know URL is /course/X/learn/?video=Y. Let's just grab from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        let vid = urlParams.get('video');
+        if (!vid) {
+            // Find the active playlist item
+            const activeLink = document.querySelector('.zen-playlist-item.active .zen-playlist-link');
+            if (activeLink) {
+                const hrefParams = new URLSearchParams(activeLink.href.split('?')[1]);
+                vid = hrefParams.get('video');
+            }
+        }
+        
+        if (!vid) {
+            showToast('Could not detect active video.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            return;
+        }
+
+        fetch(`/video/${vid}/summary/?translate=hinglish`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const block = document.getElementById('summary-markdown-block');
+                    if (block) {
+                        block.innerHTML = formatMarkdown(data.summary);
+                        showToast('🗣️ Translated to Hinglish!', 'success');
+                    }
+                    // Disable button to prevent multiple requests
+                    btn.innerHTML = '✅ Hinglish Enabled';
+                } else {
+                    showToast(data.message || 'Translation failed.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            })
+            .catch(err => {
+                showToast('Network error during translation.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
+    };
 }) ();
 </script>
 

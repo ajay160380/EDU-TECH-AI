@@ -27,6 +27,7 @@ urlpatterns = [
     path('import/', views.import_course, name='import_course'),
     path('course/<int:course_id>/learn/', views.learn_view, name='learn_view'),
     path('course/<int:course_id>/certificate/', views.certificate_view, name='certificate'),
+    path('course/<int:course_id>/certificate/download/', views.download_certificate_view, name='download_certificate'),
     path('course/<int:course_id>/final-exam/', views.final_exam_view, name='final_exam'),
     
     # Async JSON endpoints
