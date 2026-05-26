@@ -1,6 +1,6 @@
 # Use the official Microsoft Playwright Python base image
 # This image contains Python 3.11/3.12, system dependencies, and is fully configured for headless Chromium out of the box!
-FROM mcr.microsoft.com/playwright/python:v1.40.0-jammy
+FROM mcr.microsoft.com/playwright/python:v1.44.0-noble
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
