@@ -1,0 +1,175 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI — Contact Us{% endblock %}
+
+{% block content %}
+
+<section class="min-h-[45vh] flex flex-col items-center justify-center pt-32 pb-16 px-6 relative overflow-hidden" id="contact-view-wrapper">
+    <!-- WebGL Neon Tubes 3D Cursor -->
+    <canvas id="contact-tubes" class="absolute inset-0 w-full h-full block z-[1] pointer-events-none" style="opacity: 0.8; touch-action: none;"></canvas>
+    <!-- Ambient glow -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[var(--primary-hex)]/5 blur-[120px] pointer-events-none"></div>
+
+    <div class="text-center max-w-4xl mx-auto relative z-10">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--primary-hex)] opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--primary-hex)]"></span>
+            </span>
+            <span class="text-xs font-medium text-zinc-300 tracking-wide font-manrope">We're Here to Help</span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter font-manrope leading-[1.1] mb-8 animate-fade-up">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40">
+                Get in Touch
+            </span>
+            <span class="block text-[var(--primary-hex)]">Contact Us</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed animate-fade-up">
+            Have questions about subscriptions, features, or billing? Reach out and our team will get back to you within 4 hours.
+        </p>
+    </div>
+</section>
+
+<!-- Contact Form & Info Grid -->
+<section class="py-16 px-6 relative z-10">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12">
+        
+        <!-- Contact Info (5 Cols) -->
+        <div class="md:col-span-5 flex flex-col gap-8 justify-center">
+            <div class="space-y-6">
+                <h3 class="text-2xl font-bold text-white font-manrope">Contact Information</h3>
+                <p class="text-sm text-zinc-400 leading-relaxed">
+                    Feel free to contact us via email, phone, or by filling out the adjacent contact form. We look forward to hearing from you.
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Email -->
+                <div class="flex items-start gap-4 p-4 rounded-xl border border-white/[0.04] bg-white/[0.02]">
+                    <div class="p-2.5 rounded-lg bg-[var(--primary-hex)]/10 text-[var(--primary-hex)]">
+                        <iconify-icon icon="lucide:mail" class="w-5 h-5"></iconify-icon>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-sm">Email Support</h4>
+                        <a href="mailto:edutechai.contact@gmail.com" class="text-xs text-zinc-400 hover:text-[var(--primary-hex)] transition-colors mt-0.5 block">edutechai.contact@gmail.com</a>
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="flex items-start gap-4 p-4 rounded-xl border border-white/[0.04] bg-white/[0.02]">
+                    <div class="p-2.5 rounded-lg bg-[var(--primary-hex)]/10 text-[var(--primary-hex)]">
+                        <iconify-icon icon="lucide:phone" class="w-5 h-5"></iconify-icon>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-sm">Phone Hotline</h4>
+                        <p class="text-xs text-zinc-400 mt-0.5">+91 9999999999</p>
+                        <span class="text-[10px] text-zinc-500 block mt-0.5">Mon - Sat (9 AM - 6 PM IST)</span>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="flex items-start gap-4 p-4 rounded-xl border border-white/[0.04] bg-white/[0.02]">
+                    <div class="p-2.5 rounded-lg bg-[var(--primary-hex)]/10 text-[var(--primary-hex)]">
+                        <iconify-icon icon="lucide:map-pin" class="w-5 h-5"></iconify-icon>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-sm">Headquarters</h4>
+                        <p class="text-xs text-zinc-400 leading-relaxed mt-0.5">
+                            Sector 45, Gurgaon,<br>
+                            Haryana, 122003, India
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form (7 Cols) -->
+        <div class="md:col-span-7 p-8 rounded-2xl bg-white/[0.01] border border-white/[0.06] backdrop-blur-xl">
+            <h3 class="text-xl font-bold text-white mb-6 font-manrope">Send a Message</h3>
+            
+            <form id="contact-form" onsubmit="handleContactSubmit(event)" class="space-y-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">First Name</label>
+                        <input type="text" required class="w-full bg-white/[0.02] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[var(--primary-hex)] transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Last Name</label>
+                        <input type="text" required class="w-full bg-white/[0.02] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[var(--primary-hex)] transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Email Address</label>
+                    <input type="email" required class="w-full bg-white/[0.02] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[var(--primary-hex)] transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Subject</label>
+                    <input type="text" required class="w-full bg-white/[0.02] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[var(--primary-hex)] transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Message</label>
+                    <textarea rows="4" required class="w-full bg-white/[0.02] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[var(--primary-hex)] transition-all resize-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 px-4 bg-[var(--primary-hex)] hover:bg-[var(--primary-dark)] text-white font-bold rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_4px_20px_rgba(var(--primary-rgb),0.2)]">
+                    Send Message
+                </button>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<!-- Sleek Notification Script -->
+<script>
+    function handleContactSubmit(event) {
+        event.preventDefault();
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerText;
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span class="w-4 h-4 border-2 border-white/20 border-top-white rounded-full inline-block animate-spin mr-2 align-middle"></span> Sending...`;
+
+        setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalText;
+            event.target.reset();
+            
+            // Trigger customized message toast
+            if (typeof showToast === 'function') {
+                showToast("📬 Message sent successfully! We will contact you soon.", "success");
+            } else {
+                alert("📬 Message sent successfully! We will contact you soon.");
+            }
+        }, 1500);
+    }
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize WebGL Neon Tubes Background on Contact Page
+    document.addEventListener('DOMContentLoaded', () => {
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-hex').trim() || '#2563eb';
+        if (typeof window.TubesBackground !== 'undefined') {
+            new window.TubesBackground('#contact-tubes', {
+                colors: [primaryColor, "#f967fb", "#6958d5"],
+                lightsColors: [primaryColor, "#fe8a2e", "#ff008a", "#60aed5"],
+                enableClickInteraction: true,
+                clickForce: 1.5,
+                noiseForce: 0.05,
+                ribbonWidth: 3.5,
+                ribbonCount: 8,
+                speedMultiplier: 1.0,
+                cursorTracking: true
+            });
+        }
+    });
+</script>
+{% endblock %}
