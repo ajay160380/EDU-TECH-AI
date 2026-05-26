@@ -1278,6 +1278,9 @@ def log_study_session(request, course_id):
             'message': str(e)
         }, status=400)
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 @require_POST
 def login_google(request):
     """
