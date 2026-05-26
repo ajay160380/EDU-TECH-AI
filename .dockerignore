@@ -17,7 +17,6 @@ staticfiles/
 .git/
 .gitignore
 Dockerfile
-requirements.txt
 README.md
 scratch/
 test_*.py
