@@ -283,9 +283,28 @@
         })
         .then(response => {
             if (!response.ok) {
-                return response.json()
-                    .then(err => { throw new Error(err.message || "Verification failed") })
-                    .catch(() => { throw new Error("Server error (500). Please check backend logs.") });
+                return response.text().then(text => {
+                    try {
+                        const err = JSON.parse(text);
+                        throw new Error(err.message || "Verification failed");
+                    } catch(e) {
+                        console.error("Raw Server Error:", text);
+                        // Smart regex to extract Django Exception Value or heading from HTML
+                        const exceptionMatch = text.match(/<pre class="exception_value">([^<]+)<\/pre>/);
+                        const headingMatch = text.match(/<h1>([^<]+)<\/h1>/);
+                        const titleMatch = text.match(/<title>([^<]+)<\/title>/);
+                        
+                        let serverErr = "Unknown Error (500)";
+                        if (exceptionMatch && exceptionMatch[1]) {
+                            serverErr = exceptionMatch[1].trim();
+                        } else if (headingMatch && headingMatch[1]) {
+                            serverErr = headingMatch[1].trim();
+                        } else if (titleMatch && titleMatch[1]) {
+                            serverErr = titleMatch[1].trim();
+                        }
+                        throw new Error("Server Error: " + serverErr);
+                    }
+                });
             }
             return response.json();
         })
