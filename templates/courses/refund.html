@@ -1,0 +1,117 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}EduTech AI — Refund & Cancellation Policy{% endblock %}
+
+{% block content %}
+
+<section class="min-h-[50vh] flex flex-col items-center justify-center pt-32 pb-16 px-6 relative overflow-hidden" id="refund-view-wrapper">
+    <!-- WebGL Neon Tubes 3D Cursor -->
+    <canvas id="refund-tubes" class="absolute inset-0 w-full h-full block z-[1] pointer-events-none" style="opacity: 0.8; touch-action: none;"></canvas>
+    <!-- Ambient glow -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[var(--primary-hex)]/5 blur-[120px] pointer-events-none"></div>
+
+    <div class="text-center max-w-4xl mx-auto relative z-10">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--primary-hex)] opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--primary-hex)]"></span>
+            </span>
+            <span class="text-xs font-medium text-zinc-300 tracking-wide font-manrope">100% Satisfaction Guaranteed</span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter font-manrope leading-[1.1] mb-8 animate-fade-up">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40">
+                Refund & Cancellation
+            </span>
+            <span class="block text-[var(--primary-hex)]">Policy</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed animate-fade-up">
+            Our 7-Day Money-Back Guarantee ensures a risk-free learning experience. Get a full refund if you aren't completely satisfied.
+        </p>
+    </div>
+</section>
+
+<!-- Policy Content -->
+<section class="py-20 px-6 relative z-10">
+    <div class="max-w-3xl mx-auto prose prose-invert">
+        <div class="space-y-12 text-zinc-300 leading-relaxed">
+
+            <div class="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.08] backdrop-blur-xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-[var(--primary-hex)]"></div>
+                <h3 class="text-xl font-bold text-white mb-3">🛡️ 7-Day Money-Back Guarantee</h3>
+                <p class="text-sm text-zinc-300 leading-relaxed">
+                    At EduTech AI, we believe in the highest quality of digital study companion tools. If you subscribe to any of our premium plans (Pro or Ultra) and find that the platform doesn't meet your learning expectations or you don't like the courses, you can request a <strong>100% full refund within 7 days</strong> of your initial purchase.
+                </p>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">1. Eligibility for Refund</h2>
+                <p class="mb-4">To be eligible for a full refund, you must meet the following simple criteria:</p>
+                <ul class="list-disc pl-6 space-y-2 text-zinc-400">
+                    <li>Your refund request must be submitted within exactly <strong>7 days</strong> from the date of payment.</li>
+                    <li>The refund request must contain a valid transaction reference or payment order ID received from Razorpay.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">2. Zero-Questions-Asked Refund Process</h2>
+                <p class="mb-4">We respect your decision. To claim your refund, simply perform one of the following steps:</p>
+                <ul class="list-disc pl-6 space-y-2 text-zinc-400">
+                    <li>Email us at <a href="mailto:edutechai.contact@gmail.com" class="text-[var(--primary-hex)] hover:underline">edutechai.contact@gmail.com</a> with the subject "Refund Request - [Your Username]".</li>
+                    <li>Provide your registered email address, transaction reference, or Razorpay payment ID.</li>
+                </ul>
+                <p class="mt-4">Once received, our support team will initiate the refund immediately. There are no complicated forms or manual verification delays.</p>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">3. Refund Timeline</h2>
+                <p class="mb-4">Once your refund is approved and initiated by our system:</p>
+                <ul class="list-disc pl-6 space-y-2 text-zinc-400">
+                    <li>The refund will be credited back to your original source of payment (Credit Card, Debit Card, UPI, Net Banking, or Wallet).</li>
+                    <li>According to banking standards, it typically takes <strong>5 to 7 working days</strong> for the refunded amount to reflect in your bank account or card statement.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">4. Cancellations</h2>
+                <p class="mb-4">You can cancel your premium subscription renewal at any time directly from your user profile settings page. Upon cancellation:</p>
+                <ul class="list-disc pl-6 space-y-2 text-zinc-400">
+                    <li>Your active plan features (Pro or Ultra) will remain completely functional until the end of your current billing period.</li>
+                    <li>No further renewal charges will be placed on your account.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-white font-manrope mb-4">5. Support Contact</h2>
+                <p>If you have any questions about refunds, cancellations, or billing discrepancies, please reach out directly to our dedicated support desk at <a href="mailto:edutechai.contact@gmail.com" class="text-[var(--primary-hex)] hover:underline">edutechai.contact@gmail.com</a>. We are online 24/7 to assist you.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize WebGL Neon Tubes Background on Refund Page
+    document.addEventListener('DOMContentLoaded', () => {
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-hex').trim() || '#2563eb';
+        if (typeof window.TubesBackground !== 'undefined') {
+            new window.TubesBackground('#refund-tubes', {
+                colors: [primaryColor, "#f967fb", "#6958d5"],
+                lightsColors: [primaryColor, "#fe8a2e", "#ff008a", "#60aed5"],
+                enableClickInteraction: true,
+                clickForce: 1.5,
+                noiseForce: 0.05,
+                ribbonWidth: 3.5,
+                ribbonCount: 8,
+                speedMultiplier: 1.0,
+                cursorTracking: true
+            });
+        }
+    });
+</script>
+{% endblock %}
