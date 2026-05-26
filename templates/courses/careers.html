@@ -5,8 +5,10 @@
 
 {% block content %}
 
-<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6">
-    <div class="text-center max-w-4xl mx-auto">
+<section class="min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-16 px-6 relative overflow-hidden" id="careers-view-wrapper">
+    <!-- WebGL Neon Tubes 3D Cursor -->
+    <canvas id="careers-tubes" class="absolute inset-0 w-full h-full block z-[1] pointer-events-none" style="opacity: 0.8; touch-action: none;"></canvas>
+    <div class="text-center max-w-4xl mx-auto relative z-10">
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-up"
             style="animation-delay: 0.1s;">
             <span class="relative flex h-2 w-2">
@@ -74,7 +76,7 @@
                     <h3
                         class="text-lg font-semibold text-white font-manrope group-hover:text-primary transition-colors">
                         Senior Django Backend Engineer</h3>
-                    <p class="text-zinc-500 text-sm mt-1">Remote · Full-time · ₹25L–40L/yr + Equity</p>
+                    <p class="text-zinc-500 text-sm mt-1">Remote · Full-time · ₹4L–6L/yr + Equity</p>
                 </div>
                 <a href="mailto:careers.edutechai@gmail.com?subject=Application: Senior Django Backend Engineer"
                     class="shrink-0 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 hover:text-white hover:bg-white/10 transition-all text-center">Apply</a>
@@ -86,7 +88,7 @@
                     <h3
                         class="text-lg font-semibold text-white font-manrope group-hover:text-primary transition-colors">
                         AI/ML Engineer (LLM Fine-tuning)</h3>
-                    <p class="text-zinc-500 text-sm mt-1">Remote · Full-time · ₹30L–50L/yr + Equity</p>
+                    <p class="text-zinc-500 text-sm mt-1">Remote · Full-time · ₹5L–7L/yr + Equity</p>
                 </div>
                 <a href="mailto:careers.edutechai@gmail.com?subject=Application: AI/ML Engineer"
                     class="shrink-0 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 hover:text-white hover:bg-white/10 transition-all text-center">Apply</a>
@@ -98,7 +100,7 @@
                     <h3
                         class="text-lg font-semibold text-white font-manrope group-hover:text-primary transition-colors">
                         Frontend Engineer (Tailwind + Alpine.js)</h3>
-                    <p class="text-zinc-500 text-sm mt-1">Remote · Full-time · ₹18L–30L/yr + Equity</p>
+                    <p class="text-zinc-500 text-sm mt-1">Remote · Full-time · ₹3L–5L/yr + Equity</p>
                 </div>
                 <a href="mailto:careers.edutechai@gmail.com?subject=Application: Frontend Engineer"
                     class="shrink-0 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-300 hover:text-white hover:bg-white/10 transition-all text-center">Apply</a>
@@ -112,4 +114,26 @@
     </div>
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize WebGL Neon Tubes Background on Careers Page
+    document.addEventListener('DOMContentLoaded', () => {
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-hex').trim() || '#2563eb';
+        if (typeof window.TubesBackground !== 'undefined') {
+            new window.TubesBackground('#careers-tubes', {
+                colors: [primaryColor, "#f967fb", "#6958d5"],
+                lightsColors: [primaryColor, "#fe8a2e", "#ff008a", "#60aed5"],
+                enableClickInteraction: true,
+                clickForce: 1.5,
+                noiseForce: 0.05,
+                ribbonWidth: 3.5,
+                ribbonCount: 8,
+                speedMultiplier: 1.0,
+                cursorTracking: true
+            });
+        }
+    });
+</script>
 {% endblock %}
