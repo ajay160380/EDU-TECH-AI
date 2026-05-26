@@ -992,6 +992,17 @@ def init_firebase():
         return True
         
     try:
+        # Try raw JSON first (extremely useful for Heroku, Render, etc.)
+        cred_json = getattr(settings, 'FIREBASE_CREDENTIALS_JSON', '')
+        if cred_json:
+            import json
+            cred_dict = json.loads(cred_json)
+            cred = credentials.Certificate(cred_dict)
+            firebase_app = firebase_admin.initialize_app(cred)
+            firebase_initialized = True
+            return True
+            
+        # Fall back to file path
         cred_path = getattr(settings, 'FIREBASE_CREDENTIALS_PATH', '')
         if cred_path and os.path.exists(cred_path):
             cred = credentials.Certificate(cred_path)

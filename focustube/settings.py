@@ -142,6 +142,7 @@ LOGIN_URL = 'login'
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', '')
 GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
 FIREBASE_CREDENTIALS_PATH = os.getenv('FIREBASE_CREDENTIALS_PATH', '')
+FIREBASE_CREDENTIALS_JSON = os.getenv('FIREBASE_CREDENTIALS_JSON', '')
 
 # Firebase Frontend SDK Configuration
 FIREBASE_API_KEY = os.getenv('FIREBASE_API_KEY', '')
