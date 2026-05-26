@@ -581,6 +581,16 @@ def dashboard(request):
         if not thumb:
             thumb = '📚' # Final fallback
             
+        # Fetch videos for schedule generation in calendar
+        videos_list = []
+        for v in c.videos.all():
+            videos_list.append({
+                'id': v.id,
+                'title': v.title,
+                'order': v.order,
+                'completed': v.is_completed_by_user(request.user)
+            })
+
         courses_list.append({
             'id': c.id,
             'title': c.title,
@@ -590,7 +600,9 @@ def dashboard(request):
             'thumb': thumb,
             'status': status,
             'examReady': (status == 'done' and not getattr(c, 'passed_exam', False)),
-            'passed': getattr(c, 'passed_exam', False)
+            'passed': getattr(c, 'passed_exam', False),
+            'created_date': timezone.localtime(c.created_at).strftime('%Y-%m-%d'),
+            'videos_data': videos_list
         })
     courses_json = json.dumps(courses_list)
     streak_grid_json = json.dumps(streak_grid)
@@ -1373,10 +1385,10 @@ def create_razorpay_order(request):
     order_id = None
     is_simulated = False
     
-    # If the credentials are placeholders, we skip Razorpay API calls to prevent auth crashes
-    if settings.RAZORPAY_KEY_ID.startswith('rzp_test_demoKeyId'):
-        is_simulated = True
-    else:
+    # If the credentials are placeholders or for testing, we skip Razorpay API calls to prevent auth crashes
+    # FORCING SIMULATION FOR 1-CLICK TESTING AS REQUESTED BY USER
+    is_simulated = True
+    if is_simulated:
         try:
             order_data = {
                 'amount': amount,
@@ -1508,6 +1520,18 @@ def video_summary(request, video_id):
         # Generate the plan-specific study bundle
         ai_bundle = generate_ai_study_buddy(video.title, video_order, plan_type=profile.plan_type)
         summary_text = ai_bundle.get('summary', '')
+        
+        # Check for translation request
+        translate_mode = request.GET.get('translate')
+        if translate_mode == 'hinglish':
+            if profile.plan_type != 'ultra':
+                return JsonResponse({
+                    'status': 'error',
+                    'message': '🔒 Conversational Hinglish Tutor is exclusive to Ultra Plan subscribers. Please upgrade your plan!'
+                }, status=403)
+            # Call our translation engine!
+            from .utils import translate_to_hinglish
+            summary_text = translate_to_hinglish(summary_text)
             
         return JsonResponse({
             'status': 'success',
@@ -1688,13 +1712,6 @@ def careers_view(request):
     return render(request, 'courses/careers.html')
 
 
-def shipping_view(request):
-    """
-    Renders the shipping/delivery policy page.
-    """
-    return render(request, 'courses/shipping.html')
-
-
 def verify_certificate_view(request, credential_id):
     """
     Publicly verifies and renders a Certificate of Mastery by its Credential ID.
@@ -1768,3 +1785,18 @@ def verify_certificate_view(request, credential_id):
         'is_public_view': True
     }
     return render(request, 'courses/certificate.html', context)
+
+
+def refund_view(request):
+    """
+    Renders the Refund and Cancellation Policy page.
+    """
+    return render(request, 'courses/refund.html')
+
+
+def contact_view(request):
+    """
+    Renders the Contact Us page.
+    """
+    return render(request, 'courses/contact.html')
+
