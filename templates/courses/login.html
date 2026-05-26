@@ -282,7 +282,11 @@
             body: formData
         })
         .then(response => {
-            if (!response.ok) return response.json().then(err => { throw new Error(err.message) });
+            if (!response.ok) {
+                return response.json()
+                    .then(err => { throw new Error(err.message || "Verification failed") })
+                    .catch(() => { throw new Error("Server error (500). Please check backend logs.") });
+            }
             return response.json();
         })
         .then(data => {
@@ -295,7 +299,8 @@
             }
         })
         .catch(err => {
-            showToast("Server connection failed.", "error");
+            console.error("SSO Error:", err);
+            showToast(err.message || "Server connection failed.", "error");
             resetButton();
         });
     }
