@@ -10,56 +10,72 @@
         background-color: #09090b !important;
         color: #f4f4f5 !important;
     }
+
     [data-theme="dark"] .text-slate-800 {
         color: #cbd5e1 !important;
     }
+
     [data-theme="dark"] .text-slate-900 {
         color: #f8fafc !important;
     }
+
     [data-theme="dark"] .text-slate-500 {
         color: #94a3b8 !important;
     }
+
     [data-theme="dark"] .text-slate-700 {
         color: #e2e8f0 !important;
     }
+
     [data-theme="dark"] .text-slate-400 {
         color: #94a3b8 !important;
     }
+
     [data-theme="dark"] .bg-white {
         background-color: rgba(20, 20, 30, 0.6) !important;
         border-color: rgba(255, 255, 255, 0.08) !important;
     }
+
     [data-theme="dark"] .border-slate-200 {
         border-color: rgba(255, 255, 255, 0.08) !important;
     }
+
     [data-theme="dark"] .bg-slate-50 {
         background-color: rgba(255, 255, 255, 0.03) !important;
         border-color: rgba(255, 255, 255, 0.06) !important;
         color: #cbd5e1 !important;
     }
+
     [data-theme="dark"] .bg-slate-200\/80 {
         background-color: rgba(255, 255, 255, 0.1) !important;
     }
+
     [data-theme="dark"] .text-blue-650 {
         color: #60a5fa !important;
     }
+
     [data-theme="dark"] .bg-blue-50 {
         background-color: rgba(37, 99, 235, 0.1) !important;
         color: #60a5fa !important;
         border-color: rgba(37, 99, 235, 0.2) !important;
     }
+
     [data-theme="dark"] .bg-emerald-50 {
         background-color: rgba(16, 185, 129, 0.1) !important;
         color: #34d399 !important;
         border-color: rgba(16, 185, 129, 0.2) !important;
     }
+
     [data-theme="dark"] .bg-slate-100 {
         background-color: rgba(255, 255, 255, 0.06) !important;
     }
+
     [data-theme="dark"] .border-slate-350 {
         border-color: rgba(255, 255, 255, 0.15) !important;
     }
-    [data-theme="dark"] .shadow-md, [data-theme="dark"] .shadow-lg {
+
+    [data-theme="dark"] .shadow-md,
+    [data-theme="dark"] .shadow-lg {
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
     }
 </style>
@@ -68,9 +84,11 @@
 {% block content %}
 {% csrf_token %}
 
-<div class="min-h-screen text-slate-800 py-16 px-4 relative overflow-hidden bg-[#f8fafc]" style="background: transparent !important;">
+<div class="min-h-screen text-slate-800 py-16 px-4 relative overflow-hidden bg-[#f8fafc]"
+    style="background: transparent !important;">
     <!-- WebGL Neon Tubes 3D Cursor -->
-    <canvas id="pricing-tubes" class="absolute inset-0 w-full h-full block z-[1] pointer-events-none" style="opacity: 0.8; touch-action: none;"></canvas>
+    <canvas id="pricing-tubes" class="absolute inset-0 w-full h-full block z-[1] pointer-events-none"
+        style="opacity: 0.8; touch-action: none;"></canvas>
     <div
         class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-blue-400/5 blur-[120px] pointer-events-none">
     </div>
@@ -84,8 +102,7 @@
             <span
                 class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-200/50 tracking-wider uppercase">Pricing
                 Plans</span>
-            <h1
-                class="text-4xl md:text-5xl font-extrabold mt-4 tracking-tight text-slate-900">
+            <h1 class="text-4xl md:text-5xl font-extrabold mt-4 tracking-tight text-slate-900">
                 Unlock Your Learning Superpowers
             </h1>
             <p class="text-slate-500 mt-4 text-lg max-w-xl mx-auto">
@@ -96,7 +113,8 @@
             <div class="flex items-center justify-center gap-4 mt-8">
                 <span id="label-monthly" class="text-sm font-semibold text-slate-900">Monthly</span>
                 <button type="button" id="billing-toggle-btn"
-                    class="w-14 h-8 rounded-full p-1 bg-slate-200/80 border border-slate-350 transition-all duration-300 relative focus:outline-none" style="display: flex; align-items: center;">
+                    class="w-14 h-8 rounded-full p-1 bg-slate-200/80 border border-slate-350 transition-all duration-300 relative focus:outline-none"
+                    style="display: flex; align-items: center;">
                     <div id="toggle-dot"
                         class="w-6 h-6 rounded-full bg-primary shadow-md transform transition-all duration-300 translate-x-0">
                     </div>
@@ -115,8 +133,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
 
             <!-- Tier 1: Free -->
-            <div
-                class="rounded-2xl bg-white border border-slate-200 p-8 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:shadow-xl shadow-md backdrop-blur-xl relative"
+            <div class="rounded-2xl bg-white border border-slate-200 p-8 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:shadow-xl shadow-md backdrop-blur-xl relative"
                 style="animation: slideUp 0.6s ease-out 0.1s both;">
                 <div>
                     <h3 class="text-xl font-bold text-slate-800">Free Plan</h3>
@@ -149,7 +166,7 @@
                     </ul>
                 </div>
 
-                 <div class="mt-8">
+                <div class="mt-8">
                     {% if profile.plan_type == 'free' %}
                     <button disabled
                         class="w-full py-3 px-4 rounded-xl font-bold text-slate-400 bg-slate-50 border border-slate-200 cursor-not-allowed">
@@ -167,8 +184,7 @@
             </div>
 
             <!-- Tier 2: Pro (Most Popular) -->
-            <div
-                class="rounded-3xl bg-white border-2 border-blue-600 p-8 flex flex-col justify-between transition-all duration-500 hover:-translate-y-3 shadow-[0_8px_30px_rgba(37,99,235,0.08)] hover:shadow-[0_12px_40px_rgba(37,99,235,0.15)] hover:border-blue-600 backdrop-blur-xl relative scale-105 z-10"
+            <div class="rounded-3xl bg-white border-2 border-blue-600 p-8 flex flex-col justify-between transition-all duration-500 hover:-translate-y-3 shadow-[0_8px_30px_rgba(37,99,235,0.08)] hover:shadow-[0_12px_40px_rgba(37,99,235,0.15)] hover:border-blue-600 backdrop-blur-xl relative scale-105 z-10"
                 style="animation: slideUp 0.6s ease-out 0.2s both;">
                 <!-- Most Popular Banner -->
                 <div
@@ -242,8 +258,7 @@
             </div>
 
             <!-- Tier 3: Ultra -->
-            <div
-                class="rounded-2xl bg-white border border-slate-200 p-8 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:border-blue-300 hover:shadow-xl shadow-md backdrop-blur-xl relative"
+            <div class="rounded-2xl bg-white border border-slate-200 p-8 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:border-blue-300 hover:shadow-xl shadow-md backdrop-blur-xl relative"
                 style="animation: slideUp 0.6s ease-out 0.3s both;">
                 <div>
                     <h3 class="text-xl font-bold text-slate-800">Ultra Plan</h3>
@@ -345,15 +360,15 @@
     function animatePriceChange(element, startVal, endVal) {
         const duration = 800; // 800ms animation
         const startTime = performance.now();
-        
+
         function update(now) {
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const ease = progress * (2 - progress); // Ease out quad
             const current = Math.floor(startVal + (endVal - startVal) * ease);
-            
+
             element.textContent = current;
-            
+
             if (progress < 1) {
                 requestAnimationFrame(update);
             } else {
