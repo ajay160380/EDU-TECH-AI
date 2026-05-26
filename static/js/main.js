@@ -167,7 +167,12 @@ function initZenMode() {
 }
 
 /**
-
+/**
+ * Pomodoro Timer
+ */
+function initPomodoroTimer() {
+    // Pomodoro logic
+}
 
 /**
  * Lo-Fi Concentration Music Player Controller
@@ -1070,7 +1075,7 @@ function showToast(message, type = 'success') {
      * Scroll-triggered reveal animations (Intersection Observer)
      * Used on the About page "What Makes Us Unique" timeline section
      */
-    function initScrollReveal() {
+    window.initScrollReveal = function() {
         const revealElements = document.querySelectorAll('.reveal-on-scroll');
         if (!revealElements.length) return;
 
@@ -1100,7 +1105,7 @@ function showToast(message, type = 'success') {
     /**
      * Timeline node pulse — intensifies glow when the section is in viewport
      */
-    function initTimelinePulse() {
+    window.initTimelinePulse = function() {
         const section = document.getElementById('unique-section');
         if (!section) return;
 
@@ -1126,7 +1131,7 @@ function showToast(message, type = 'success') {
      * Viewport-Triggered Count-Up Animation Utility
      * Smoothly animates integers and decimals over exactly 1000ms when scrolled into view.
      */
-    function initCountUpAnimation() {
+    window.initCountUpAnimation = function() {
         const elements = document.querySelectorAll('.count-up-number');
         if (!elements.length) return;
 
