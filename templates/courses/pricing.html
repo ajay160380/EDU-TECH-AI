@@ -436,8 +436,13 @@
                     this.disabled = false;
 
                     if (data.status === 'success') {
-                        // Launch actual Razorpay Modal integration
-                        launchRealRazorpayCheckout(data, plan);
+                        if (data.is_simulated) {
+                            // Show custom simulation modal
+                            openSimulatedCheckout(data, plan);
+                        } else {
+                            // Launch actual Razorpay Modal integration
+                            launchRealRazorpayCheckout(data, plan);
+                        }
                     } else {
                         showToast(data.message || "Failed to initiate payment.", "error");
                     }
