@@ -12,7 +12,7 @@
   <a href="https://edu-tech-ai-vk2e.onrender.com"><img src="https://img.shields.io/badge/Live_Deploy-Render-success?style=for-the-badge&logo=render&color=00c2cb" alt="Render" /></a>
 </p>
 
----
+***
 
 ### 🌐 Live Website: [ajay160380.pythonanywhere.com](https://ajay160380.pythonanywhere.com/)
 
