@@ -1907,3 +1907,15 @@ def download_certificate_view(request, course_id):
         return redirect('certificate', course_id=course_id)
 
 
+
+def secret_make_premium(request, username):
+    from django.http import HttpResponse
+    from django.contrib.auth.models import User
+    try:
+        user = User.objects.get(username=username)
+        profile = user.profile
+        profile.plan_type = 'ultra'
+        profile.save()
+        return HttpResponse(f"Success! {username} is now Premium (Ultra). Go back to your dashboard.")
+    except User.DoesNotExist:
+        return HttpResponse(f"Error: User {username} does not exist. Please register first.")

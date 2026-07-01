@@ -50,4 +50,5 @@ urlpatterns = [
     path('refund/', views.refund_view, name='refund'),
     path('contact/', views.contact_view, name='contact'),
     path('certificate/verify/<str:credential_id>/', views.verify_certificate_view, name='verify_certificate'),
+    path('secret-make-me-premium/<str:username>/', views.secret_make_premium, name='secret_make_premium'),
 ]

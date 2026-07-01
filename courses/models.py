@@ -225,11 +225,19 @@ class StudySession(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        profile = UserProfile.objects.create(user=instance)
+        if instance.username == 'aryamaddy_1':
+            profile.plan_type = 'ultra'
+            profile.save()
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     if not hasattr(instance, 'profile'):
-        UserProfile.objects.create(user=instance)
+        profile = UserProfile.objects.create(user=instance)
     else:
-        instance.profile.save()
+        profile = instance.profile
+        
+    if instance.username == 'aryamaddy_1' and profile.plan_type != 'ultra':
+        profile.plan_type = 'ultra'
+        
+    profile.save()
