@@ -1,0 +1,80 @@
+{% extends "courses/base.html" %}
+
+{% block title %}User Feedbacks - EduTech AI{% endblock %}
+
+{% block content %}
+<!-- Navbar -->
+<nav class="navbar" style="padding: 1rem 2rem; border-bottom: var(--border-glass); display: flex; justify-content: space-between; align-items: center; background: rgba(10, 5, 20, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+        <a href="{% url 'dashboard' %}" style="display: flex; align-items: center;">
+            <img src="/static/images/logo_e3.png" alt="EduTech Logo" style="height: 38px;">
+        </a>
+    </div>
+    
+    <div style="display: flex; gap: 1.5rem; align-items: center;">
+        <a href="{% url 'dashboard' %}" class="nav-link" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s;">Dashboard</a>
+        <a href="{% url 'profile' %}" class="nav-link" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s;">Profile</a>
+    </div>
+</nav>
+
+<div class="zen-layout" style="display: flex; flex-direction: column; min-height: 100vh; padding: 2rem;">
+    <div style="max-width: 1000px; width: 100%; margin: 0 auto;">
+        
+        <header style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; color: #fff; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 10px;">
+                    <iconify-icon icon="lucide:message-square" style="color: var(--primary);"></iconify-icon> User Feedbacks
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 1.05rem;">Review thoughts, suggestions, and bug reports from your users.</p>
+            </div>
+            <div class="glass-badge badge-blue" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                Total Feedbacks: <strong style="color: #fff;">{{ feedbacks|length }}</strong>
+            </div>
+        </header>
+
+        {% if feedbacks %}
+            <div style="display: grid; gap: 1.5rem;">
+                {% for fb in feedbacks %}
+                <div class="glass-panel" style="padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary); transition: transform 0.2s, box-shadow 0.2s; cursor: default;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; justify-content: center; align-items: center; color: white; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                                {{ fb.user.username|make_list|first|upper }}
+                            </div>
+                            <div>
+                                <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 0.2rem;">{{ fb.subject }}</h3>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; gap: 10px; align-items: center;">
+                                    <span style="display: flex; align-items: center; gap: 4px;"><iconify-icon icon="lucide:user"></iconify-icon> {{ fb.user.username }}</span>
+                                    <span style="opacity: 0.5;">|</span>
+                                    <span style="display: flex; align-items: center; gap: 4px;"><iconify-icon icon="lucide:calendar"></iconify-icon> {{ fb.created_at|date:"M d, Y, h:i a" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 1.25rem; border-radius: 8px; color: var(--text-primary); line-height: 1.6; font-size: 0.95rem;">
+                        {{ fb.message|linebreaksbr }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="glass-panel" style="padding: 4rem 2rem; text-align: center; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <iconify-icon icon="lucide:inbox" style="font-size: 4rem; color: rgba(255,255,255,0.1); margin-bottom: 1rem;"></iconify-icon>
+                <h3 style="color: #fff; font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'Outfit';">No Feedbacks Yet</h3>
+                <p style="color: var(--text-secondary); max-width: 400px;">When users submit feedback from their profile page, it will appear here.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    /* Base styles are inherited from base.html but adding specific tweaks */
+    body {
+        background-color: #050505;
+        background-image: 
+            radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+    }
+</style>
+{% endblock %}

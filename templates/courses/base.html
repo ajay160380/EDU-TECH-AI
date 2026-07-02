@@ -535,6 +535,12 @@
                     {% if user.is_authenticated %}
                     <a href="{% url 'dashboard' %}"
                         class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'dashboard' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">Dashboard</a>
+                        
+                    {% if user.is_superuser %}
+                    <a href="{% url 'admin_feedbacks' %}"
+                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'admin_feedbacks' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">Feedbacks</a>
+                    {% endif %}
+                        
                     <a href="{% url 'import_course' %}"
                         class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'import_course' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">Import</a>
                     <a href="{% url 'focus_room' %}"

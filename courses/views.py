@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from django.contrib import messages
 from django.views.decorators.http import require_POST
@@ -2034,3 +2034,9 @@ def view_schedule(request, course_id):
         })
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_feedback_view(request):
+    from .models import Feedback
+    feedbacks = Feedback.objects.all().order_by('-created_at')
+    return render(request, 'courses/admin_feedback.html', {'feedbacks': feedbacks})
