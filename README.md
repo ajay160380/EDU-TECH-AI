@@ -15,8 +15,10 @@
 ***
 
 ### 🌐 Live Websites: 
-- **PythonAnywhere**: [ajay160380.pythonanywhere.com](https://ajay160380.pythonanywhere.com/)
-- **Render**: [edu-tech-ai-vk2e.onrender.com](https://edu-tech-ai-vk2e.onrender.com)
+- **Render (🔥 MAIN PRODUCTION)**: [edu-tech-ai-vk2e.onrender.com](https://edu-tech-ai-vk2e.onrender.com)
+  *(This is the official live website. It is securely connected to our permanent cloud Neon PostgreSQL Database.)*
+- **PythonAnywhere (🧪 TESTING ONLY)**: [ajay160380.pythonanywhere.com](https://ajay160380.pythonanywhere.com/)
+  *(This link is used for testing features locally on a temporary SQLite database. Data here is not synced with the main production server.)*
 
 **EduTech AI** is a premium, high-fidelity EdTech SaaS platform that turns standard YouTube educational playlists into comprehensive, interactive virtual classrooms. Utilizing advanced Language Models and interactive UI overlays, it acts as an automated study companion, offering textbook-level summaries, custom-tailored study plans, smart interactive quizzes, a focused Pomodoro study room, and automated grading systems with dynamic PDF certificate generation on exam completion.
 
