@@ -539,6 +539,8 @@
                     {% if user.is_superuser %}
                     <a href="{% url 'admin_feedbacks' %}"
                         class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'admin_feedbacks' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">Feedbacks</a>
+                    <a href="{% url 'admin_analytics' %}"
+                        class="nav-link text-sm font-medium {% if request.resolver_match.url_name == 'admin_analytics' %}active text-primary{% else %}text-slate-500{% endif %} hover:text-primary transition-colors py-1 relative">Analytics</a>
                     {% endif %}
                         
                     <a href="{% url 'import_course' %}"

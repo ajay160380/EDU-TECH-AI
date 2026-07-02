@@ -22,6 +22,7 @@ urlpatterns = [
     # Dashboard & course actions
     path('dashboard/', views.dashboard, name='dashboard'),
     path('admin-feedbacks/', views.admin_feedback_view, name='admin_feedbacks'),
+    path('admin-analytics/', views.admin_analytics_view, name='admin_analytics'),
     path('dashboard/courses/', views.dashboard_courses_partial, name='dashboard_courses_partial'),
     path('dashboard/ai-assist/', views.dashboard_ai_assist, name='dashboard_ai_assist'),
     path('dashboard/heatmap/', views.dashboard_heatmap_partial, name='dashboard_heatmap_partial'),

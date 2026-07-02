@@ -2040,3 +2040,24 @@ def admin_feedback_view(request):
     from .models import Feedback
     feedbacks = Feedback.objects.all().order_by('-created_at')
     return render(request, 'courses/admin_feedback.html', {'feedbacks': feedbacks})
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_analytics_view(request):
+    from django.contrib.auth.models import User
+    from .models import UserProfile, Course
+    
+    total_users = User.objects.count()
+    premium_users = UserProfile.objects.filter(plan_type__in=['ultra', 'pro']).count()
+    total_courses = Course.objects.count()
+    
+    recent_users = User.objects.all().order_by('-date_joined')[:10]
+    top_streaks = UserProfile.objects.all().order_by('-streak_count')[:10]
+    
+    context = {
+        'total_users': total_users,
+        'premium_users': premium_users,
+        'total_courses': total_courses,
+        'recent_users': recent_users,
+        'top_streaks': top_streaks,
+    }
+    return render(request, 'courses/admin_analytics.html', context)
