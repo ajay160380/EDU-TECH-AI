@@ -14,7 +14,9 @@
 
 ***
 
-### 🌐 Live Website: [ajay160380.pythonanywhere.com](https://ajay160380.pythonanywhere.com/)
+### 🌐 Live Websites: 
+- **PythonAnywhere**: [ajay160380.pythonanywhere.com](https://ajay160380.pythonanywhere.com/)
+- **Render**: [edu-tech-ai-vk2e.onrender.com](https://edu-tech-ai-vk2e.onrender.com)
 
 **EduTech AI** is a premium, high-fidelity EdTech SaaS platform that turns standard YouTube educational playlists into comprehensive, interactive virtual classrooms. Utilizing advanced Language Models and interactive UI overlays, it acts as an automated study companion, offering textbook-level summaries, custom-tailored study plans, smart interactive quizzes, a focused Pomodoro study room, and automated grading systems with dynamic PDF certificate generation on exam completion.
 
