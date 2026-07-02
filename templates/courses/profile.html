@@ -45,6 +45,11 @@
                         <iconify-icon icon="lucide:crown" class="w-5 h-5 text-zinc-500"></iconify-icon>
                         Subscription
                     </button>
+                    <button onclick="switchSection('feedback')" id="nav-feedback"
+                        class="profile-nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap bg-transparent border border-transparent text-zinc-400 hover:text-white hover:bg-white/[0.04]">
+                        <iconify-icon icon="lucide:message-square" class="w-5 h-5 text-zinc-500"></iconify-icon>
+                        Feedback
+                    </button>
                 </nav>
             </aside>
             <main class="flex-1 min-w-0">
@@ -80,9 +85,14 @@
                                 class="hidden" onchange="handleAvatar(this)" />
                         </div>
                         <div>
-                            <h2 class="text-xl sm:text-2xl font-bold text-white mb-1"
+                            <h2 class="text-xl sm:text-2xl font-bold text-white mb-1 flex items-center gap-2"
                                 style="font-family:'Outfit',sans-serif;">
                                 {{ phead }} {{ phead_ln }}
+                                {% if user.profile.plan_type == 'ultra' %}
+                                <span class="plan-badge" style="background: linear-gradient(135deg, #FFD700, #DAA520); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px;">✦ Ultra</span>
+                                {% elif user.profile.plan_type == 'pro' %}
+                                <span class="plan-badge" style="background: linear-gradient(135deg, #00C9FF, #92FE9D); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px;">✦ Pro</span>
+                                {% endif %}
                             </h2>
                             <p class="text-sm text-zinc-400">
                                 {{ disp_email }}
@@ -452,6 +462,37 @@
                     </div>
                 </section>
 
+                {# ─── SECTION: FEEDBACK ─── #}
+                <section id="section-feedback" class="profile-section hidden">
+                    <div class="glass-card-profile mb-6 p-6 sm:p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                <iconify-icon icon="lucide:message-square" class="w-6 h-6 text-primary"></iconify-icon>
+                            </div>
+                            <div>
+                                <h3 class="text-xl sm:text-2xl font-bold text-white" style="font-family:'Outfit',sans-serif;">Feedback</h3>
+                                <p class="text-sm text-zinc-400">Help us improve by sharing your thoughts or suggestions.</p>
+                            </div>
+                        </div>
+                        <form id="feedback-form" onsubmit="submitFeedback(event)">
+                            <div class="mb-4">
+                                <label for="feedback-subject" class="block text-sm font-medium text-zinc-300 mb-2">Subject</label>
+                                <input type="text" id="feedback-subject" name="subject" required class="w-full bg-black/40 border border-white/[0.10] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 transition-colors" placeholder="What's this regarding?">
+                            </div>
+                            <div class="mb-6">
+                                <label for="feedback-message" class="block text-sm font-medium text-zinc-300 mb-2">Message</label>
+                                <textarea id="feedback-message" name="message" rows="5" required class="w-full bg-black/40 border border-white/[0.10] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 transition-colors" placeholder="Your feedback..."></textarea>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" id="feedback-submit-btn" class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-xl transition-all shadow-[0_0_20px_rgba(239,35,60,0.3)]">
+                                    <iconify-icon icon="lucide:send" class="w-5 h-5"></iconify-icon>
+                                    <span>Submit Feedback</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
             </main>
         </div>
     </div>
@@ -607,6 +648,44 @@
             var activeColor = document.documentElement.getAttribute('data-theme-color') || 'blue';
             updateSwatchHighlights(activeColor);
         });
+
+        // Feedback submission
+        window.submitFeedback = function(event) {
+            event.preventDefault();
+            const btn = document.getElementById('feedback-submit-btn');
+            const subject = document.getElementById('feedback-subject').value;
+            const message = document.getElementById('feedback-message').value;
+
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<iconify-icon icon="lucide:loader" class="w-5 h-5 animate-spin"></iconify-icon> <span>Submitting...</span>';
+            btn.disabled = true;
+
+            fetch('{% url "submit_feedback" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRF()
+                },
+                body: JSON.stringify({ subject: subject, message: message })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showToast(data.message);
+                    document.getElementById('feedback-form').reset();
+                } else {
+                    showToast(data.message || 'An error occurred.');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('Failed to submit feedback.');
+            })
+            .finally(() => {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            });
+        };
     })();
 </script>
 {% endblock %}
