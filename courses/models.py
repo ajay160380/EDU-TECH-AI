@@ -221,6 +221,41 @@ class StudySession(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.duration_minutes} mins on {self.completed_date}"
 
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedback')
+    subject = models.CharField(max_length=255)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback from {self.user.username} - {self.subject}"
+
+class CourseSchedule(models.Model):
+    course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='schedule')
+    start_date = models.DateField(auto_now_add=True)
+    target_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Schedule for {self.course.title}"
+
+class ScheduleDay(models.Model):
+    schedule = models.ForeignKey(CourseSchedule, on_delete=models.CASCADE, related_name='days')
+    date = models.DateField()
+    videos = models.ManyToManyField(Video, related_name='scheduled_days')
+    
+    class Meta:
+        ordering = ['date']
+        
+    def __str__(self):
+        return f"Day {self.date} for {self.schedule.course.title}"
+    
+    @property
+    def total_duration_display(self):
+        total_seconds = sum(v.duration_seconds for v in self.videos.all())
+        minutes = total_seconds // 60
+        return f"{minutes}m"
+
 # Signal handlers to ensure UserProfile is automatically kept in sync
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
