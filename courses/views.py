@@ -1919,3 +1919,118 @@ def secret_make_premium(request, username):
         return HttpResponse(f"Success! {username} is now Premium (Ultra). Go back to your dashboard.")
     except User.DoesNotExist:
         return HttpResponse(f"Error: User {username} does not exist. Please register first.")
+
+@login_required
+@require_POST
+def submit_feedback(request):
+    from .models import Feedback
+    import json
+    try:
+        data = json.loads(request.body)
+        subject = data.get('subject', '').strip()
+        message = data.get('message', '').strip()
+        
+        if not subject or not message:
+            return JsonResponse({'status': 'error', 'message': 'Both subject and message are required.'}, status=400)
+            
+        Feedback.objects.create(user=request.user, subject=subject, message=message)
+        return JsonResponse({'status': 'success', 'message': 'Your feedback has been submitted. Thank you!'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+@require_POST
+def generate_schedule(request, course_id):
+    from .models import Course, CourseSchedule, ScheduleDay, Progress
+    import json
+    import datetime
+    
+    try:
+        course = Course.objects.get(id=course_id, user=request.user)
+        data = json.loads(request.body)
+        target_date_str = data.get('target_date')
+        
+        if not target_date_str:
+            return JsonResponse({'status': 'error', 'message': 'Target date is required.'}, status=400)
+            
+        target_date = datetime.datetime.strptime(target_date_str, "%Y-%m-%d").date()
+        today = datetime.date.today()
+        
+        days_available = (target_date - today).days
+        if days_available <= 0:
+            return JsonResponse({'status': 'error', 'message': 'Target date must be in the future.'}, status=400)
+            
+        # Get uncompleted videos
+        completed_video_ids = Progress.objects.filter(user=request.user, video__course=course, is_completed=True).values_list('video_id', flat=True)
+        pending_videos = course.videos.exclude(id__in=completed_video_ids).order_by('order')
+        
+        if not pending_videos.exists():
+            return JsonResponse({'status': 'error', 'message': 'You have already completed all videos in this course!'}, status=400)
+
+        # Create or update schedule
+        schedule, created = CourseSchedule.objects.update_or_create(
+            course=course,
+            defaults={'target_date': target_date}
+        )
+        
+        # Clear existing days
+        schedule.days.all().delete()
+        
+        # Distribution algorithm
+        videos_list = list(pending_videos)
+        total_videos = len(videos_list)
+        videos_per_day = max(1, total_videos // days_available)
+        extra_videos = total_videos % days_available
+        
+        current_video_idx = 0
+        
+        for i in range(days_available):
+            if current_video_idx >= total_videos:
+                break
+                
+            current_date = today + datetime.timedelta(days=i)
+            day = ScheduleDay.objects.create(schedule=schedule, date=current_date)
+            
+            # How many videos to assign today?
+            videos_today = videos_per_day + (1 if i < extra_videos else 0)
+            
+            for _ in range(videos_today):
+                if current_video_idx < total_videos:
+                    day.videos.add(videos_list[current_video_idx])
+                    current_video_idx += 1
+                    
+        return JsonResponse({'status': 'success', 'message': 'Schedule generated successfully.'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required
+def view_schedule(request, course_id):
+    from .models import Course, CourseSchedule
+    
+    try:
+        course = Course.objects.get(id=course_id, user=request.user)
+        schedule = CourseSchedule.objects.filter(course=course).first()
+        
+        if not schedule:
+            return JsonResponse({'status': 'error', 'message': 'No schedule found.'}, status=404)
+            
+        days_data = []
+        for day in schedule.days.all():
+            videos_data = [{'id': v.id, 'title': v.title, 'duration': v.duration_display} for v in day.videos.all()]
+            days_data.append({
+                'date': day.date.strftime("%b %d, %Y"),
+                'raw_date': day.date.strftime("%Y-%m-%d"),
+                'total_duration': day.total_duration_display,
+                'videos': videos_data
+            })
+            
+        return JsonResponse({
+            'status': 'success',
+            'schedule': {
+                'start_date': schedule.start_date.strftime("%b %d, %Y"),
+                'target_date': schedule.target_date.strftime("%b %d, %Y"),
+                'days': days_data
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

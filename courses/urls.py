@@ -17,6 +17,7 @@ urlpatterns = [
     path('profile/avatar/upload/', views.profile_avatar_upload, name='profile_avatar_upload'),
     path('profile/update/', views.profile_update_info, name='profile_update_info'),
     path('profile/theme/update/', views.profile_update_theme, name='profile_update_theme'),
+    path('profile/feedback/submit/', views.submit_feedback, name='submit_feedback'),
     
     # Dashboard & course actions
     path('dashboard/', views.dashboard, name='dashboard'),
@@ -29,6 +30,8 @@ urlpatterns = [
     path('course/<int:course_id>/certificate/', views.certificate_view, name='certificate'),
     path('course/<int:course_id>/certificate/download/', views.download_certificate_view, name='download_certificate'),
     path('course/<int:course_id>/final-exam/', views.final_exam_view, name='final_exam'),
+    path('course/<int:course_id>/schedule/generate/', views.generate_schedule, name='generate_schedule'),
+    path('course/<int:course_id>/schedule/view/', views.view_schedule, name='view_schedule'),
     
     # Async JSON endpoints
     path('video/<int:video_id>/chat/', views.video_chat, name='video_chat'),
