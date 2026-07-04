@@ -7,17 +7,18 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PORT=7860
 
-# Hugging Face Spaces requires a non-root user (id 1000)
-RUN useradd -m -u 1000 user
-USER user
-ENV HOME=/home/user \
-    PATH=/home/user/.local/bin:$PATH
+# Hugging Face Spaces requires a non-root user (id 1000).
+# The base image already contains a user with UID 1000, so we just switch to it.
+RUN mkdir -p /app && chown -R 1000:1000 /app
+USER 1000
+ENV HOME=/app \
+    PATH=/app/.local/bin:$PATH
 
 # Set the working directory inside the container
-WORKDIR $HOME/app
+WORKDIR /app
 
 # Copy requirements file first to take advantage of Docker layer caching
-COPY --chown=user requirements.txt $HOME/app/
+COPY --chown=1000:1000 requirements.txt /app/
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
@@ -26,7 +27,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN playwright install chromium
 
 # Copy the entire workspace into the container
-COPY --chown=user . $HOME/app/
+COPY --chown=1000:1000 . /app/
 
 # Run static files collection so that WhiteNoise can serve them efficiently
 RUN python manage.py collectstatic --noinput
