@@ -1,3 +1,12 @@
+---
+title: Edu Tech AI
+emoji: 🎓
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+---
+
 # 🎓 EduTech AI - AI-Powered Interactive Course & Learning Workspace
 
 <p align="center">
