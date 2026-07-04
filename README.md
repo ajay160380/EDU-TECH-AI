@@ -19,6 +19,7 @@ app_port: 7860
   <a href="https://github.com/ajay160380/Edu-Tech-AI"><img src="https://img.shields.io/badge/Django-6.0.5-092e20?style=for-the-badge&logo=django" alt="Django" /></a>
   <a href="https://github.com/ajay160380/Edu-Tech-AI"><img src="https://img.shields.io/badge/Python-3.12+-3776ab?style=for-the-badge&logo=python" alt="Python" /></a>
   <a href="https://edu-tech-ai-vk2e.onrender.com"><img src="https://img.shields.io/badge/Live_Deploy-Render-success?style=for-the-badge&logo=render&color=00c2cb" alt="Render" /></a>
+  <a href="https://solocode12-edu-tech-ai.hf.space"><img src="https://img.shields.io/badge/Live_Deploy-HuggingFace-ffcc00?style=for-the-badge&logo=huggingface&logoColor=black" alt="HuggingFace" /></a>
 </p>
 
 ***
@@ -26,6 +27,8 @@ app_port: 7860
 ### 🌐 Live Websites: 
 - **Render (🔥 MAIN PRODUCTION)**: [edu-tech-ai-vk2e.onrender.com](https://edu-tech-ai-vk2e.onrender.com)
   *(This is the official live website. It is securely connected to our permanent cloud Neon PostgreSQL Database.)*
+- **Hugging Face (🚀 HIGH-SPEED BACKUP)**: [solocode12-edu-tech-ai.hf.space](https://solocode12-edu-tech-ai.hf.space)
+  *(This is the secondary production website hosted on Hugging Face Spaces. It connects to the same Neon Database.)*
 - **PythonAnywhere (🧪 TESTING ONLY)**: [ajay160380.pythonanywhere.com](https://ajay160380.pythonanywhere.com/)
   *(This link is used for testing features locally on a temporary SQLite database. Data here is not synced with the main production server.)*
 
