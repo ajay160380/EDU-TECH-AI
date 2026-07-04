@@ -220,23 +220,34 @@
     const ssoModal = document.getElementById('google-sso-modal');
     const closeBtn = document.getElementById('modal-close-btn');
 
-    document.getElementById('btn-google-login').addEventListener('click', function () {
+    document.getElementById('btn-google-login').addEventListener('click', function (e) {
+        e.preventDefault();
         if (isFirebaseConfigured) {
-            const btn = this;
-            btn.innerHTML = `<span style="width: 1.2rem; height: 1.2rem; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; display: inline-block; animation: spin 1s infinite linear;"></span>`;
-            btn.disabled = true;
-
             const provider = new firebase.auth.GoogleAuthProvider();
             provider.setCustomParameters({ prompt: 'select_account' });
 
-            // Use redirect instead of popup to bypass Safari/iframe popup blockers
-            firebase.auth().signInWithRedirect(provider).catch((error) => {
-                console.error("Redirect start error:", error);
-                const errorMsg = error.message ? error.message : error.code;
-                btn.innerHTML = `<span style="font-weight: 600; color: #ef233c !important;">Error: ${errorMsg}</span>`;
-                btn.disabled = false;
-                setTimeout(() => resetButton(), 5000);
-            });
+            // Call popup immediately to preserve Safari user gesture. Do DOM changes in .then()
+            firebase.auth().signInWithPopup(provider)
+                .then((result) => {
+                    const btn = document.getElementById('btn-google-login');
+                    btn.innerHTML = `<span style="width: 1.2rem; height: 1.2rem; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; display: inline-block; animation: spin 1s infinite linear;"></span>`;
+                    btn.disabled = true;
+                    if (result && result.user) return result.user.getIdToken();
+                    throw new Error("No user profile returned");
+                })
+                .then((idToken) => submitGoogleTokenToDjango(idToken))
+                .catch((error) => {
+                    console.error("Auth error:", error);
+                    if (error.code === "auth/popup-blocked") {
+                        firebase.auth().signInWithRedirect(provider);
+                    } else {
+                        const errorMsg = error.message ? error.message : error.code;
+                        const btn = document.getElementById('btn-google-login');
+                        btn.innerHTML = `<span style="font-weight: 600; color: #ef233c !important;">Error: ${errorMsg}</span>`;
+                        btn.disabled = false;
+                        setTimeout(() => resetButton(), 5000);
+                    }
+                });
         } else {
             // Fallback to Demo SSO if Firebase is missing
             ssoModal.style.display = 'flex';
