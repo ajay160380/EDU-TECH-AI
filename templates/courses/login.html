@@ -231,8 +231,11 @@
 
             // Use redirect instead of popup to bypass Safari/iframe popup blockers
             firebase.auth().signInWithRedirect(provider).catch((error) => {
-                showToast("Authentication failed to start.", "error");
-                resetButton();
+                console.error("Redirect start error:", error);
+                const errorMsg = error.message ? error.message : error.code;
+                btn.innerHTML = `<span style="font-weight: 600; color: #ef233c !important;">Error: ${errorMsg}</span>`;
+                btn.disabled = false;
+                setTimeout(() => resetButton(), 5000);
             });
         } else {
             // Fallback to Demo SSO if Firebase is missing
