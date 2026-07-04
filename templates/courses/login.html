@@ -229,20 +229,11 @@
             const provider = new firebase.auth.GoogleAuthProvider();
             provider.setCustomParameters({ prompt: 'select_account' });
 
-            firebase.auth().signInWithPopup(provider)
-                .then((result) => {
-                    if (result && result.user) return result.user.getIdToken();
-                    throw new Error("No user profile returned");
-                })
-                .then((idToken) => submitGoogleTokenToDjango(idToken))
-                .catch((error) => {
-                    if (error.code === "auth/popup-blocked") {
-                        firebase.auth().signInWithRedirect(provider);
-                    } else {
-                        showToast("Authentication cancelled or failed.", "error");
-                        resetButton();
-                    }
-                });
+            // Use redirect instead of popup to bypass Safari/iframe popup blockers
+            firebase.auth().signInWithRedirect(provider).catch((error) => {
+                showToast("Authentication failed to start.", "error");
+                resetButton();
+            });
         } else {
             // Fallback to Demo SSO if Firebase is missing
             ssoModal.style.display = 'flex';
