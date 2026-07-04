@@ -31,6 +31,13 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.hf.space',
+    'https://huggingface.co',
+    'https://solocode12-edu-tech-ai.hf.space',
+    'https://edu-tech-ai-vk2e.onrender.com',
+]
+
 
 # Application definition
 
