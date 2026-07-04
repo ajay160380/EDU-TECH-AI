@@ -5,13 +5,19 @@ FROM mcr.microsoft.com/playwright/python:v1.47.0-noble
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PORT=8000
+    PORT=7860
+
+# Hugging Face Spaces requires a non-root user (id 1000)
+RUN useradd -m -u 1000 user
+USER user
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR $HOME/app
 
 # Copy requirements file first to take advantage of Docker layer caching
-COPY requirements.txt /app/
+COPY --chown=user requirements.txt $HOME/app/
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
@@ -20,13 +26,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN playwright install chromium
 
 # Copy the entire workspace into the container
-COPY . /app/
+COPY --chown=user . $HOME/app/
 
 # Run static files collection so that WhiteNoise can serve them efficiently
 RUN python manage.py collectstatic --noinput
 
 # Expose the default application port
-EXPOSE 8000
+EXPOSE 7860
 
 # Command to run the production WSGI application with gunicorn
-CMD python manage.py migrate --noinput && chmod -R 777 /app && gunicorn focustube.wsgi:application --bind 0.0.0.0:$PORT
+CMD python manage.py migrate --noinput && gunicorn focustube.wsgi:application --bind 0.0.0.0:$PORT
