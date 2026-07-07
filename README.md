@@ -24,13 +24,20 @@ app_port: 7860
 
 ***
 
-### 🌐 Live Websites: 
-- **Render (🔥 MAIN PRODUCTION)**: [edu-tech-ai-vk2e.onrender.com](https://edu-tech-ai-vk2e.onrender.com)
-  *(This is the official live website. It is securely connected to our permanent cloud Neon PostgreSQL Database.)*
-- **Hugging Face (🚀 HIGH-SPEED BACKUP)**: [solocode12-edu-tech-ai.hf.space](https://solocode12-edu-tech-ai.hf.space)
-  *(This is the secondary production website hosted on Hugging Face Spaces. It connects to the same Neon Database.)*
-- **PythonAnywhere (🧪 TESTING ONLY)**: [ajay160380.pythonanywhere.com](https://ajay160380.pythonanywhere.com/)
-  *(This link is used for testing features locally on a temporary SQLite database. Data here is not synced with the main production server.)*
+### 🌐 Live Websites
+
+* **🤗 Hugging Face (🔥 Primary Production | 🚀 High-Speed Backup)**
+  **[Visit Website](https://solocode12-edu-tech-ai.hf.space)**
+  *This is the official production deployment hosted on Hugging Face Spaces. It is connected to the primary Neon PostgreSQL database.*
+
+* **🎯 Render (Production Mirror)**
+  **[Visit Website](https://edu-tech-ai-vk2e.onrender.com)**
+  *This serves as an alternative production deployment and is securely connected to the same Neon PostgreSQL database.*
+
+* **🧪 PythonAnywhere (Testing Only)**
+  **[Visit Website](https://ajay160380.pythonanywhere.com/)**
+  *This deployment is intended for testing and development purposes only. It uses a temporary SQLite database, so data is not synchronized with the production environment.*
+
 ---
 **EduTech AI** is a premium, high-fidelity EdTech SaaS platform that turns standard YouTube educational playlists into comprehensive, interactive virtual classrooms. Utilizing advanced Language Models and interactive UI overlays, it acts as an automated study companion, offering textbook-level summaries, custom-tailored study plans, smart interactive quizzes, a focused Pomodoro study room, and automated grading systems with dynamic PDF certificate generation on exam completion.
 
