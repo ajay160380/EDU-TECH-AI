@@ -26,14 +26,15 @@ app_port: 7860
 
 ### 🌐 Live Websites
 
-* **🤗 Hugging Face (🔥 Primary Production | 🚀 High-Speed Backup)**
-  **[Visit Website](https://solocode12-edu-tech-ai.hf.space)**
-  *This is the official production deployment hosted on Hugging Face Spaces. It is connected to the primary Neon PostgreSQL database.*
+## 🌐 Live Deployments
 
-* **🎯 Render (Production Mirror)**
+* **🎯 Render (🔥 Primary Production)**
   **[Visit Website](https://edu-tech-ai-vk2e.onrender.com)**
-  *This serves as an alternative production deployment and is securely connected to the same Neon PostgreSQL database.*
+  *This is the official production deployment hosted on Render. It is connected to the primary Neon PostgreSQL database.*
 
+* **🤗 Hugging Face (🚀 High-Speed Backup)**
+  **[Visit Website](https://solocode12-edu-tech-ai.hf.space)**
+  *This serves as a backup deployment and is securely connected to the same Neon PostgreSQL database.*
 * **🧪 PythonAnywhere (Testing Only)**
   **[Visit Website](https://ajay160380.pythonanywhere.com/)**
   *This deployment is intended for testing and development purposes only. It uses a temporary SQLite database, so data is not synchronized with the production environment.*
