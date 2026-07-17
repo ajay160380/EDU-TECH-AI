@@ -180,6 +180,5 @@ python test_customizer_features.py # Validates AI tutor chatbot and summaries
 ```
 
 ---
-
 ## 🛡️ License
-Distributed under the MIT License. See `LICENSE` for more details.
+This project is protected under a proprietary license — see [LICENSE](LICENSE) for details. Unauthorized copying, modification, or use is prohibited.
