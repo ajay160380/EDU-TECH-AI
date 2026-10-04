@@ -45,7 +45,7 @@
                 </div>
                 <h3 class="text-slate-400 text-sm font-medium mb-1 uppercase tracking-wider">Premium Users (Ultra/Pro)</h3>
                 <p class="text-5xl font-black text-white flex items-baseline gap-2">
-                    {{ premium_users }} <span class="text-sm font-normal text-slate-400">Total</span>
+                    <span id="premiumUsersCount">{{ premium_users }}</span> <span class="text-sm font-normal text-slate-400">Total</span>
                 </p>
             </div>
 
@@ -61,51 +61,108 @@
             </div>
         </div>
 
+        <input type="hidden" id="csrfTokenAdmin" value="{{ csrf_token }}">
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Recent Signups -->
-            <div class="rounded-3xl border border-white/10 overflow-hidden" style="background: rgba(0,0,0,0.2); backdrop-filter: blur(20px);">
+            <!-- User Access & Subscription Management -->
+            <div class="rounded-3xl border border-white/10 overflow-hidden flex flex-col" style="background: rgba(0,0,0,0.25); backdrop-filter: blur(20px);">
+                <!-- Header -->
                 <div class="px-6 py-5 border-b border-white/10 flex justify-between items-center bg-white/5">
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="ri-user-add-line text-primary"></i> Recent Signups</h2>
-                    <span class="text-xs text-slate-400 bg-white/10 px-2 py-1 rounded-md">Last 10 users</span>
+                    <div>
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="ri-shield-keyhole-line text-primary"></i> User Access & Plan Control
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Grant Pro / Ultra access or turn off plans instantly.</p>
+                    </div>
+                    <span class="text-xs text-slate-300 bg-white/10 border border-white/10 px-3 py-1 rounded-full font-medium">
+                        <span id="userCountBadge">{{ all_users|length }}</span> users
+                    </span>
                 </div>
-                <div class="overflow-x-auto">
+
+                <!-- Search and Filters -->
+                <div class="p-4 border-b border-white/10 bg-white/[0.02] flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+                    <div class="relative flex-1">
+                        <i class="ri-search-line absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="userSearchInput" oninput="filterUsers()" placeholder="Search by username or email..." 
+                               class="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                    </div>
+                    <div class="flex items-center gap-1.5 flex-shrink-0" id="planFilterButtons">
+                        <button type="button" onclick="setPlanFilter('all')" class="plan-filter-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white border border-primary transition-all" data-filter="all">All</button>
+                        <button type="button" onclick="setPlanFilter('free')" class="plan-filter-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all" data-filter="free">Free</button>
+                        <button type="button" onclick="setPlanFilter('pro')" class="plan-filter-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all" data-filter="pro">Pro</button>
+                        <button type="button" onclick="setPlanFilter('ultra')" class="plan-filter-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all" data-filter="ultra">Ultra</button>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="overflow-x-auto max-h-[580px] overflow-y-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-white/5 text-slate-400 text-xs uppercase tracking-wider">
+                        <thead class="sticky top-0 z-10 bg-zinc-950/90 backdrop-blur-md border-b border-white/10 text-slate-400 text-[11px] uppercase tracking-wider">
+                            <tr>
                                 <th class="p-4 font-semibold">User</th>
-                                <th class="p-4 font-semibold">Joined Date</th>
-                                <th class="p-4 font-semibold text-right">Plan</th>
+                                <th class="p-4 font-semibold text-center">Current Plan</th>
+                                <th class="p-4 font-semibold text-right">Access Action</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-white/5">
-                            {% for u in recent_users %}
-                            <tr class="hover:bg-white/5 transition-colors">
+                        <tbody class="divide-y divide-white/5" id="userTableBody">
+                            {% for u in all_users %}
+                            <tr class="user-row hover:bg-white/5 transition-colors" 
+                                id="user-row-{{ u.id }}"
+                                data-username="{{ u.username|lower }}" 
+                                data-email="{{ u.email|lower }}" 
+                                data-plan="{{ u.profile.plan_type }}">
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold shadow-lg">
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0">
+                                            {% if u.profile.avatar %}
+                                            <img src="{{ u.profile.avatar.url }}" alt="{{ u.username }}" class="w-full h-full rounded-full object-cover">
+                                            {% else %}
                                             {{ u.username|make_list|first|upper }}
+                                            {% endif %}
                                         </div>
-                                        <div>
-                                            <p class="text-white font-medium">{{ u.username }}</p>
-                                            <p class="text-xs text-slate-400">{{ u.email|default:"No email" }}</p>
+                                        <div class="min-w-0">
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <p class="text-white font-semibold text-sm truncate max-w-[150px] sm:max-w-none">{{ u.username }}</p>
+                                                {% if u.is_superuser %}
+                                                <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">ADMIN</span>
+                                                {% endif %}
+                                            </div>
+                                            <p class="text-xs text-slate-400 truncate max-w-[180px] sm:max-w-none">{{ u.email|default:"No email" }}</p>
+                                            <p class="text-[10px] text-slate-500 mt-0.5">Joined {{ u.date_joined|date:"M d, Y" }}</p>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="p-4 text-sm text-slate-300">{{ u.date_joined|date:"M d, Y" }}</td>
-                                <td class="p-4 text-right">
-                                    {% if u.profile.plan_type == 'ultra' %}
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500/20 text-purple-400 border border-purple-500/30">
-                                        ULTRA
-                                    </span>
-                                    {% elif u.profile.plan_type == 'pro' %}
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                                        PRO
-                                    </span>
-                                    {% else %}
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/10 text-slate-400 border border-white/10">
-                                        FREE
-                                    </span>
-                                    {% endif %}
+                                <td class="p-4 text-center whitespace-nowrap">
+                                    <div id="plan-badge-{{ u.id }}">
+                                        {% if u.profile.plan_type == 'ultra' %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm shadow-purple-500/10">
+                                            <i class="ri-vip-crown-fill text-purple-400 text-xs"></i> ULTRA
+                                        </span>
+                                        {% elif u.profile.plan_type == 'pro' %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow-sm shadow-blue-500/10">
+                                            <i class="ri-flashlight-fill text-blue-400 text-xs"></i> PRO
+                                        </span>
+                                        {% else %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-slate-400 border border-white/10">
+                                            <i class="ri-user-line text-xs"></i> FREE
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="p-4 text-right whitespace-nowrap">
+                                    <div class="inline-flex items-center gap-2">
+                                        <select id="plan-select-{{ u.id }}" 
+                                                data-current="{{ u.profile.plan_type }}"
+                                                onchange="changeUserPlan('{{ u.id }}', '{{ u.username|escapejs }}', this.value)"
+                                                class="bg-white/10 hover:bg-white/15 text-white text-xs font-semibold rounded-xl px-3 py-1.5 border border-white/15 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all cursor-pointer">
+                                            <option value="free" class="bg-zinc-900 text-slate-300" {% if u.profile.plan_type == 'free' %}selected{% endif %}>⚪ Free (Off)</option>
+                                            <option value="pro" class="bg-zinc-900 text-blue-400" {% if u.profile.plan_type == 'pro' %}selected{% endif %}>⚡ Pro Plan</option>
+                                            <option value="ultra" class="bg-zinc-900 text-purple-400" {% if u.profile.plan_type == 'ultra' %}selected{% endif %}>👑 Ultra Plan</option>
+                                        </select>
+                                        <span id="plan-spinner-{{ u.id }}" class="hidden text-primary text-sm">
+                                            <i class="ri-loader-4-line animate-spin"></i>
+                                        </span>
+                                    </div>
                                 </td>
                             </tr>
                             {% empty %}
@@ -113,21 +170,30 @@
                                 <td colspan="3" class="p-8 text-center text-slate-500">No users found.</td>
                             </tr>
                             {% endfor %}
+                            <tr id="no-search-results" class="hidden">
+                                <td colspan="3" class="p-8 text-center text-slate-500">
+                                    <i class="ri-search-line text-2xl block mb-2 opacity-50"></i>
+                                    No users found matching your search or filter.
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
             <!-- Top Active Learners -->
-            <div class="rounded-3xl border border-white/10 overflow-hidden" style="background: rgba(0,0,0,0.2); backdrop-filter: blur(20px);">
+            <div class="rounded-3xl border border-white/10 overflow-hidden flex flex-col" style="background: rgba(0,0,0,0.25); backdrop-filter: blur(20px);">
                 <div class="px-6 py-5 border-b border-white/10 flex justify-between items-center bg-white/5">
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="ri-fire-fill text-orange-500"></i> Top Active Learners</h2>
+                    <div>
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="ri-fire-fill text-orange-500"></i> Top Active Learners</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Ranked by current learning streak count.</p>
+                    </div>
                     <span class="text-xs text-slate-400 bg-white/10 px-2 py-1 rounded-md">By Streak</span>
                 </div>
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto max-h-[640px] overflow-y-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-white/5 text-slate-400 text-xs uppercase tracking-wider">
+                        <thead class="sticky top-0 z-10 bg-zinc-950/90 backdrop-blur-md border-b border-white/10 text-slate-400 text-[11px] uppercase tracking-wider">
+                            <tr>
                                 <th class="p-4 font-semibold">User</th>
                                 <th class="p-4 font-semibold">Current Streak</th>
                                 <th class="p-4 font-semibold text-right">Status</th>
@@ -138,11 +204,12 @@
                             <tr class="hover:bg-white/5 transition-colors">
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-300 font-bold bg-white/5">
+                                        <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-300 font-bold bg-white/5 flex-shrink-0">
                                             {{ forloop.counter }}
                                         </div>
                                         <div>
                                             <p class="text-white font-medium">{{ p.user.username }}</p>
+                                            <p class="text-xs text-slate-500">Plan: <span class="uppercase font-semibold text-slate-400">{{ p.plan_type }}</span></p>
                                         </div>
                                     </div>
                                 </td>
@@ -154,7 +221,7 @@
                                 </td>
                                 <td class="p-4 text-right">
                                     {% if p.streak_count > 0 %}
-                                    <span class="text-emerald-400 text-sm"><i class="ri-checkbox-circle-fill"></i> Active</span>
+                                    <span class="text-emerald-400 text-sm font-medium"><i class="ri-checkbox-circle-fill"></i> Active</span>
                                     {% else %}
                                     <span class="text-slate-500 text-sm">Inactive</span>
                                     {% endif %}
@@ -172,5 +239,177 @@
         </div>
         
     </div>
+
+    <!-- Floating Action Toast Notification -->
+    <div id="admin-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div id="admin-toast-box" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-zinc-900/95 border border-white/20 shadow-2xl backdrop-blur-xl text-white text-sm">
+            <span id="admin-toast-icon" class="text-lg"></span>
+            <span id="admin-toast-msg" class="font-medium"></span>
+        </div>
+    </div>
 </div>
+
+<script>
+    let activePlanFilter = 'all';
+    let toastTimeout = null;
+
+    function showAdminToast(msg, type = 'success') {
+        const toast = document.getElementById('admin-toast');
+        const box = document.getElementById('admin-toast-box');
+        const icon = document.getElementById('admin-toast-icon');
+        const text = document.getElementById('admin-toast-msg');
+
+        if (type === 'success') {
+            box.style.borderColor = 'rgba(52, 211, 153, 0.4)';
+            icon.innerHTML = '<i class="ri-checkbox-circle-fill text-emerald-400"></i>';
+        } else {
+            box.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+            icon.innerHTML = '<i class="ri-error-warning-fill text-red-400"></i>';
+        }
+
+        text.textContent = msg;
+        toast.classList.remove('translate-y-24', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-24', 'opacity-0');
+        }, 3500);
+    }
+
+    function getAdminCSRF() {
+        const el = document.getElementById('csrfTokenAdmin');
+        if (el && el.value) return el.value;
+        const name = 'csrftoken';
+        const cookies = document.cookie ? document.cookie.split(';') : [];
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                return decodeURIComponent(cookie.substring(name.length + 1));
+            }
+        }
+        return '';
+    }
+
+    function changeUserPlan(userId, username, newPlan) {
+        const selectEl = document.getElementById(`plan-select-${userId}`);
+        const spinnerEl = document.getElementById(`plan-spinner-${userId}`);
+        const badgeEl = document.getElementById(`plan-badge-${userId}`);
+        const rowEl = document.getElementById(`user-row-${userId}`);
+        const previousPlan = selectEl.getAttribute('data-current') || 'free';
+
+        // Show spinner & disable select during request
+        selectEl.disabled = true;
+        if (spinnerEl) spinnerEl.classList.remove('hidden');
+
+        fetch('{% url "admin_update_user_plan" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getAdminCSRF()
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                plan_type: newPlan
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => { throw new Error(data.message || 'Server error'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Update select state
+            selectEl.setAttribute('data-current', newPlan);
+
+            // Update badge DOM
+            if (badgeEl) {
+                if (newPlan === 'ultra') {
+                    badgeEl.innerHTML = `
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm shadow-purple-500/10">
+                            <i class="ri-vip-crown-fill text-purple-400 text-xs"></i> ULTRA
+                        </span>
+                    `;
+                } else if (newPlan === 'pro') {
+                    badgeEl.innerHTML = `
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow-sm shadow-blue-500/10">
+                            <i class="ri-flashlight-fill text-blue-400 text-xs"></i> PRO
+                        </span>
+                    `;
+                } else {
+                    badgeEl.innerHTML = `
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-slate-400 border border-white/10">
+                            <i class="ri-user-line text-xs"></i> FREE
+                        </span>
+                    `;
+                }
+            }
+
+            // Update row dataset for instant filtering
+            if (rowEl) {
+                rowEl.setAttribute('data-plan', newPlan);
+            }
+
+            // Update Premium Users counter
+            if (data.premium_users_count !== undefined) {
+                const countEl = document.getElementById('premiumUsersCount');
+                if (countEl) countEl.textContent = data.premium_users_count;
+            }
+
+            showAdminToast(data.message || `Plan updated to ${newPlan.toUpperCase()}`);
+            filterUsers();
+        })
+        .catch(err => {
+            console.error('Failed to update plan:', err);
+            // Revert dropdown selection
+            selectEl.value = previousPlan;
+            showAdminToast(err.message || 'Failed to update user plan', 'error');
+        })
+        .finally(() => {
+            selectEl.disabled = false;
+            if (spinnerEl) spinnerEl.classList.add('hidden');
+        });
+    }
+
+    function setPlanFilter(filter) {
+        activePlanFilter = filter;
+        document.querySelectorAll('.plan-filter-btn').forEach(btn => {
+            if (btn.getAttribute('data-filter') === filter) {
+                btn.className = 'plan-filter-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white border border-primary transition-all';
+            } else {
+                btn.className = 'plan-filter-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all';
+            }
+        });
+        filterUsers();
+    }
+
+    function filterUsers() {
+        const query = (document.getElementById('userSearchInput').value || '').trim().toLowerCase();
+        const rows = document.querySelectorAll('.user-row');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const username = row.getAttribute('data-username') || '';
+            const email = row.getAttribute('data-email') || '';
+            const plan = row.getAttribute('data-plan') || 'free';
+
+            const matchesSearch = !query || username.includes(query) || email.includes(query);
+            const matchesPlan = activePlanFilter === 'all' || plan === activePlanFilter;
+
+            if (matchesSearch && matchesPlan) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        const noResultsRow = document.getElementById('no-search-results');
+        if (noResultsRow) {
+            noResultsRow.classList.toggle('hidden', visibleCount > 0);
+        }
+    }
+</script>
 {% endblock %}

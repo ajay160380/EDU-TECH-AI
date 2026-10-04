@@ -2050,14 +2050,64 @@ def admin_analytics_view(request):
     premium_users = UserProfile.objects.filter(plan_type__in=['ultra', 'pro']).count()
     total_courses = Course.objects.count()
     
-    recent_users = User.objects.all().order_by('-date_joined')[:10]
-    top_streaks = UserProfile.objects.all().order_by('-streak_count')[:10]
+    users = list(User.objects.select_related('profile').all().order_by('-date_joined'))
+    for u in users:
+        try:
+            _ = u.profile
+        except (UserProfile.DoesNotExist, AttributeError):
+            UserProfile.objects.get_or_create(user=u)
+            
+    top_streaks = UserProfile.objects.select_related('user').all().order_by('-streak_count')[:10]
     
     context = {
         'total_users': total_users,
         'premium_users': premium_users,
         'total_courses': total_courses,
-        'recent_users': recent_users,
+        'all_users': users,
+        'recent_users': users[:10],
         'top_streaks': top_streaks,
     }
     return render(request, 'courses/admin_analytics.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
+@require_POST
+def admin_update_user_plan(request):
+    import json
+    import datetime
+    from django.contrib.auth.models import User
+    from .models import UserProfile
+    
+    try:
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        plan = data.get('plan_type', '').lower().strip()
+        
+        if plan not in ['free', 'pro', 'ultra']:
+            return JsonResponse({'status': 'error', 'message': 'Invalid plan specified.'}, status=400)
+            
+        user = User.objects.get(id=user_id)
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        
+        profile.plan_type = plan
+        if plan == 'free':
+            profile.subscription_end_date = None
+        else:
+            profile.subscription_end_date = datetime.date.today() + datetime.timedelta(days=365)
+            
+        profile.save()
+        
+        premium_users_count = UserProfile.objects.filter(plan_type__in=['ultra', 'pro']).count()
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f"Plan for '{user.username}' successfully changed to {plan.upper()}!",
+            'user_id': user.id,
+            'plan_type': profile.plan_type,
+            'plan_display': profile.get_plan_type_display(),
+            'premium_users_count': premium_users_count
+        })
+    except User.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'User not found.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
