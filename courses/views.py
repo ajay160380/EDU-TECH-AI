@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.utils import timezone
 from .models import Course, Video, Progress, StudySession, UserProfile
-from .utils import parse_playlist_id, fetch_youtube_playlist, generate_ai_study_buddy, verify_firebase_token, generate_final_exam, sync_course_video_durations
+from .utils import parse_playlist_id, fetch_youtube_playlist, generate_ai_study_buddy, verify_firebase_token, generate_final_exam, sync_course_video_durations, query_groq_llm
 
 def home(request):
     """
@@ -716,23 +716,13 @@ Your goal is to provide encouraging, accurate, and helpful answers to their quer
 Do not use unnecessary restrictions. Be concise, highly professional, and conversational."""
 
     try:
-        url = "https://api.groq.com/openai/v1/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": "llama-3.1-8b-instant",
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": message}
-            ],
-            "temperature": 0.7,
-            "max_tokens": 800
-        }
-        res = requests.post(url, headers=headers, json=payload, timeout=15)
-        res.raise_for_status()
-        response_text = res.json()['choices'][0]['message']['content'].strip()
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": message}
+        ]
+        response_text = query_groq_llm(messages, temperature=0.7, max_tokens=800, timeout=15)
+        if not response_text:
+            response_text = "I'm currently having trouble connecting to the AI brain. Please check your Groq API key configuration or try again in a few seconds."
         
         # Generic suggestions
         suggestions = ['Summarize my progress', 'Which course next?', 'Peak study hours']
@@ -1104,6 +1094,13 @@ def video_chat(request, video_id):
         remaining_queries = 5 - new_count
         
     message = request.POST.get('message', '').strip()
+    if not message:
+        try:
+            import json
+            data = json.loads(request.body)
+            message = data.get('message', '').strip()
+        except Exception:
+            pass
     
     if not message:
         return JsonResponse({'status': 'error', 'message': 'Message cannot be empty.'}, status=400)
@@ -1120,24 +1117,13 @@ def video_chat(request, video_id):
 
     try:
         if api_key:
-            import requests
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            }
-            data = {
-                "model": "llama-3.1-8b-instant",
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": message}
-                ],
-                "temperature": 0.7,
-                "max_tokens": 800
-            }
-            res = requests.post(url, headers=headers, json=data, timeout=15)
-            res.raise_for_status()
-            ai_response = res.json()['choices'][0]['message']['content']
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": message}
+            ]
+            ai_response = query_groq_llm(messages, temperature=0.7, max_tokens=800, timeout=15)
+            if not ai_response:
+                raise Exception("No response received from Groq AI models.")
             return JsonResponse({'status': 'success', 'response': ai_response, 'remaining': remaining_queries})
         else:
             raise Exception("No Groq API Key")

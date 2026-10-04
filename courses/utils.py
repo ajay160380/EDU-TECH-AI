@@ -40,6 +40,70 @@ def parse_iso_duration(iso_str):
     seconds = int(match.group(3) or 0)
     return hours * 3600 + minutes * 60 + seconds
 
+def query_groq_llm(messages, temperature=0.7, max_tokens=800, response_format=None, timeout=15):
+    """
+    Resilient Groq API caller with automatic candidate model fallbacks.
+    Tries configured primary model (default 'openai/gpt-oss-120b'), and falls back across
+    known working models ('openai/gpt-oss-20b', 'qwen/qwen3.8-27b', etc.) if 400/404 occurs.
+    """
+    api_key = getattr(settings, 'GROQ_API_KEY', '')
+    if not api_key:
+        return None
+
+    configured_model = getattr(settings, 'GROQ_MODEL', 'openai/gpt-oss-120b')
+    candidate_models = [
+        configured_model,
+        'openai/gpt-oss-120b',
+        'openai/gpt-oss-20b',
+        'qwen/qwen3.8-27b',
+        'llama-3.3-70b-versatile',
+        'llama-3.1-8b-instant'
+    ]
+
+    seen = set()
+    models_to_try = []
+    for m in candidate_models:
+        if m and m not in seen:
+            seen.add(m)
+            models_to_try.append(m)
+
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    last_error = None
+    for model in models_to_try:
+        try:
+            payload = {
+                "model": model,
+                "messages": messages,
+                "temperature": temperature,
+                "max_tokens": max_tokens
+            }
+            if response_format:
+                payload["response_format"] = response_format
+
+            res = requests.post(url, headers=headers, json=payload, timeout=timeout)
+            if res.status_code == 200:
+                data = res.json()
+                choices = data.get('choices', [])
+                if choices:
+                    return choices[0].get('message', {}).get('content', '')
+            elif res.status_code in [400, 404]:
+                last_error = f"Model {model} returned {res.status_code}: {res.text}"
+                continue
+            else:
+                res.raise_for_status()
+        except Exception as e:
+            last_error = e
+            continue
+
+    if last_error:
+        print(f"Groq API error across candidate models: {last_error}")
+    return None
+
 def fetch_youtube_playlist(playlist_id):
     """
     Fetches playlist information and its videos from YouTube Data API v3.
@@ -309,28 +373,16 @@ def generate_ai_study_buddy(video_title, video_order=1, plan_type='free'):
     
     if api_key:
         try:
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            }
-            data = {
-                "model": "llama-3.1-8b-instant",
-                "messages": [
-                    {"role": "system", "content": "You are a helpful educational AI assistant that outputs raw JSON strictly conforming to the requested schema. Each response must be UNIQUE to the specific lecture title provided. Always generate exactly 5 quiz questions."},
-                    {"role": "user", "content": prompt}
-                ],
-                "temperature": 0.5,
-                "response_format": {"type": "json_object"}
-            }
-            res = requests.post(url, headers=headers, json=data, timeout=15)
-            res.raise_for_status()
-            content = res.json()['choices'][0]['message']['content']
-            parsed_data = json.loads(content)
-            
-            # Basic structural validation - accept 3+ questions
-            if 'summary' in parsed_data and 'quiz' in parsed_data and len(parsed_data['quiz']) >= 3:
-                return parsed_data
+            messages = [
+                {"role": "system", "content": "You are a helpful educational AI assistant that outputs raw JSON strictly conforming to the requested schema. Each response must be UNIQUE to the specific lecture title provided. Always generate exactly 5 quiz questions."},
+                {"role": "user", "content": prompt}
+            ]
+            content = query_groq_llm(messages, temperature=0.5, response_format={"type": "json_object"}, timeout=20)
+            if content:
+                parsed_data = json.loads(content)
+                # Basic structural validation - accept 3+ questions
+                if 'summary' in parsed_data and 'quiz' in parsed_data and len(parsed_data['quiz']) >= 3:
+                    return parsed_data
         except Exception as e:
             print(f"Error querying Groq API: {e}. Falling back to mock generator.")
             
@@ -361,26 +413,13 @@ def translate_to_hinglish(text):
     """
     if api_key:
         try:
-            import requests
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            }
-            data = {
-                "model": "llama-3.1-8b-instant",
-                "messages": [
-                    {"role": "system", "content": "You are a helpful educational AI assistant that translates text into natural Hinglish (Hindi in Roman script) while preserving Markdown and code block structure."},
-                    {"role": "user", "content": prompt}
-                ],
-                "temperature": 0.5,
-                "max_tokens": 1200
-            }
-            res = requests.post(url, headers=headers, json=data, timeout=15)
-            res.raise_for_status()
-            translated = res.json()['choices'][0]['message']['content'].strip()
-            if translated:
-                return translated
+            messages = [
+                {"role": "system", "content": "You are a helpful educational AI assistant that translates text into natural Hinglish (Hindi in Roman script) while preserving Markdown and code block structure."},
+                {"role": "user", "content": prompt}
+            ]
+            translated = query_groq_llm(messages, temperature=0.5, max_tokens=1200, timeout=20)
+            if translated and translated.strip():
+                return translated.strip()
         except Exception as e:
             print(f"Error translating to Hinglish via Groq: {e}. Trying free translation backend.")
             
@@ -1203,45 +1242,16 @@ def generate_final_exam(course_title, course_description=""):
     if not api_key:
         return fallback_exam
 
-    url = "https://api.groq.com/openai/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-
-    prompt = f"""You are an elite AI technical professor. Create a rigorous 10-question final certification exam specifically tailored to the curriculum of the masterclass titled: '{course_title}'.
-Course Description/Overview: {course_description}
-
-The questions MUST specifically test key concepts, syntax, problem-solving, and professional patterns relevant to '{course_title}'. Make the questions practical, challenging, and highly specific to the course topic.
-
-You MUST return EXACTLY a JSON array containing 10 objects. Do NOT return any markdown formatting, backticks, or introductory text. Just raw valid JSON.
-
-Format exactly like this example:
-[
-  {{
-    "id": 1,
-    "question": "Sample Question?",
-    "options": ["Option A", "Option B", "Option C", "Option D"],
-    "correct_index": 0,
-    "explanation": "Explanation for correct answer."
-  }}
-]
-"""
-
-    payload = {
-        "model": "llama-3.1-8b-instant",
-        "messages": [
-            {"role": "system", "content": "You are a JSON generator. You output only valid JSON without any markdown formatting."},
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.3,
-        "max_tokens": 2500
-    }
+    messages = [
+        {"role": "system", "content": "You are a JSON generator. You output only valid JSON without any markdown formatting."},
+        {"role": "user", "content": prompt}
+    ]
 
     try:
-        res = requests.post(url, headers=headers, json=payload, timeout=15)
-        res.raise_for_status()
-        content = res.json()['choices'][0]['message']['content'].strip()
+        content = query_groq_llm(messages, temperature=0.3, max_tokens=2500, timeout=25)
+        if not content:
+            return fallback_exam
+        content = content.strip()
         
         # Clean up possible markdown code blocks
         if content.startswith("```json"):
