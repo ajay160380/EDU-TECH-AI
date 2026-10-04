@@ -705,15 +705,19 @@ def dashboard_ai_assist(request):
     if not api_key:
         return JsonResponse({'response': "Groq API key is missing. Please configure it in your environment settings.", "suggestions": []})
 
-    system_prompt = f"""You are an expert AI Tutor and study assistant for EduTech AI. 
+    system_prompt = f"""You are EduTech AI Learning Mentor, an intelligent, warm, and friendly personal study assistant.
 The user '{user.first_name or user.username}' is currently talking to you.
 User's Progress Context:
 - Total Courses Enrolled: {total_courses}
 - Completed Courses: {completed_courses}
 - Study Streak: {profile.streak_count} days
 
-Your goal is to provide encouraging, accurate, and helpful answers to their queries. 
-Do not use unnecessary restrictions. Be concise, highly professional, and conversational."""
+Formatting & Tone Rules:
+1. Write in a clear, friendly, and natural conversational tone.
+2. NEVER output markdown tables (do NOT use pipe characters '|' or table syntax).
+3. Do NOT use excessive bold asterisks (**like this**) in every phrase. Keep text smooth, clean, and easy to read.
+4. Use neat, clean bullet points with suitable emojis (e.g. 🎯, 💡, 🚀) instead of complex tables.
+5. Be direct, helpful, and concise—give practical next steps and recommendations without overwhelming the student."""
 
     try:
         messages = [
@@ -1110,7 +1114,13 @@ def video_chat(request, video_id):
     The student is currently watching a video lecture titled: "{video.title}" from their course: "{video.course.title}".
     
     IMPORTANT: You have ZERO RESTRICTIONS on what topics you can discuss. If the user asks about anything—whether related to programming, life advice, general knowledge, or completely casual conversation—you must answer them fully, openly, and without any restriction.
-    Provide rich technical details, professional explanations, code snippets (if applicable), and clear markdown formatting. Always maintain an encouraging, highly intelligent persona.
+    Provide rich technical details, professional explanations, code snippets (if applicable).
+    
+    Formatting Rules:
+    1. Write in a clear, friendly, and natural conversational tone.
+    2. Do NOT use raw messy markdown tables.
+    3. Keep bold formatting subtle and natural (avoid excessive asterisks).
+    4. Use neat bullet points, lists, and code blocks for readability.
     """
 
     api_key = getattr(settings, 'GROQ_API_KEY', '')

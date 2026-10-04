@@ -2734,11 +2734,89 @@
             showToast(`🔒 <strong>AI Assistant is a Pro / Ultra Feature!</strong> Upgrade your plan to unlock your personal AI study companion. <a href="{% url 'pricing' %}" style="color: #f59e0b; text-decoration: underline; font-weight: 700;">Upgrade Now →</a>`, 'warn', 10000);
         {% endif %}
     }
+    function formatAIMessage(text) {
+        if (!text) return '';
+        let str = text;
+
+        // Code blocks
+        str = str.replace(/```([\s\S]*?)```/g, '<pre style="background: rgba(0,0,0,0.45); padding: 8px 12px; border-radius: 8px; margin: 8px 0; overflow-x: auto; font-family: monospace; font-size: 11px; border: 1px solid rgba(255,255,255,0.1);"><code>$1</code></pre>');
+
+        // Inline code
+        str = str.replace(/`([^`\n]+)`/g, '<code style="background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #f87171;">$1</code>');
+
+        // Markdown tables fallback
+        str = str.replace(/(?:^\|.+$\n?)+/gm, function(tableText) {
+            const rows = tableText.trim().split('\n').filter(r => r.trim().startsWith('|'));
+            if (rows.length < 2) return tableText;
+            let html = '<div style="overflow-x:auto; margin:8px 0;"><table style="width:100%; border-collapse:collapse; font-size:11px;">';
+            let isHeader = true;
+            for (let r = 0; r < rows.length; r++) {
+                const row = rows[r].trim();
+                if (/^\|[-:\s|]+\|$/.test(row)) { isHeader = false; continue; }
+                const cells = row.split('|').slice(1, -1).map(c => c.trim());
+                html += '<tr>';
+                for (let c = 0; c < cells.length; c++) {
+                    const tag = isHeader ? 'th' : 'td';
+                    const style = isHeader 
+                        ? 'padding:6px 8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.08); font-weight:600; color:#fff; text-align:left;' 
+                        : 'padding:5px 8px; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.85);';
+                    html += `<${tag} style="${style}">${cells[c]}</${tag}>`;
+                }
+                html += '</tr>';
+                if (isHeader) isHeader = false;
+            }
+            html += '</table></div>';
+            return html;
+        });
+
+        // Headings
+        str = str.replace(/^### (.*)$/gm, '<div style="font-weight:700; color:#fff; margin-top:8px; margin-bottom:4px; font-size:13px;">$1</div>');
+        str = str.replace(/^## (.*)$/gm, '<div style="font-weight:700; color:#fff; margin-top:10px; margin-bottom:6px; font-size:14px;">$1</div>');
+        str = str.replace(/^# (.*)$/gm, '<div style="font-weight:800; color:#fff; margin-top:12px; margin-bottom:8px; font-size:15px;">$1</div>');
+
+        // Bold & Italic (Convert asterisks cleanly into HTML tags)
+        str = str.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #fff; font-weight: 700;">$1</strong>');
+        str = str.replace(/\*([^*\n]+)\*/g, '<em style="color: #cbd5e1;">$1</em>');
+
+        // Bullet lists
+        str = str.replace(/(?:^[-*]\s+.*$\n?)+/gm, function(listText) {
+            const items = listText.trim().split('\n').map(line => {
+                const content = line.replace(/^[-*]\s+/, '').trim();
+                return `<li style="margin-bottom: 4px; padding-left: 2px;">${content}</li>`;
+            }).join('');
+            return `<ul style="margin: 6px 0 8px 18px; padding: 0; list-style-type: disc;">${items}</ul>`;
+        });
+
+        // Numbered lists
+        str = str.replace(/(?:^\d+\.\s+.*$\n?)+/gm, function(listText) {
+            const items = listText.trim().split('\n').map(line => {
+                const content = line.replace(/^\d+\.\s+/, '').trim();
+                return `<li style="margin-bottom: 4px; padding-left: 2px;">${content}</li>`;
+            }).join('');
+            return `<ol style="margin: 6px 0 8px 18px; padding: 0;">${items}</ol>`;
+        });
+
+        // Spacing & line breaks
+        str = str.replace(/\n\n+/g, '<div style="height: 6px;"></div>');
+        str = str.replace(/\n/g, '<br>');
+
+        // Strip extra <br> right around block tags
+        str = str.replace(/(<\/(?:div|ul|ol|li|pre|table|tr)>)<br>/gi, '$1');
+        str = str.replace(/<br>(<(?:div|ul|ol|li|pre|table|tr)[^>]*>)/gi, '$1');
+
+        return str;
+    }
+
     function addMsg(text, cls) {
         const div = document.createElement('div');
         div.className = `ai-msg ${cls}`;
-        div.innerHTML = text.replace(/\n/g, '<br>');
-        aiMessages.appendChild(div); aiMessages.scrollTop = aiMessages.scrollHeight;
+        if (cls.includes('bot')) {
+            div.innerHTML = formatAIMessage(text);
+        } else {
+            div.textContent = text;
+        }
+        aiMessages.appendChild(div);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
         return div;
     }
     async function fetchAIResponse(msgText) {
